@@ -1,0 +1,102 @@
+<html>
+    <script>
+        //Declaração Variaveis
+        let debug=1; //Liga e desliga o debug no F12
+        let arr; //Vetor principal
+        let typeOfCalculation = 0; // 0-Descritiva, 1-Probabilidade, 2-Correlação
+        let tipoDePesquisa = 0; //0-População, 1-Amostra
+        let varName = ""; //Nome da variável a ser pesquisada
+        let varDescription = "";//Nome da coluna de frequencia
+        let strInput="";  //Entrada de dados do usuario
+    </script>
+    <head>
+        <meta charset="utf-8">
+        <title>Teste</title>
+    </head>
+    <body>
+
+        <div>
+            <input type="button" name="bnt_Descritiva" id="bnt_Descritiva" onclick="typeOfCalculation=0;" value="Estatística Descritiva">
+            <input type="button" name="bnt_Probabilidade" id="bnt_Probabilidade" onclick="typeOfCalculation=1;" value="Probabilidade">
+            <input type="button" name="bnt_Correlacao" id="bnt_Correlacao" onclick="typeOfCalculation=2;" value="Correlação e Regressão">
+        </div>
+        <br>
+        <div>
+            <input type="radio" name="rad_Pesquisa" value="0" onclick="setaRadioOption(this.value)" checked>População<br>
+            <input type="radio" name="rad_Pesquisa" value="1" onclick="setaRadioOption(this.value)">Amostra<br>
+        </div>
+        <br>
+        <div>
+            <label for="nomeVariavel">Informe o nome da varável a ser pesquisada</label>
+            <input type="text" name="nomeVariavel" id="nomeVariavel" onchange="varName=this.value">
+        </div>
+        <br>
+        <div>
+            <label for="nomeDescricao">Informe o label da coluna de frequencia (este parametro é opcional)</label>
+            <input type="text" name="nomeDescricao" id="nomeDescricao" onchange="varDescription=this.value">
+        </div>
+        <br>
+        <div>
+            <label for="inputText">Digite os valores separados por espaço ou ;</label>
+            <textarea  name="inputText" id="inputText" ></textarea>
+        </div>
+        <br>
+        <div>
+            <label for="inputFile">Importar arquivo:</label>
+            <input type="file" name="inputFile" id="inputFile"  accept=".txt, .csv" onchange="tryLoad()">
+        </div>
+        <br>
+        <div>
+            <input type="button" name="bnt_initCalc" id="bnt_initCalc" onclick="initCalc()" value="initCalc">
+        </div>
+        <br>
+
+    </body>
+    <script>
+
+        //Função tryLoad é responsável por importar o arquivo
+        function tryLoad(){
+            let reader = new FileReader();
+            reader.addEventListener('load', function() {
+                let res = this.result;
+                document.querySelector("#inputText").value=res;
+                imported=true;
+            });
+            reader.addEventListener('error', function() {
+                arr=[];
+                imported=false;
+            });
+            reader.readAsText(document.querySelector('#inputFile').files[0]);
+        };
+
+        //Cria o vetor separando os dados importados ou informados pelo paciente
+        function inputProcess(res){
+            arr=res.split(/;| /); // Expressão regular para filtrar os espaços e os ponto e virgulas
+
+        }
+
+
+        //Inicío dos cálculos
+        function initCalc(){
+            inputProcess(document.querySelector("#inputText").value);
+            if (debug){showDebug();}
+        }
+
+        //Transfere a opção escolhida (amostra ou população) para a variável de controle
+        function setaRadioOption(opcao){
+            tipoDePesquisa=opcao;
+        }
+
+        //Exibe as informações de debug
+        function showDebug(){
+            console.log("Var typeOfCalculation = " + typeOfCalculation);
+            console.log("Var tipoDePesquisa = " + tipoDePesquisa);
+            console.log("Var varName = " + varName);
+            console.log("Var varDescription = " + varDescription);
+            console.log("arr = " + arr);
+        }
+
+    </script>
+</html>
+
+
