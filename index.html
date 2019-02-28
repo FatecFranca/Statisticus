@@ -8,10 +8,12 @@
         let varName = ""; //Nome da variável a ser pesquisada
         let varDescription = "";//Nome da coluna de frequencia
         let strInput="";  //Entrada de dados do usuario
+        let varType=0; //0-Quali, 1-Quanti discreta, 2-Quanti Continua
     </script>
     <head>
         <meta charset="utf-8">
         <title>Teste</title>
+        <script src="_src/funcoes.js"></script>
     </head>
     <body>
 
@@ -69,16 +71,16 @@
             reader.readAsText(document.querySelector('#inputFile').files[0]);
         };
 
-        //Cria o vetor separando os dados importados ou informados pelo paciente
-        function inputProcess(res){
-            arr=res.split(/;| /); // Expressão regular para filtrar os espaços e os ponto e virgulas
-
-        }
-
-
         //Inicío dos cálculos
         function initCalc(){
-            inputProcess(document.querySelector("#inputText").value);
+            arr = processaInput(document.querySelector("#inputText").value);
+            if (checaSeTemLetras(arr)==false){arr=converteEmNumeros(arr);}
+            arr = ordenaVetor(arr);
+            ////////////////////////////////////////////
+            /// TO DO TIPO DA VARIAVEL /////////////////
+            ////////////////////////////////////////////
+            //varType = checaTipoDeVariavel(arr);
+
             if (debug){showDebug();}
         }
 
@@ -93,6 +95,7 @@
             console.log("Var tipoDePesquisa = " + tipoDePesquisa);
             console.log("Var varName = " + varName);
             console.log("Var varDescription = " + varDescription);
+            console.log("Var varType = " + varType);
             console.log("arr = " + arr);
         }
 
