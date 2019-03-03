@@ -13,47 +13,67 @@
     <head>
         <meta charset="utf-8">
         <title>Teste</title>
+        <meta name="viewport" content="width=device-width, initial-scale = 1, shrink-to-fit=no">
+        <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
         <script src="_src/funcoes.js"></script>
     </head>
     <body>
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <p> <!--Disparadores -->
+                        <button class="btn btn-secondary" data-toggle="collapse" type="button" data-target="#ItemColapso1" aria-expanded="false" aria-controls="ItemColapso1">Teste</button>
+                    </p>
 
-        <div>
-            <input type="button" name="bnt_Descritiva" id="bnt_Descritiva" onclick="typeOfCalculation=0;" value="Estatística Descritiva">
-            <input type="button" name="bnt_Probabilidade" id="bnt_Probabilidade" onclick="typeOfCalculation=1;" value="Probabilidade">
-            <input type="button" name="bnt_Correlacao" id="bnt_Correlacao" onclick="typeOfCalculation=2;" value="Correlação e Regressão">
-        </div>
-        <br>
-        <div>
-            <input type="radio" name="rad_Pesquisa" value="0" onclick="setaRadioOption(this.value)" checked>População<br>
-            <input type="radio" name="rad_Pesquisa" value="1" onclick="setaRadioOption(this.value)">Amostra<br>
-        </div>
-        <br>
-        <div>
-            <label for="nomeVariavel">Informe o nome da varável a ser pesquisada</label>
-            <input type="text" name="nomeVariavel" id="nomeVariavel" onchange="varName=this.value">
-        </div>
-        <br>
-        <div>
-            <label for="nomeDescricao">Informe o label da coluna de frequencia (este parametro é opcional)</label>
-            <input type="text" name="nomeDescricao" id="nomeDescricao" onchange="varDescription=this.value">
-        </div>
-        <br>
-        <div>
-            <label for="inputText">Digite os valores separados por espaço ou ;</label>
-            <textarea  name="inputText" id="inputText" ></textarea>
-        </div>
-        <br>
-        <div>
-            <label for="inputFile">Importar arquivo:</label>
-            <input type="file" name="inputFile" id="inputFile"  accept=".txt, .csv" onchange="tryLoad()">
-        </div>
-        <br>
-        <div>
-            <input type="button" name="bnt_initCalc" id="bnt_initCalc" onclick="initCalc()" value="initCalc">
-        </div>
-        <br>
+                    <div class="collapse" id="ItemColapso1">
+                        <div class="card card-body">
+                            <div>
+                                    <input type="button" name="bnt_Descritiva" id="bnt_Descritiva" onclick="typeOfCalculation=0;" value="Estatística Descritiva">
+                                    <input type="button" name="bnt_Probabilidade" id="bnt_Probabilidade" onclick="typeOfCalculation=1;" value="Probabilidade">
+                                    <input type="button" name="bnt_Correlacao" id="bnt_Correlacao" onclick="typeOfCalculation=2;" value="Correlação e Regressão">
+                                </div>
+                                <br>
+                                <div>
+                                    <input type="radio" name="rad_Pesquisa" value="0" onclick="setaRadioOption(this.value)" checked>População<br>
+                                    <input type="radio" name="rad_Pesquisa" value="1" onclick="setaRadioOption(this.value)">Amostra<br>
+                                </div>
+                                <br>
+                                <div>
+                                    <label for="nomeVariavel">Informe o nome da varável a ser pesquisada</label>
+                                    <input type="text" name="nomeVariavel" id="nomeVariavel" onchange="varName=this.value">
+                                </div>
+                                <br>
+                                <div>
+                                    <label for="nomeDescricao">Informe o label da coluna de frequencia (este parametro é opcional)</label>
+                                    <input type="text" name="nomeDescricao" id="nomeDescricao" onchange="varDescription=this.value">
+                                </div>
+                                <br>
+                                <div>
+                                    <label for="inputText">Digite os valores separados por espaço ou ;</label>
+                                    <textarea  name="inputText" id="inputText" ></textarea>
+                                </div>
+                                <br>
+                                <div>
+                                    <label for="inputFile">Importar arquivo:</label>
+                                    <input type="file" name="inputFile" id="inputFile"  accept=".txt, .csv" onchange="tryLoad()">
+                                </div>
+                                <br>
+                                <div>
+                                    <input type="button" name="bnt_initCalc" id="bnt_initCalc" onclick="initCalc()" value="initCalc">
+                                </div>
+                                <br>
+                        </div>
+                    </div>
 
+                </div>
+            </div>
+        </div>
     </body>
+
+    <script src="js/jquery-3.2.1.min.js"></script>
+    <script src="js/popper.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+
     <script>
 
         //Função tryLoad é responsável por importar o arquivo
@@ -73,14 +93,11 @@
 
         //Inicío dos cálculos
         function initCalc(){
+            debugger;
             arr = processaInput(document.querySelector("#inputText").value);
-            if (checaSeTemLetras(arr)==false){arr=converteEmNumeros(arr);}
+            //if (checaSeTemLetras(arr)==false){arr=converteEmNumeros(arr);}
             arr = ordenaVetor(arr);
-            ////////////////////////////////////////////
-            /// TO DO TIPO DA VARIAVEL /////////////////
-            ////////////////////////////////////////////
-            //varType = checaTipoDeVariavel(arr);
-
+            verificaTipo(arr);
             if (debug){showDebug();}
         }
 
@@ -97,6 +114,77 @@
             console.log("Var varDescription = " + varDescription);
             console.log("Var varType = " + varType);
             console.log("arr = " + arr);
+        }
+
+        /*
+            Função para verificar qual o tipo de variável
+            Qualitativa Nominal - Tipo = String, Ordenação = ???
+            Qualitativa Ordinal - Tipo = String, Ordenação = ???
+            Quantitativa Discreta - Tipo = Numérica, Ordenação = crescente
+            Quantitativa Continua - Tipo = Numérica, Ordenação = crescente
+            (Discreta: Pouca variedade(<= que 6) e muita repetição)
+            (Continua: Muita variedade(> 6) e pouca repetição)
+        */
+        function verificaTipo(Vetor){
+            let tipo = '';
+            let arr = Vetor;
+
+            for(let i=0 ; i< arr.length; i++){
+                if(isNaN(arr[i])){
+                    tipo = 'Qualitativa';
+                    break;
+                }
+            }
+
+            if(tipo != 'Qualitativa'){
+                tipo = verificaQuantitativa(arr);
+            }
+
+            if(tipo == 'Continua'){
+
+            } else if (tipo == 'Discreta'){
+
+            } /* else if (){//quantitativa Ordinal
+
+            } else{//qualitativa Nominal
+
+            } */
+        }
+
+        function verificaQuantitativa(Vetor){
+            let arr = Vetor;
+            let arrAux = [];
+            let contArr = [];
+            let tipoQuantitativa = '';
+            let flag = true
+            let flag2 = true
+
+            for(let i=0; i<arr.length; i++){
+                if(flag ==  true){
+                    flag = false;
+                    arrAux.push(arr[i]);
+                    contArr.push(1);
+                } else{
+                    for(let j=0; j<arrAux.length; j++){
+                        if(Vetor[i] == arrAux[j]){
+                            flag2 = false;
+                            contArr[j]+=1;
+                        }
+                    }
+                    if(flag2 == true){
+                        arrAux.push(Vetor[i]);
+                        contArr.push(1);
+                    }
+                    flag2 = true;
+                }
+            }
+            if(contArr.length > 6){
+                tipoQuantitativa = 'Discreta';
+            }
+
+            if(tipoQuantitativa == ''){
+                tipoQuantitativa = 'Continua'
+            }
         }
 
     </script>
