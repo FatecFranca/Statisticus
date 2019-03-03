@@ -6,19 +6,20 @@ function processaInput(res) {
     return arr;
 }
 
-function ordenaVetor(arr) {
-    for (let i=0; i<arr.length-1;i++){
-        indice=i;
-        for(let j=i+1;j<arr.length;j++){
-            if (parseFloat(arr[j])<parseFloat(arr[indice])){
-                indice=j;
-            }
-        }
-        temp = arr[i];
-        arr[i]=arr[indice];
-        arr[indice]=temp;
+function ordenaVetor(vet) {
+    for(let posC = 1; posC<vet.length;posC++){
+       for(let posA=0; posA<posC;posA++){
+           if(vet[posC]<=vet[posA]){
+               let temp = vet[posC];
+               for (let i=posC;i>posA;i--){
+                   vet[i]=vet[i-1];
+               }
+               vet[posA]=temp;
+               break;
+           }
+       }
     }
-    return arr;
+    return vet;
 }
 /*
 function checaDiscretaContinua(arr) {
@@ -61,3 +62,77 @@ function checaSeTemLetras(arr) {
     }
     return temLetras;
 }
+
+
+ /*
+            Função para verificar qual o tipo de variável
+            Qualitativa Nominal - Tipo = String, Ordenação = ???
+            Qualitativa Ordinal - Tipo = String, Ordenação = ???
+            Quantitativa Discreta - Tipo = Numérica, Ordenação = crescente
+            Quantitativa Continua - Tipo = Numérica, Ordenação = crescente
+            (Discreta: Pouca variedade(<= que 6) e muita repetição)
+            (Continua: Muita variedade(> 6) e pouca repetição)
+        */
+        function verificaTipo(Vetor){
+            let tipo = '';
+            let arr = Vetor;
+
+            for(let i=0 ; i< arr.length; i++){
+                if(isNaN(arr[i])){
+                    tipo = 'Qualitativa';
+                    break;
+                }
+            }
+
+            if(tipo != 'Qualitativa'){
+                tipo = verificaQuantitativa(arr);
+            }
+
+            if(tipo == 'Continua'){
+
+            } else if (tipo == 'Discreta'){
+
+            } /* else if (){//quantitativa Ordinal
+
+            } else{//qualitativa Nominal
+
+            } */
+        }
+
+        function verificaQuantitativa(Vetor){
+            let arr = Vetor;
+            let arrAux = [];
+            let contArr = [];
+            let tipoQuantitativa = '';
+            let flag = 'S'
+            let flag2 = 'S'
+
+            for(let i=0; i<arr.length; i++){
+                if(flag == 'S'){
+                    flag = 'N';
+                    arrAux.push(arr[i]);
+                    contArr.push(1);
+                } else{
+                    for(let j=0; j<arrAux.length; j++){
+                        if(Vetor[i] == arrAux[j]){
+                            flag2 = 'N';
+                            contArr[j]+=1;
+                        }
+                    }
+                    if(flag2 == 'S'){
+                        arrAux.push(Vetor[i]);
+                        contArr.push(1);
+                    }
+                }
+            }
+            for(let i=0; i<contArr.length; i++){
+                if(contArr.length < 6){
+                    tipoQuantitativa = 'Discreta';
+                }
+            }
+
+            if(tipoQuantitativa == ''){
+                tipoQuantitativa = 'Continua'
+            }
+        }
+
