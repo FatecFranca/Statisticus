@@ -5,7 +5,6 @@ function processaInput(res) {
     if (arr[arr.length-1]==""){let r = arr.pop();}
     return arr;
 }
-
 function ordenaVetor(vet) {
     for(let posC = 1; posC<vet.length;posC++){
        for(let posA=0; posA<posC;posA++){
@@ -21,37 +20,11 @@ function ordenaVetor(vet) {
     }
     return vet;
 }
-/*
-function checaDiscretaContinua(arr) {
-    let totalNumDiferentes=1;
-    let numeros=[];
-    numeros.push(arr[0]);
-    for (let i=0;i<arr.length;i++){
-        let tem=false;
-        for(let j=0;j<numeros.length;j++){
-            if (arr[i]==numeros[j]){
-                tem=true;
-            }
-        }
-        if(!tem){
-            numeros.push(a[i]);
-            totalNumDiferentes++;
-        }
-    }
-    console.log("Quantidade de elementos diferentes = " + totalNumDiferentes);
-    if (totalNumDiferentes>5){
-        return 2;
-    } else {
-        return 1;
-    }
-}*/
-
 function converteEmNumeros(arr) {
     const newArr = arr.map(x => parseFloat(x));
     console.log(newArr);
     return newArr;
 }
-
 function checaSeTemLetras(arr) {
     let temLetras = false;
     for(let i=0;i<arr.length;i++){
@@ -62,8 +35,6 @@ function checaSeTemLetras(arr) {
     }
     return temLetras;
 }
-
-
  /*
             Função para verificar qual o tipo de variável
             Qualitativa Nominal - Tipo = String, Ordenação = ???
@@ -73,66 +44,73 @@ function checaSeTemLetras(arr) {
             (Discreta: Pouca variedade(<= que 6) e muita repetição)
             (Continua: Muita variedade(> 6) e pouca repetição)
         */
-        function verificaTipo(Vetor){
-            let tipo = '';
-            let arr = Vetor;
-
-            for(let i=0 ; i< arr.length; i++){
-                if(isNaN(arr[i])){
-                    tipo = 'Qualitativa';
-                    break;
-                }
-            }
-
-            if(tipo != 'Qualitativa'){
-                tipo = verificaQuantitativa(arr);
-            }
-
-            if(tipo == 'Continua'){
-
-            } else if (tipo == 'Discreta'){
-
-            } /* else if (){//quantitativa Ordinal
-
-            } else{//qualitativa Nominal
-
-            } */
+function verificaTipo(Vetor){
+    let tipo = '';
+    for(let i=0 ; i< Vetor.length; i++){
+        if(isNaN(Vetor[i])){
+            tipo = 'Qualitativa';
+            break;
         }
+    }
+    if(tipo != 'Qualitativa'){
+        tipo = verificaQuantitativa(Vetor);
+    }
+    return tipo;
+}
+function verificaQuantitativa(Vetor){
+    let arr = Vetor;
+    let arrAux = [];
+    let contArr = [];
+    let tipoQuantitativa = '';
 
-        function verificaQuantitativa(Vetor){
-            let arr = Vetor;
-            let arrAux = [];
-            let contArr = [];
-            let tipoQuantitativa = '';
-            let flag = 'S'
-            let flag2 = 'S'
+    let flag2 = 'S'
 
-            for(let i=0; i<arr.length; i++){
-                if(flag == 'S'){
-                    flag = 'N';
-                    arrAux.push(arr[i]);
-                    contArr.push(1);
-                } else{
-                    for(let j=0; j<arrAux.length; j++){
-                        if(Vetor[i] == arrAux[j]){
-                            flag2 = 'N';
-                            contArr[j]+=1;
-                        }
-                    }
-                    if(flag2 == 'S'){
-                        arrAux.push(Vetor[i]);
-                        contArr.push(1);
-                    }
-                }
-            }
-            for(let i=0; i<contArr.length; i++){
-                if(contArr.length < 6){
-                    tipoQuantitativa = 'Discreta';
-                }
-            }
+    arrAux.push(arr[0]);
+    contArr.push(1);
 
-            if(tipoQuantitativa == ''){
-                tipoQuantitativa = 'Continua'
+    for(let i=0; i<arr.length; i++){
+        for(let j=0; j<arrAux.length; j++){
+            if(Vetor[i] == arrAux[j]){
+                flag2 = 'N';
+                contArr[j]+=1;
             }
         }
+        if(flag2 == 'S'){
+            arrAux.push(Vetor[i]);
+            contArr.push(1);
+        }
+        flag2 = 'S';
+    }
 
+    if(contArr.length < 6){
+        tipoQuantitativa = 'Discreta';
+    } else {
+        tipoQuantitativa = 'Continua'
+    }
+
+    return tipoQuantitativa;
+}
+function retornaMaior(arr){
+    let res=arr[0];
+    for(let i=1;i<arr.length;i++){
+        if (arr[i]>res){
+            res=arr[i];
+        }
+    }
+    return res;
+}
+function retornaMenor(arr){
+    let res=arr[0];
+    for(let i=1;i<arr.length;i++){
+        if (arr[i]<res){
+            res=arr[i];
+        }
+    }
+    return res;
+}
+function calcAmplitude(arr){
+    return retornaMaior(arr) - retornaMenor(arr);
+}
+function calcNumLinhas(arr){
+    return Math.round(Math.sqrt(arr.length));
+}

@@ -8,7 +8,9 @@
         let varName = ""; //Nome da variável a ser pesquisada
         let varDescription = "";//Nome da coluna de frequencia
         let strInput="";  //Entrada de dados do usuario
-        let varType=0; //0-Quali, 1-Quanti discreta, 2-Quanti Continua
+        let varType='';
+        let amplitude=0;
+        let k=0; //Classes; Linhas
     </script>
     <head>
         <meta charset="utf-8">
@@ -93,11 +95,13 @@
 
         //Inicío dos cálculos
         function initCalc(){
-            debugger;
+            //debugger;
             arr = processaInput(document.querySelector("#inputText").value);
-            //if (checaSeTemLetras(arr)==false){arr=converteEmNumeros(arr);}
+            if (checaSeTemLetras(arr)==false){arr=converteEmNumeros(arr);}
             arr = ordenaVetor(arr);
-            verificaTipo(arr);
+            varType=verificaTipo(arr);
+            amplitude = calcAmplitude(arr);
+            k=calcNumLinhas(arr);
             if (debug){showDebug();}
         }
 
@@ -114,78 +118,12 @@
             console.log("Var varDescription = " + varDescription);
             console.log("Var varType = " + varType);
             console.log("arr = " + arr);
+            console.log("Amplitude = " + amplitude + "  K(classes) = " + k);
         }
 
-        /*
-            Função para verificar qual o tipo de variável
-            Qualitativa Nominal - Tipo = String, Ordenação = ???
-            Qualitativa Ordinal - Tipo = String, Ordenação = ???
-            Quantitativa Discreta - Tipo = Numérica, Ordenação = crescente
-            Quantitativa Continua - Tipo = Numérica, Ordenação = crescente
-            (Discreta: Pouca variedade(<= que 6) e muita repetição)
-            (Continua: Muita variedade(> 6) e pouca repetição)
-        */
-        function verificaTipo(Vetor){
-            let tipo = '';
-            let arr = Vetor;
 
-            for(let i=0 ; i< arr.length; i++){
-                if(isNaN(arr[i])){
-                    tipo = 'Qualitativa';
-                    break;
-                }
-            }
 
-            if(tipo != 'Qualitativa'){
-                tipo = verificaQuantitativa(arr);
-            }
 
-            if(tipo == 'Continua'){
-
-            } else if (tipo == 'Discreta'){
-
-            } /* else if (){//quantitativa Ordinal
-
-            } else{//qualitativa Nominal
-
-            } */
-        }
-
-        function verificaQuantitativa(Vetor){
-            let arr = Vetor;
-            let arrAux = [];
-            let contArr = [];
-            let tipoQuantitativa = '';
-            let flag = true
-            let flag2 = true
-
-            for(let i=0; i<arr.length; i++){
-                if(flag ==  true){
-                    flag = false;
-                    arrAux.push(arr[i]);
-                    contArr.push(1);
-                } else{
-                    for(let j=0; j<arrAux.length; j++){
-                        if(Vetor[i] == arrAux[j]){
-                            flag2 = false;
-                            contArr[j]+=1;
-                        }
-                    }
-                    if(flag2 == true){
-                        arrAux.push(Vetor[i]);
-                        contArr.push(1);
-                    }
-                    flag2 = true;
-                }
-            }
-            if(contArr.length > 6){
-                tipoQuantitativa = 'Discreta';
-            }
-
-            if(tipoQuantitativa == ''){
-                tipoQuantitativa = 'Continua'
-            }
-        }
 
     </script>
 </html>
