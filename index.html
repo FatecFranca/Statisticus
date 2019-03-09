@@ -9,8 +9,7 @@
         let varDescription = "";//Nome da coluna de frequencia
         let strInput="";  //Entrada de dados do usuario
         let varType='';
-        let amplitude=0;
-        let k=0; //Classes; Linhas
+        let r=[];
     </script>
     <head>
         <meta charset="utf-8">
@@ -100,8 +99,7 @@
             if (checaSeTemLetras(arr)==false){arr=converteEmNumeros(arr);}
             arr = ordenaVetor(arr);
             varType=verificaTipo(arr);
-            amplitude = calcAmplitude(arr);
-            k=calcNumLinhas(arr);
+            r = intervaloClasse(arr,r);
             if (debug){showDebug();}
         }
 
@@ -118,7 +116,7 @@
             console.log("Var varDescription = " + varDescription);
             console.log("Var varType = " + varType);
             console.log("arr = " + arr);
-            console.log("Amplitude = " + amplitude + "  K(classes) = " + k);
+            console.log("Linhas = " + r[1] + "  Intervalo = " + r[0]);
         }
 
 

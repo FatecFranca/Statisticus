@@ -114,3 +114,25 @@ function calcAmplitude(arr){
 function calcNumLinhas(arr){
     return Math.round(Math.sqrt(arr.length));
 }
+function intervaloClasse(arr,r){
+    let amp = calcAmplitude(arr);
+    let k = calcNumLinhas(arr);
+    let flag=false;
+    do {
+        amp++;
+        if ((amp%k)==0){
+            flag=true;
+            r.push(amp/k);
+            r.push(k);
+        } else if(amp%(k-1)==0) {
+            flag=true;
+            r.push(amp/(k-1));
+            r.push((k-1));
+        } else if(amp%(k+1)==0){
+            flag=true;
+            r.push(amp/(k+1));
+            r.push((k+1));
+        }
+    } while (!flag);
+    return r;
+}
