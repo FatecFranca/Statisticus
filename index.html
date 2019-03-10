@@ -5,14 +5,15 @@
         let arr; //Vetor principal
         let typeOfCalculation = 0; // 0-Descritiva, 1-Probabilidade, 2-Correlação
         let tipoDePesquisa = 0; //0-População, 1-Amostra
-        let varName = ""; //Nome da variável a ser pesquisada
-        let varDescription = "";//Nome da coluna de frequencia
+        let varName = 'Variável Pesquisada (xi)'; //Nome da variável a ser pesquisada
+        let varDescription = 'Frequencia (fi)';//Nome da coluna de frequencia
         let strInput="";  //Entrada de dados do usuario
         let varType='';
         let dadosTabela=[];//Indice 0 é o intervalo, indice 1 é a quantidade de linhas
         let elementosDoVetor=[];
         let contagemDeElementosDoVetor=[];
         let jaCalculado = false; //Controla se já foi executado algum calculo para poder apagar as tabelas geradas
+
     </script>
     <head>
         <meta charset="utf-8">
@@ -31,7 +32,7 @@
                 border-color: black;
             }
             table {
-                width: 50% !important;
+                width: 80% !important;
                 margin: auto;
             }
             .table-responsive{
@@ -135,11 +136,12 @@
                 }
             }
             jaCalculado = true;
+
             arr = processaInput(document.querySelector("#inputText").value);
             if (checaSeTemLetras(arr)==false){arr=converteEmNumeros(arr);}
             arr = ordenaVetor(arr);
             varType=verificaTipo(arr);
-            desenhaTabela(arr,varType,elementosDoVetor,contagemDeElementosDoVetor);
+            desenhaTabela(arr,varType,varName,varDescription);
             if (debug){showDebug();}
         }
 

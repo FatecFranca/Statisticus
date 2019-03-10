@@ -1,5 +1,8 @@
+let freqAcum=[];
 let eleVetor=[];
 let contVet=[];
+let freqPerc=[];
+let freqAcumPerc=[];
 
 //Cria o vetor separando os dados importados ou informados pelo paciente
 function processaInput(res) {
@@ -30,8 +33,7 @@ function converteEmNumeros(arr) {
 }
 function checaSeTemLetras(arr) {
     let temLetras = false;
-    for(let i=0;i<arr.length;i++){
-        if (isNaN(arr[i])){
+    for(let i=0;i<arr.length;i++){        if (isNaN(arr[i])){
             temLetras=true;
             break;
         }
@@ -161,24 +163,65 @@ function contaElementos(arr){
     }
 
 }
+function retornaTotalDeElementos(arr){
+    return arr.length;
+}
+function calcFreqPerc(arr){
+    freqPerc=[];
+    let tot = retornaTotalDeElementos(arr);
 
-function desenhaTabela(arr,varType,elementosDoVetor,contagemDeElementosDoVetor){
+    for(let i=0;i<contVet.length;i++){
+        freqPerc.push(Math.round(contVet[i]/tot*100));
+    }
+}
+function calcFreqAcum(contVet){
+    freqAcum=[];
+    freqAcum.push(contVet[0]);
+    for(let i=1;i<contVet.length;i++){
+        freqAcum.push(freqAcum[i-1] + contVet[i]);
+    }
+    return freqAcum;
+}
+function calcFreqAcumPerc(){
+    freqAcumPerc=[];
+    freqAcumPerc.push(freqPerc[0]);
+    for(let i=1;i<contVet.length;i++){
+        freqAcumPerc.push(freqAcumPerc[i-1] + freqPerc[i]);
+    }
+    return freqAcumPerc;
+}
+
+function desenhaTabela(arr,varType,varName,varDescription){
 
     contaElementos(arr);
+    calcFreqPerc(arr);
+    let fqA = calcFreqAcum(contVet);
+    let fqAcP = calcFreqAcumPerc();
     let div = document.createElement("div");
     document.body.appendChild(div);
     let table = document.createElement("table");
     div.appendChild(table);
+    let trh = document.createElement("tr");
+    table.appendChild(trh);
 
-
-    for(let i=0;i<eleVetor.length;i++){
-
+    trh.innerHTML=`<th>${varName}</th><th>${varDescription}</th><th>Frequencia% (fi%)</th><th>Frequencia Acumulada</th><th>Frequencia Acumulada % (fac%)</th>`;
+    let somaFreqP=0;
+    let freqAcum=0;
+    if(varType!='Continua'){
+        for(let i=0;i<eleVetor.length;i++){
             let tr=document.createElement("tr");
-            tr.innerHTML=`<td>${eleVetor[i]}</td><td>${contVet[i]}</td><td> </td>`;
+            tr.innerHTML=`<td>${eleVetor[i]}</td><td>${contVet[i]}</td><td>${freqPerc[i]}%</td><td>${fqA[i]}</td><td>${fqAcP[i]}%</td>`;
             table.appendChild(tr);
-
-
+            somaFreqP+=freqPerc[i];
         }
+    } else {
+        // CRIAR A TABELA CONTINUA
+    }
+
+
+    let tr=document.createElement("tr");
+    table.appendChild(tr);
+    tr.innerHTML=`<td>Total</td><td>${retornaTotalDeElementos(arr)}</td><td>${somaFreqP}%</td><td>${fqA[fqA.length-1]}</td><td></td>`;
 
     if(varType=='Qualitativa'){
         div.setAttribute("id", "tabelaQualitativa");
