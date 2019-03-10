@@ -9,14 +9,43 @@
         let varDescription = "";//Nome da coluna de frequencia
         let strInput="";  //Entrada de dados do usuario
         let varType='';
-        let r=[];
+        let dadosTabela=[];//Indice 0 é o intervalo, indice 1 é a quantidade de linhas
+        let elementosDoVetor=[];
+        let contagemDeElementosDoVetor=[];
+        let jaCalculado = false; //Controla se já foi executado algum calculo para poder apagar as tabelas geradas
     </script>
     <head>
         <meta charset="utf-8">
         <title>Teste</title>
         <meta name="viewport" content="width=device-width, initial-scale = 1, shrink-to-fit=no">
         <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
+        <script src="js/jquery-3.2.1.min.js"></script>
+        <script src="js/popper.min.js"></script>
+        <script src="js/bootstrap.min.js"></script>
         <script src="_src/funcoes.js"></script>
+        <style>
+
+            table,tr,td, th {
+                border-style: solid;
+                border-width: 1px;
+                border-color: black;
+            }
+            table {
+                width: 50% !important;
+                margin: auto;
+            }
+            .table-responsive{
+              width: 100% !important;
+            }
+
+
+
+            .table-status {
+                margin-top: 20px;
+                margin-bottom: 20px !important;
+            }
+        </style>
+
     </head>
     <body>
         <div class="container">
@@ -71,9 +100,7 @@
         </div>
     </body>
 
-    <script src="js/jquery-3.2.1.min.js"></script>
-    <script src="js/popper.min.js"></script>
-    <script src="js/bootstrap.min.js"></script>
+
 
     <script>
 
@@ -94,12 +121,25 @@
 
         //Inicío dos cálculos
         function initCalc(){
-            //debugger;
+            if (jaCalculado){
+                //debugger;
+                let temp = document.querySelector("#tabelaQualitativa");
+                if (temp==null){
+                    temp = document.querySelector("#tabelaDiscreta");
+                    if (temp==null){
+                        temp = document.querySelector("#tabelaContinua");
+                    }
+                }
+                if (temp!=null){
+                    document.body.removeChild(temp);
+                }
+            }
+            jaCalculado = true;
             arr = processaInput(document.querySelector("#inputText").value);
             if (checaSeTemLetras(arr)==false){arr=converteEmNumeros(arr);}
             arr = ordenaVetor(arr);
             varType=verificaTipo(arr);
-            r = intervaloClasse(arr,r);
+            desenhaTabela(arr,varType,elementosDoVetor,contagemDeElementosDoVetor);
             if (debug){showDebug();}
         }
 
@@ -116,7 +156,7 @@
             console.log("Var varDescription = " + varDescription);
             console.log("Var varType = " + varType);
             console.log("arr = " + arr);
-            console.log("Linhas = " + r[1] + "  Intervalo = " + r[0]);
+            console.log("Linhas = " + dadosTabela[1] + "  Intervalo = " + dadosTabela[0]);
         }
 
 

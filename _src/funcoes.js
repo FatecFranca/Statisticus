@@ -1,3 +1,6 @@
+let eleVetor=[];
+let contVet=[];
+
 //Cria o vetor separando os dados importados ou informados pelo paciente
 function processaInput(res) {
     let t = res.replace(/,/g, ".");  //Substitui a "," pelo "."
@@ -115,10 +118,11 @@ function calcNumLinhas(arr){
     return Math.round(Math.sqrt(arr.length));
 }
 function intervaloClasse(arr,r){
-    let amp = calcAmplitude(arr);
-    let k = calcNumLinhas(arr);
+    let amp = Math.round(calcAmplitude(arr));
+    let k = Math.round(calcNumLinhas(arr));
     let flag=false;
     do {
+        //debugger;
         amp++;
         if ((amp%k)==0){
             flag=true;
@@ -135,4 +139,53 @@ function intervaloClasse(arr,r){
         }
     } while (!flag);
     return r;
+}
+function contaElementos(arr){
+
+    eleVetor=[];
+    contVet=[];
+    eleVetor.push(arr[0]);
+    contVet.push(1);
+    for(let i=1;i<arr.length;i++){
+        let existe=false;
+        for(let j=0;j<eleVetor.length;j++){
+            if (eleVetor[j]==arr[i]){
+                existe=true;
+                contVet[j]++;
+            }
+        }
+        if (!existe){
+            eleVetor.push(arr[i]);
+            contVet.push(1);
+        }
+    }
+
+}
+
+function desenhaTabela(arr,varType,elementosDoVetor,contagemDeElementosDoVetor){
+
+    contaElementos(arr);
+    let div = document.createElement("div");
+    document.body.appendChild(div);
+    let table = document.createElement("table");
+    div.appendChild(table);
+
+
+    for(let i=0;i<eleVetor.length;i++){
+
+            let tr=document.createElement("tr");
+            tr.innerHTML=`<td>${eleVetor[i]}</td><td>${contVet[i]}</td><td> </td>`;
+            table.appendChild(tr);
+
+
+        }
+
+    if(varType=='Qualitativa'){
+        div.setAttribute("id", "tabelaQualitativa");
+    } else if (varType=='Discreta'){
+        div.setAttribute("id", "tabelaDiscreta");
+    }else {
+        div.setAttribute("id", "tabelaContinua");
+    }
+    //dadosTabela = intervaloClasse(arr,dadosTabela);
 }
