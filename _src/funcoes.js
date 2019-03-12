@@ -9,6 +9,16 @@ function processaInput(res) {
     let t = res.replace(/,/g, ".");  //Substitui a "," pelo "."
     let arr=t.split(/;| |\r?\n|\r/); // Expressão regular para filtrar os espaços, ponto e virgulas e quebras de linha
     if (arr[arr.length-1]==""){let r = arr.pop();}
+
+    for(let i=0;i<arr.length;i++){
+        let a=parseFloat(arr[i]);
+
+        if (isNaN(a) || a=="")   {
+
+            arr.splice(i,1);
+            i--;
+        }
+    }
     return arr;
 }
 function ordenaVetor(vet) {
