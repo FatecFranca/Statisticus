@@ -6,21 +6,24 @@ let freqAcumPerc=[];
 
 //Cria o vetor separando os dados importados ou informados pelo paciente
 function processaInput(res) {
-    let t = res.replace(/,/g, ".");  //Substitui a "," pelo "."
+    //debugger;
+    res.trim();
+    let u = res.replace(/,/g, ".");  //Substitui a "," pelo "."
+    let v = u.replace(/[.]+/g,'.'); //Substitui . duplicados
+    let t = v.replace(/[ ]+/g,' '); //Substitui . duplicados
+
     let arr=t.split(/;| |\r?\n|\r/); // Expressão regular para filtrar os espaços, ponto e virgulas e quebras de linha
     if (arr[arr.length-1]==""){let r = arr.pop();}
-
     for(let i=0;i<arr.length;i++){
         let a=parseFloat(arr[i]);
-
-        if (isNaN(a) || a=="")   {
-
+        if (isNaN(a) || a==""){
             arr.splice(i,1);
             i--;
         }
     }
     return arr;
 }
+
 function ordenaVetor(vet) {
     for(let posC = 1; posC<vet.length;posC++){
        for(let posA=0; posA<posC;posA++){
