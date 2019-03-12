@@ -1,0 +1,171 @@
+<html>
+    <script>
+        //Declaração Variaveis
+        let debug=1; //Liga e desliga o debug no F12
+        let arr; //Vetor principal
+        let typeOfCalculation = 0; // 0-Descritiva, 1-Probabilidade, 2-Correlação
+        let tipoDePesquisa = 0; //0-População, 1-Amostra
+        let varName = 'Variável Pesquisada (xi)'; //Nome da variável a ser pesquisada
+        let varDescription = 'Frequencia (fi)';//Nome da coluna de frequencia
+        let strInput="";  //Entrada de dados do usuario
+        let varType='';
+        let dadosTabela=[];//Indice 0 é o intervalo, indice 1 é a quantidade de linhas
+        let elementosDoVetor=[];
+        let contagemDeElementosDoVetor=[];
+        let jaCalculado = false; //Controla se já foi executado algum calculo para poder apagar as tabelas geradas
+
+    </script>
+    <head>
+        <meta charset="utf-8">
+        <title>Teste</title>
+        <meta name="viewport" content="width=device-width, initial-scale = 1, shrink-to-fit=no">
+        <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
+        <script src="js/jquery-3.2.1.min.js"></script>
+        <script src="js/popper.min.js"></script>
+        <script src="js/bootstrap.min.js"></script>
+        <script src="_src/funcoes.js"></script>
+        <style>
+
+            table,tr,td, th {
+                border-style: solid;
+                border-width: 1px;
+                border-color: black;
+            }
+            table {
+                width: 80% !important;
+                margin: auto;
+            }
+            .table-responsive{
+              width: 100% !important;
+            }
+
+
+
+            .table-status {
+                margin-top: 20px;
+                margin-bottom: 20px !important;
+            }
+        </style>
+
+    </head>
+    <body>
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <p> <!--Disparadores -->
+                        <button class="btn btn-secondary" data-toggle="collapse" type="button" data-target="#ItemColapso1" aria-expanded="false" aria-controls="ItemColapso1">Teste</button>
+                    </p>
+
+                    <div class="collapse" id="ItemColapso1">
+                        <div class="card card-body">
+                            <div>
+                                    <input type="button" name="bnt_Descritiva" id="bnt_Descritiva" onclick="typeOfCalculation=0;" value="Estatística Descritiva">
+                                    <input type="button" name="bnt_Probabilidade" id="bnt_Probabilidade" onclick="typeOfCalculation=1;" value="Probabilidade">
+                                    <input type="button" name="bnt_Correlacao" id="bnt_Correlacao" onclick="typeOfCalculation=2;" value="Correlação e Regressão">
+                                </div>
+                                <br>
+                                <div>
+                                    <input type="radio" name="rad_Pesquisa" value="0" onclick="setaRadioOption(this.value)" checked>População<br>
+                                    <input type="radio" name="rad_Pesquisa" value="1" onclick="setaRadioOption(this.value)">Amostra<br>
+                                </div>
+                                <br>
+                                <div>
+                                    <label for="nomeVariavel">Informe o nome da varável a ser pesquisada</label>
+                                    <input type="text" name="nomeVariavel" id="nomeVariavel" onchange="varName=this.value">
+                                </div>
+                                <br>
+                                <div>
+                                    <label for="nomeDescricao">Informe o label da coluna de frequencia (este parametro é opcional)</label>
+                                    <input type="text" name="nomeDescricao" id="nomeDescricao" onchange="varDescription=this.value">
+                                </div>
+                                <br>
+                                <div>
+                                    <label for="inputText">Digite os valores separados por espaço ou ;</label>
+                                    <textarea  name="inputText" id="inputText" ></textarea>
+                                </div>
+                                <br>
+                                <div>
+                                    <label for="inputFile">Importar arquivo:</label>
+                                    <input type="file" name="inputFile" id="inputFile"  accept=".txt, .csv" onchange="tryLoad()">
+                                </div>
+                                <br>
+                                <div>
+                                    <input type="button" name="bnt_initCalc" id="bnt_initCalc" onclick="initCalc()" value="initCalc">
+                                </div>
+                                <br>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </body>
+
+
+
+    <script>
+
+        //Função tryLoad é responsável por importar o arquivo
+        function tryLoad(){
+            let reader = new FileReader();
+            reader.addEventListener('load', function() {
+                let res = this.result;
+                document.querySelector("#inputText").value=res;
+                imported=true;
+            });
+            reader.addEventListener('error', function() {
+                arr=[];
+                imported=false;
+            });
+            reader.readAsText(document.querySelector('#inputFile').files[0]);
+        };
+
+        //Inicío dos cálculos
+        function initCalc(){
+            if (jaCalculado){
+                //debugger;
+                let temp = document.querySelector("#tabelaQualitativa");
+                if (temp==null){
+                    temp = document.querySelector("#tabelaDiscreta");
+                    if (temp==null){
+                        temp = document.querySelector("#tabelaContinua");
+                    }
+                }
+                if (temp!=null){
+                    document.body.removeChild(temp);
+                }
+            }
+            jaCalculado = true;
+
+            arr = processaInput(document.querySelector("#inputText").value);
+            if (checaSeTemLetras(arr)==false){arr=converteEmNumeros(arr);}
+            arr = ordenaVetor(arr);
+            varType=verificaTipo(arr);
+            desenhaTabela(arr,varType,varName,varDescription);
+            if (debug){showDebug();}
+        }
+
+        //Transfere a opção escolhida (amostra ou população) para a variável de controle
+        function setaRadioOption(opcao){
+            tipoDePesquisa=opcao;
+        }
+
+        //Exibe as informações de debug
+        function showDebug(){
+            console.log("Var typeOfCalculation = " + typeOfCalculation);
+            console.log("Var tipoDePesquisa = " + tipoDePesquisa);
+            console.log("Var varName = " + varName);
+            console.log("Var varDescription = " + varDescription);
+            console.log("Var varType = " + varType);
+            console.log("arr = " + arr);
+            console.log("Linhas = " + dadosTabela[1] + "  Intervalo = " + dadosTabela[0]);
+        }
+
+
+
+
+
+    </script>
+</html>
+
+
