@@ -195,15 +195,14 @@ function calcFreqAcumPerc(){
     }
     return freqAcumPerc;
 }
-function calcNumLinhas(arr){
+function calcK(arr){
     return Math.round(Math.sqrt(arr.length));
 }
-function intervaloClasse(arr,r){
-    let amp = Math.round(calcAmplitude(arr));
-    let k = Math.round(calcNumLinhas(arr));
+
+function intervaloClasse(amp,k){
+    r=[];
     let flag=false;
     do {
-        //debugger;
         amp++;
         if ((amp%k)==0){
             flag=true;
@@ -225,8 +224,8 @@ function desenhaTabela(arr,varType,varName,varDescription){
 
     //contaElementos(arr);
     //calcFreqPerc(arr);
-    let fqA = calcFreqAcum(contVet);
-    let fqAcP = calcFreqAcumPerc();
+    //let fqA = calcFreqAcum(contVet);
+    //let fqAcP = calcFreqAcumPerc();
     let div = document.createElement("div");
     document.body.appendChild(div);
     let table = document.createElement("table");

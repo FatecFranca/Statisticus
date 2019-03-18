@@ -155,6 +155,11 @@
             dadosGerais.totalFrequenciaPercentualReal = calcTotalFreqPercReal(dadosGerais.frequenciaPercentualReal);
             dadosGerais.frequenciaAcumulada = calcFreqAcum(dadosGerais.qtdElementos);
             dadosGerais.frequenciaAcumuladaPercentualReal = calcFreqAcumPerc(dadosGerais.frequenciaPercentualReal, dadosGerais.qtdElementos);
+            dadosGerais.K = calcK(dadosGerais.elementos);//Calcula K original (n linhas) será tualizado abaixo
+            let temporario = intervaloClasse(dadosGerais.amplitude, dadosGerais.K);
+            dadosGerais.K=temporario[1];
+            dadosGerais.intervaloDeClasse=temporario[0];
+
 
            // desenhaTabela(dadosGerais.arr,dadosGerais.varType,dadosGerais.varName,dadosGerais.varDescription);
             if (debug){showDebug();}
