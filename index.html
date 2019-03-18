@@ -125,6 +125,7 @@
 
         //Inicío dos cálculos
         function initCalc(){
+            dadosGerais.arr=[];
             if (jaCalculado){
                 //debugger;
                 let temp = document.querySelector("#tabelaQualitativa");
@@ -137,6 +138,7 @@
                 if (temp!=null){
                     document.body.removeChild(temp);
                 }
+
             }
             jaCalculado = true;
 
@@ -144,7 +146,18 @@
             if (checaSeTemLetras(dadosGerais.arr)==false){dadosGerais.arr=converteEmNumeros(dadosGerais.arr);}
             dadosGerais.arr = ordenaVetor(dadosGerais.arr);
             dadosGerais.varType=verificaTipo(dadosGerais.arr);
-            desenhaTabela(dadosGerais.arr,dadosGerais.varType,dadosGerais.varName,dadosGerais.varDescription);
+            dadosGerais.maiorElemento = retornaMaior(dadosGerais.arr, dadosGerais.varType);
+            dadosGerais.menorElemento = retornaMenor(dadosGerais.arr, dadosGerais.varType);
+            dadosGerais.amplitude = calcAmplitude(dadosGerais.maiorElemento, dadosGerais.menorElemento, dadosGerais.varType);
+            dadosGerais.Elementos =  contaElementos(dadosGerais.arr);
+            dadosGerais.qtdElementos = quantidadeElementos();
+
+
+
+
+
+
+           // desenhaTabela(dadosGerais.arr,dadosGerais.varType,dadosGerais.varName,dadosGerais.varDescription);
             if (debug){showDebug();}
         }
 
@@ -159,13 +172,10 @@
                 if (dadosGerais.hasOwnProperty(i)) {
                     console.log("dadosGerais." + i + " = " + dadosGerais[i]);
                 }
-
             }
             console.log("Linhas = " + dadosTabela[1] + "  Intervalo = " + dadosTabela[0]);
+
         }
-
-
-
     </script>
 </html>
 

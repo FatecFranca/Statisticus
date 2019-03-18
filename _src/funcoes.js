@@ -4,23 +4,20 @@ let contVet=[];
 let freqPerc=[];
 let freqAcumPerc=[];
 
+
+
 //Cria o vetor separando os dados importados ou informados pelo paciente
 function processaInput(res) {
     //debugger;
     res.trim();
     let u = res.replace(/,/g, ".");  //Substitui a "," pelo "."
-    let v = u.replace(/[.]+/g,'.'); //Substitui . duplicados
-    let t = v.replace(/[ ]+/g,' '); //Substitui . duplicados
+    u = u.replace(/[.]+/g,'.'); //Substitui . duplicados
+    u = u.replace(/[;]+/g,' ');
+    let t = u.replace(/[ ]+/g,' '); //Substitui . duplicados
 
     let arr=t.split(/;| |\r?\n|\r/); // Expressão regular para filtrar os espaços, ponto e virgulas e quebras de linha
     if (arr[arr.length-1]==""){let r = arr.pop();}
-    for(let i=0;i<arr.length;i++){
-        let a=parseFloat(arr[i]);
-        if (isNaN(a) || a==""){
-            arr.splice(i,1);
-            i--;
-        }
-    }
+    if (arr[0]=="" || arr[0]==" "){let r = arr.shift();}
     return arr;
 }
 
@@ -108,26 +105,93 @@ function verificaQuantitativa(Vetor){
 
     return tipoQuantitativa;
 }
-function retornaMaior(arr){
-    let res=arr[0];
-    for(let i=1;i<arr.length;i++){
-        if (arr[i]>res){
-            res=arr[i];
+function retornaMaior(arr, tipo){
+    let res;
+    if (tipo=='Qualitativa'){
+        res=arr[arr.length-1];
+    } else {
+        res=arr[0];
+        for(let i=1;i<arr.length;i++){
+            if (arr[i]>res){
+                res=arr[i];
+            }
+        }
+
+    }
+    return res;
+}
+function retornaMenor(arr, tipo){
+    let res;
+    if (tipo=='Qualitativa'){
+        res=arr[0];
+    } else {
+        res=arr[0];
+        for(let i=1;i<arr.length;i++){
+            if (arr[i]<res){
+                res=arr[i];
+            }
         }
     }
     return res;
 }
-function retornaMenor(arr){
-    let res=arr[0];
+function calcAmplitude(maior, menor, tipo){
+    let res;
+    if (tipo!='Qualitativa'){
+        res = maior - menor;
+    }
+    return res
+}
+
+
+
+function contaElementos(arr){
+    eleVetor=[];
+    contVet=[];
+    eleVetor.push(arr[0]);
+    contVet.push(1);
     for(let i=1;i<arr.length;i++){
-        if (arr[i]<res){
-            res=arr[i];
+        let existe=false;
+        for(let j=0;j<eleVetor.length;j++){
+            if (eleVetor[j]==arr[i]){
+                existe=true;
+                contVet[j]++;
+            }
+        }
+        if (!existe){
+            eleVetor.push(arr[i]);
+            contVet.push(1);
         }
     }
-    return res;
+    return eleVetor;
 }
-function calcAmplitude(arr){
-    return retornaMaior(arr) - retornaMenor(arr);
+
+function quantidadeElementos(){
+    return contVet;
+}
+
+function calcFreqPerc(arr){
+    freqPerc=[];
+    let tot = arr.length;
+
+    for(let i=0;i<contVet.length;i++){
+        freqPerc.push(Math.round(contVet[i]/tot*100));
+    }
+}
+function calcFreqAcum(contVet){
+    freqAcum=[];
+    freqAcum.push(contVet[0]);
+    for(let i=1;i<contVet.length;i++){
+        freqAcum.push(freqAcum[i-1] + contVet[i]);
+    }
+    return freqAcum;
+}
+function calcFreqAcumPerc(){
+    freqAcumPerc=[];
+    freqAcumPerc.push(freqPerc[0]);
+    for(let i=1;i<contVet.length;i++){
+        freqAcumPerc.push(freqAcumPerc[i-1] + freqPerc[i]);
+    }
+    return freqAcumPerc;
 }
 function calcNumLinhas(arr){
     return Math.round(Math.sqrt(arr.length));
@@ -155,55 +219,6 @@ function intervaloClasse(arr,r){
     } while (!flag);
     return r;
 }
-function contaElementos(arr){
-
-    eleVetor=[];
-    contVet=[];
-    eleVetor.push(arr[0]);
-    contVet.push(1);
-    for(let i=1;i<arr.length;i++){
-        let existe=false;
-        for(let j=0;j<eleVetor.length;j++){
-            if (eleVetor[j]==arr[i]){
-                existe=true;
-                contVet[j]++;
-            }
-        }
-        if (!existe){
-            eleVetor.push(arr[i]);
-            contVet.push(1);
-        }
-    }
-
-}
-function retornaTotalDeElementos(arr){
-    return arr.length;
-}
-function calcFreqPerc(arr){
-    freqPerc=[];
-    let tot = retornaTotalDeElementos(arr);
-
-    for(let i=0;i<contVet.length;i++){
-        freqPerc.push(Math.round(contVet[i]/tot*100));
-    }
-}
-function calcFreqAcum(contVet){
-    freqAcum=[];
-    freqAcum.push(contVet[0]);
-    for(let i=1;i<contVet.length;i++){
-        freqAcum.push(freqAcum[i-1] + contVet[i]);
-    }
-    return freqAcum;
-}
-function calcFreqAcumPerc(){
-    freqAcumPerc=[];
-    freqAcumPerc.push(freqPerc[0]);
-    for(let i=1;i<contVet.length;i++){
-        freqAcumPerc.push(freqAcumPerc[i-1] + freqPerc[i]);
-    }
-    return freqAcumPerc;
-}
-
 function desenhaTabela(arr,varType,varName,varDescription){
 
     contaElementos(arr);
