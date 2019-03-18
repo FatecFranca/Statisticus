@@ -145,20 +145,27 @@
             dadosGerais.arr = processaInput(document.querySelector("#inputText").value);
             if (checaSeTemLetras(dadosGerais.arr)==false){dadosGerais.arr=converteEmNumeros(dadosGerais.arr);}
             dadosGerais.arr = ordenaVetor(dadosGerais.arr);
-            dadosGerais.varType=verificaTipo(dadosGerais.arr);
+            dadosGerais.varType=verificaTipo(dadosGerais.arr); //Tipo da variável - qualitativa, discreta ou continua
             dadosGerais.maiorElemento = retornaMaior(dadosGerais.arr, dadosGerais.varType);
             dadosGerais.menorElemento = retornaMenor(dadosGerais.arr, dadosGerais.varType);
             dadosGerais.amplitude = calcAmplitude(dadosGerais.maiorElemento, dadosGerais.menorElemento, dadosGerais.varType);
             dadosGerais.elementos =  contaElementos(dadosGerais.arr);
             dadosGerais.qtdElementos = quantidadeElementos();
             dadosGerais.frequenciaPercentualReal = calcFreqPerc(dadosGerais.arr);
-            dadosGerais.totalFrequenciaPercentualReal = calcTotalFreqPercReal(dadosGerais.frequenciaPercentualReal);
+            dadosGerais.totalFrequenciaPercentualReal = calcTotalReal(dadosGerais.frequenciaPercentualReal);
             dadosGerais.frequenciaAcumulada = calcFreqAcum(dadosGerais.qtdElementos);
+            dadosGerais.totalFrequenciaAcumuladaReal = calcTotalReal(dadosGerais.qtdElementos);
             dadosGerais.frequenciaAcumuladaPercentualReal = calcFreqAcumPerc(dadosGerais.frequenciaPercentualReal, dadosGerais.qtdElementos);
             dadosGerais.K = calcK(dadosGerais.elementos);//Calcula K original (n linhas) será tualizado abaixo
-            let temporario = intervaloClasse(dadosGerais.amplitude, dadosGerais.K);
+            let temporario = intervaloClasse(dadosGerais.amplitude, dadosGerais.K, dadosGerais.elementos.length);
             dadosGerais.K=temporario[1];
             dadosGerais.intervaloDeClasse=temporario[0];
+            dadosGerais.totalFrequenciaPercentual = arredondaTotal(dadosGerais.totalFrequenciaPercentualReal);
+            //debugger;
+            desenhaTabela(dadosGerais.arr, dadosGerais.varType, dadosGerais.varName, dadosGerais.varDescription, dadosGerais.elementos,
+                          dadosGerais.qtdElementos, dadosGerais.frequenciaPercentualReal, dadosGerais.frequenciaAcumulada,
+                          dadosGerais.frequenciaAcumuladaPercentualReal, dadosGerais.totalFrequenciaAcumuladaReal,
+                          dadosGerais.totalFrequenciaPercentual);
 
 
            // desenhaTabela(dadosGerais.arr,dadosGerais.varType,dadosGerais.varName,dadosGerais.varDescription);
@@ -177,8 +184,6 @@
                     console.log("dadosGerais." + i + " = " + dadosGerais[i]);
                 }
             }
-            //console.log("Linhas = " + dadosTabela[1] + "  Intervalo = " + dadosTabela[0]);
-
         }
     </script>
 </html>

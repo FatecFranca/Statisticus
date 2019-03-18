@@ -1,8 +1,4 @@
-let freqAcum=[];
-let eleVetor=[];
-let contVet=[];
-let freqPerc=[];
-let freqAcumPerc=[];
+
 
 
 
@@ -172,7 +168,7 @@ function calcFreqPerc(arr){
     }
     return freqPerc;
 }
-function calcTotalFreqPercReal(arr){
+function calcTotalReal(arr){
     let res=0;
     for(let i=0;i<arr.length;i++){
         res+=arr[i];
@@ -198,10 +194,10 @@ function calcFreqAcumPerc(){
 function calcK(arr){
     return Math.round(Math.sqrt(arr.length));
 }
-
-function intervaloClasse(amp,k){
+function intervaloClasse(amp,k,tam){
     r=[];
     let flag=false;
+    let ampOriginal=amp;
     do {
         amp++;
         if ((amp%k)==0){
@@ -217,10 +213,18 @@ function intervaloClasse(amp,k){
             r.push(amp/(k+1));
             r.push((k+1));
         }
+        if (amp>tam){
+            amp=ampOriginal;
+            k--
+        }
     } while (!flag);
     return r;
 }
-function desenhaTabela(arr,varType,varName,varDescription){
+function arredondaTotal(num){
+    return Math.round(num);
+}
+
+function desenhaTabela(arr,varType,varName,varDescription,eleVetor,contVet,freqPerc,fqA,fqAcP,total,totalPercentagem){
 
     //contaElementos(arr);
     //calcFreqPerc(arr);
@@ -234,14 +238,13 @@ function desenhaTabela(arr,varType,varName,varDescription){
     table.appendChild(trh);
 
     trh.innerHTML=`<th>${varName}</th><th>${varDescription}</th><th>Frequencia% (fi%)</th><th>Frequencia Acumulada</th><th>Frequencia Acumulada % (fac%)</th>`;
-    let somaFreqP=0;
+
     let freqAcum=0;
     if(varType!='Continua'){
         for(let i=0;i<eleVetor.length;i++){
             let tr=document.createElement("tr");
-            tr.innerHTML=`<td>${eleVetor[i]}</td><td>${contVet[i]}</td><td>${freqPerc[i]}%</td><td>${fqA[i]}</td><td>${fqAcP[i]}%</td>`;
+            tr.innerHTML=`<td>${eleVetor[i]}</td><td>${contVet[i]}</td><td>${freqPerc[i].toFixed(2)}%</td><td>${fqA[i]}</td><td>${fqAcP[i].toFixed(2)}%</td>`;
             table.appendChild(tr);
-            somaFreqP+=freqPerc[i];
         }
     } else {
         // CRIAR A TABELA CONTINUA
@@ -250,7 +253,7 @@ function desenhaTabela(arr,varType,varName,varDescription){
 
     let tr=document.createElement("tr");
     table.appendChild(tr);
-    tr.innerHTML=`<td>Total</td><td>${retornaTotalDeElementos(arr)}</td><td>${somaFreqP}%</td><td>${fqA[fqA.length-1]}</td><td></td>`;
+    tr.innerHTML=`<td>Total</td><td>${total}</td><td>${totalPercentagem}%</td><td>${fqA[fqA.length-1]}</td><td></td>`;
 
     if(varType=='Qualitativa'){
         div.setAttribute("id", "tabelaQualitativa");
