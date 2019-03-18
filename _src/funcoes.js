@@ -38,7 +38,7 @@ function ordenaVetor(vet) {
 }
 function converteEmNumeros(arr) {
     const newArr = arr.map(x => parseFloat(x));
-    console.log(newArr);
+
     return newArr;
 }
 function checaSeTemLetras(arr) {
@@ -141,9 +141,6 @@ function calcAmplitude(maior, menor, tipo){
     }
     return res
 }
-
-
-
 function contaElementos(arr){
     eleVetor=[];
     contVet=[];
@@ -164,18 +161,23 @@ function contaElementos(arr){
     }
     return eleVetor;
 }
-
 function quantidadeElementos(){
     return contVet;
 }
-
 function calcFreqPerc(arr){
     freqPerc=[];
     let tot = arr.length;
-
     for(let i=0;i<contVet.length;i++){
-        freqPerc.push(Math.round(contVet[i]/tot*100));
+        freqPerc.push(contVet[i]/tot*100);
     }
+    return freqPerc;
+}
+function calcTotalFreqPercReal(arr){
+    let res=0;
+    for(let i=0;i<arr.length;i++){
+        res+=arr[i];
+    }
+    return res;
 }
 function calcFreqAcum(contVet){
     freqAcum=[];
@@ -221,8 +223,8 @@ function intervaloClasse(arr,r){
 }
 function desenhaTabela(arr,varType,varName,varDescription){
 
-    contaElementos(arr);
-    calcFreqPerc(arr);
+    //contaElementos(arr);
+    //calcFreqPerc(arr);
     let fqA = calcFreqAcum(contVet);
     let fqAcP = calcFreqAcumPerc();
     let div = document.createElement("div");
