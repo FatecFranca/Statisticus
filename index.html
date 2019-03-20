@@ -2,17 +2,15 @@
     <script>
         //Declaração Variaveis
         let debug=1; //Liga e desliga o debug no F12
-        let arr; //Vetor principal
-        let typeOfCalculation = 0; // 0-Descritiva, 1-Probabilidade, 2-Correlação
-        let tipoDePesquisa = 0; //0-População, 1-Amostra
-        let varName = 'Variável Pesquisada (xi)'; //Nome da variável a ser pesquisada
-        let varDescription = 'Frequencia (fi)';//Nome da coluna de frequencia
-        let strInput="";  //Entrada de dados do usuario
-        let varType='';
         let dadosTabela=[];//Indice 0 é o intervalo, indice 1 é a quantidade de linhas
         let elementosDoVetor=[];
         let contagemDeElementosDoVetor=[];
         let jaCalculado = false; //Controla se já foi executado algum calculo para poder apagar as tabelas geradas
+
+        let dadosGerais = new Object();
+
+
+
 
     </script>
     <head>
@@ -59,9 +57,9 @@
                     <div class="collapse" id="ItemColapso1">
                         <div class="card card-body">
                             <div>
-                                    <input type="button" name="bnt_Descritiva" id="bnt_Descritiva" onclick="typeOfCalculation=0;" value="Estatística Descritiva">
-                                    <input type="button" name="bnt_Probabilidade" id="bnt_Probabilidade" onclick="typeOfCalculation=1;" value="Probabilidade">
-                                    <input type="button" name="bnt_Correlacao" id="bnt_Correlacao" onclick="typeOfCalculation=2;" value="Correlação e Regressão">
+                                    <input type="button" name="bnt_Descritiva" id="bnt_Descritiva" onclick="dadosGerais.typeOfCalculation=0;" value="Estatística Descritiva">
+                                    <input type="button" name="bnt_Probabilidade" id="bnt_Probabilidade" onclick="dadosGerais.typeOfCalculation=1;" value="Probabilidade">
+                                    <input type="button" name="bnt_Correlacao" id="bnt_Correlacao" onclick="dadosGerais.typeOfCalculation=2;" value="Correlação e Regressão">
                                 </div>
                                 <br>
                                 <div>
@@ -71,12 +69,12 @@
                                 <br>
                                 <div>
                                     <label for="nomeVariavel">Informe o nome da varável a ser pesquisada</label>
-                                    <input type="text" name="nomeVariavel" id="nomeVariavel" onchange="varName=this.value">
+                                    <input type="text" name="nomeVariavel" id="nomeVariavel" onchange="dadosGerais.varName=this.value">
                                 </div>
                                 <br>
                                 <div>
                                     <label for="nomeDescricao">Informe o label da coluna de frequencia (este parametro é opcional)</label>
-                                    <input type="text" name="nomeDescricao" id="nomeDescricao" onchange="varDescription=this.value">
+                                    <input type="text" name="nomeDescricao" id="nomeDescricao" onchange="dadosGerais.varDescription=this.value">
                                 </div>
                                 <br>
                                 <div>
@@ -114,7 +112,7 @@
                 imported=true;
             });
             reader.addEventListener('error', function() {
-                arr=[];
+                dadosGerais.arr=[];
                 imported=false;
             });
             reader.readAsText(document.querySelector('#inputFile').files[0]);
@@ -122,48 +120,89 @@
 
         //Inicío dos cálculos
         function initCalc(){
+            dadosGerais.arr = [];//Vetor Principal
+            dadosGerais.typeOfCalculation = 0;// 0-Descritiva, 1-Probabilidade, 2-Correlação
+            dadosGerais.tipoDePesquisa = 0; //0-População, 1-Amostra
+            dadosGerais.varName = 'Variável Pesquisada (xi)'; //Nome da variável a ser pesquisada
+            dadosGerais.varDescription = 'Frequencia (fi)';//Nome da coluna de frequencia
+            dadosGerais.varType='';//Tipo da variável - qualitativa, discreta ou continua
             if (jaCalculado){
-                //debugger;
-                let temp = document.querySelector("#tabelaQualitativa");
-                if (temp==null){
-                    temp = document.querySelector("#tabelaDiscreta");
-                    if (temp==null){
-                        temp = document.querySelector("#tabelaContinua");
-                    }
-                }
-                if (temp!=null){
-                    document.body.removeChild(temp);
-                }
+                destroiTabela();
             }
             jaCalculado = true;
 
-            arr = processaInput(document.querySelector("#inputText").value);
-            if (checaSeTemLetras(arr)==false){arr=converteEmNumeros(arr);}
-            arr = ordenaVetor(arr);
-            varType=verificaTipo(arr);
-            desenhaTabela(arr,varType,varName,varDescription);
+            dadosGerais.arr = processaInput(document.querySelector("#inputText").value);
+            if (checaSeTemLetras(dadosGerais.arr)==false){dadosGerais.arr=converteEmNumeros(dadosGerais.arr);}
+            dadosGerais.arr = ordenaVetor(dadosGerais.arr);
+            dadosGerais.varType=verificaTipo(dadosGerais.arr); //Tipo da variável - qualitativa, discreta ou continua
+            dadosGerais.maiorElemento = retornaMaior(dadosGerais.arr, dadosGerais.varType);
+            dadosGerais.menorElemento = retornaMenor(dadosGerais.arr, dadosGerais.varType);
+            if (dadosGerais.varType!='Qualitativa') {
+                dadosGerais.amplitude = calcAmplitude(dadosGerais.maiorElemento, dadosGerais.menorElemento, dadosGerais.varType);
+            }
+            dadosGerais.elementos =  contaElementos(dadosGerais.arr);
+            dadosGerais.copiaElementos = dadosGerais.elementos.slice();
+            dadosGerais.qtdElementos = quantidadeElementos();
+            dadosGerais.copiaQtdElementos = dadosGerais.qtdElementos.slice();
+            dadosGerais.frequenciaPercentualReal = calcFreqPerc(dadosGerais.arr);
+            dadosGerais.copiaFrequenciaPercentualReal = dadosGerais.frequenciaPercentualReal.slice();
+            dadosGerais.totalFrequenciaPercentualReal = calcTotalReal(dadosGerais.frequenciaPercentualReal);
+            dadosGerais.frequenciaAcumulada = calcFreqAcum(dadosGerais.qtdElementos);
+            dadosGerais.copiaFrequenciaAcumulada = dadosGerais.frequenciaAcumulada.slice();
+            dadosGerais.totalFrequenciaAcumuladaReal = calcTotalReal(dadosGerais.qtdElementos);
+            dadosGerais.frequenciaAcumuladaPercentualReal = calcFreqAcumPerc(dadosGerais.frequenciaPercentualReal, dadosGerais.qtdElementos);
+            dadosGerais.copiaFrequenciaAcumuladaPercentualReal = dadosGerais.frequenciaAcumuladaPercentualReal.slice();
+            if (dadosGerais.varType=='Continua') {
+                dadosGerais.K = calcK(dadosGerais.elementos);//Calcula K original (n linhas) será tualizado abaixo
+                let temporario = intervaloClasse(dadosGerais.amplitude, dadosGerais.K, dadosGerais.elementos.length);
+                dadosGerais.K=temporario[1];
+                dadosGerais.intervaloDeClasse=temporario[0];
+            }
+            dadosGerais.totalFrequenciaPercentual = arredondaTotal(dadosGerais.totalFrequenciaPercentualReal);
+
+            desenhaTabela(dadosGerais.arr, dadosGerais.varType, dadosGerais.varName, dadosGerais.varDescription, dadosGerais.copiaElementos, dadosGerais.copiaQtdElementos, dadosGerais.copiaFrequenciaPercentualReal, dadosGerais.copiaFrequenciaAcumulada, dadosGerais.copiaFrequenciaAcumuladaPercentualReal, dadosGerais.totalFrequenciaAcumuladaReal, dadosGerais.totalFrequenciaPercentual);
+
+
+           // desenhaTabela(dadosGerais.arr,dadosGerais.varType,dadosGerais.varName,dadosGerais.varDescription);
             if (debug){showDebug();}
         }
 
         //Transfere a opção escolhida (amostra ou população) para a variável de controle
         function setaRadioOption(opcao){
-            tipoDePesquisa=opcao;
+            dadosGerais.tipoDePesquisa=opcao;
         }
 
         //Exibe as informações de debug
         function showDebug(){
-            console.log("Var typeOfCalculation = " + typeOfCalculation);
-            console.log("Var tipoDePesquisa = " + tipoDePesquisa);
-            console.log("Var varName = " + varName);
-            console.log("Var varDescription = " + varDescription);
-            console.log("Var varType = " + varType);
-            console.log("arr = " + arr);
-            console.log("Linhas = " + dadosTabela[1] + "  Intervalo = " + dadosTabela[0]);
+            for (let i in dadosGerais) {
+                if (dadosGerais.hasOwnProperty(i)) {
+                    console.log("dadosGerais." + i + " = " + dadosGerais[i]);
+                }
+            }
         }
 
-
-
-
+        function sobe(pos){
+            if (pos>0){
+                destroiTabela();
+                dadosGerais.copiaQtdElementos             = trocaElementoDoArray(dadosGerais.copiaQtdElementos             ,pos,pos-1);
+                dadosGerais.copiaElementos                = trocaElementoDoArray(dadosGerais.copiaElementos                ,pos,pos-1);
+                dadosGerais.copiaFrequenciaPercentualReal = trocaElementoDoArray(dadosGerais.copiaFrequenciaPercentualReal ,pos,pos-1);
+                dadosGerais.copiaFrequenciaAcumulada = calcFreqAcum(dadosGerais.copiaQtdElementos);
+                dadosGerais.copiaFrequenciaAcumuladaPercentualReal = calcFreqAcumPerc(dadosGerais.copiaFrequenciaPercentualReal, dadosGerais.copiaQtdElementos);
+                desenhaTabela(dadosGerais.arr, dadosGerais.varType, dadosGerais.varName, dadosGerais.varDescription, dadosGerais.copiaElementos, dadosGerais.copiaQtdElementos, dadosGerais.copiaFrequenciaPercentualReal, dadosGerais.copiaFrequenciaAcumulada, dadosGerais.copiaFrequenciaAcumuladaPercentualReal, dadosGerais.totalFrequenciaAcumuladaReal, dadosGerais.totalFrequenciaPercentual);
+            }
+        }
+        function desce(pos, limite){
+            if (pos<limite){
+                destroiTabela();
+                dadosGerais.copiaQtdElementos             = trocaElementoDoArray(dadosGerais.copiaQtdElementos             ,pos,pos+1);
+                dadosGerais.copiaElementos                = trocaElementoDoArray(dadosGerais.copiaElementos                ,pos,pos+1);
+                dadosGerais.copiaFrequenciaPercentualReal = trocaElementoDoArray(dadosGerais.copiaFrequenciaPercentualReal ,pos,pos+1);
+                dadosGerais.copiaFrequenciaAcumulada = calcFreqAcum(dadosGerais.copiaQtdElementos);
+                dadosGerais.copiaFrequenciaAcumuladaPercentualReal = calcFreqAcumPerc(dadosGerais.copiaFrequenciaPercentualReal, dadosGerais.copiaQtdElementos);
+                desenhaTabela(dadosGerais.arr, dadosGerais.varType, dadosGerais.varName, dadosGerais.varDescription, dadosGerais.copiaElementos, dadosGerais.copiaQtdElementos, dadosGerais.copiaFrequenciaPercentualReal, dadosGerais.copiaFrequenciaAcumulada, dadosGerais.copiaFrequenciaAcumuladaPercentualReal, dadosGerais.totalFrequenciaAcumuladaReal, dadosGerais.totalFrequenciaPercentual);
+            }
+        }
 
     </script>
 </html>
