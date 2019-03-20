@@ -8,12 +8,7 @@
         let jaCalculado = false; //Controla se já foi executado algum calculo para poder apagar as tabelas geradas
 
         let dadosGerais = new Object();
-            dadosGerais.arr = [];//Vetor Principal
-            dadosGerais.typeOfCalculation = 0;// 0-Descritiva, 1-Probabilidade, 2-Correlação
-            dadosGerais.tipoDePesquisa = 0; //0-População, 1-Amostra
-            dadosGerais.varName = 'Variável Pesquisada (xi)'; //Nome da variável a ser pesquisada
-            dadosGerais.varDescription = 'Frequencia (fi)';//Nome da coluna de frequencia
-            dadosGerais.varType='';//Tipo da variável - qualitativa, discreta ou continua
+
 
 
 
@@ -125,20 +120,14 @@
 
         //Inicío dos cálculos
         function initCalc(){
-            dadosGerais.arr=[];
+            dadosGerais.arr = [];//Vetor Principal
+            dadosGerais.typeOfCalculation = 0;// 0-Descritiva, 1-Probabilidade, 2-Correlação
+            dadosGerais.tipoDePesquisa = 0; //0-População, 1-Amostra
+            dadosGerais.varName = 'Variável Pesquisada (xi)'; //Nome da variável a ser pesquisada
+            dadosGerais.varDescription = 'Frequencia (fi)';//Nome da coluna de frequencia
+            dadosGerais.varType='';//Tipo da variável - qualitativa, discreta ou continua
             if (jaCalculado){
-                //debugger;
-                let temp = document.querySelector("#tabelaQualitativa");
-                if (temp==null){
-                    temp = document.querySelector("#tabelaDiscreta");
-                    if (temp==null){
-                        temp = document.querySelector("#tabelaContinua");
-                    }
-                }
-                if (temp!=null){
-                    document.body.removeChild(temp);
-                }
-
+                destroiTabela();
             }
             jaCalculado = true;
 
@@ -148,24 +137,30 @@
             dadosGerais.varType=verificaTipo(dadosGerais.arr); //Tipo da variável - qualitativa, discreta ou continua
             dadosGerais.maiorElemento = retornaMaior(dadosGerais.arr, dadosGerais.varType);
             dadosGerais.menorElemento = retornaMenor(dadosGerais.arr, dadosGerais.varType);
-            dadosGerais.amplitude = calcAmplitude(dadosGerais.maiorElemento, dadosGerais.menorElemento, dadosGerais.varType);
+            if (dadosGerais.varType!='Qualitativa') {
+                dadosGerais.amplitude = calcAmplitude(dadosGerais.maiorElemento, dadosGerais.menorElemento, dadosGerais.varType);
+            }
             dadosGerais.elementos =  contaElementos(dadosGerais.arr);
+            dadosGerais.copiaElementos = dadosGerais.elementos.slice();
             dadosGerais.qtdElementos = quantidadeElementos();
+            dadosGerais.copiaQtdElementos = dadosGerais.qtdElementos.slice();
             dadosGerais.frequenciaPercentualReal = calcFreqPerc(dadosGerais.arr);
+            dadosGerais.copiaFrequenciaPercentualReal = dadosGerais.frequenciaPercentualReal.slice();
             dadosGerais.totalFrequenciaPercentualReal = calcTotalReal(dadosGerais.frequenciaPercentualReal);
             dadosGerais.frequenciaAcumulada = calcFreqAcum(dadosGerais.qtdElementos);
+            dadosGerais.copiaFrequenciaAcumulada = dadosGerais.frequenciaAcumulada.slice();
             dadosGerais.totalFrequenciaAcumuladaReal = calcTotalReal(dadosGerais.qtdElementos);
             dadosGerais.frequenciaAcumuladaPercentualReal = calcFreqAcumPerc(dadosGerais.frequenciaPercentualReal, dadosGerais.qtdElementos);
-            dadosGerais.K = calcK(dadosGerais.elementos);//Calcula K original (n linhas) será tualizado abaixo
-            let temporario = intervaloClasse(dadosGerais.amplitude, dadosGerais.K, dadosGerais.elementos.length);
-            dadosGerais.K=temporario[1];
-            dadosGerais.intervaloDeClasse=temporario[0];
+            dadosGerais.copiaFrequenciaAcumuladaPercentualReal = dadosGerais.frequenciaAcumuladaPercentualReal.slice();
+            if (dadosGerais.varType=='Continua') {
+                dadosGerais.K = calcK(dadosGerais.elementos);//Calcula K original (n linhas) será tualizado abaixo
+                let temporario = intervaloClasse(dadosGerais.amplitude, dadosGerais.K, dadosGerais.elementos.length);
+                dadosGerais.K=temporario[1];
+                dadosGerais.intervaloDeClasse=temporario[0];
+            }
             dadosGerais.totalFrequenciaPercentual = arredondaTotal(dadosGerais.totalFrequenciaPercentualReal);
-            //debugger;
-            desenhaTabela(dadosGerais.arr, dadosGerais.varType, dadosGerais.varName, dadosGerais.varDescription, dadosGerais.elementos,
-                          dadosGerais.qtdElementos, dadosGerais.frequenciaPercentualReal, dadosGerais.frequenciaAcumulada,
-                          dadosGerais.frequenciaAcumuladaPercentualReal, dadosGerais.totalFrequenciaAcumuladaReal,
-                          dadosGerais.totalFrequenciaPercentual);
+
+            desenhaTabela(dadosGerais.arr, dadosGerais.varType, dadosGerais.varName, dadosGerais.varDescription, dadosGerais.copiaElementos, dadosGerais.copiaQtdElementos, dadosGerais.copiaFrequenciaPercentualReal, dadosGerais.copiaFrequenciaAcumulada, dadosGerais.copiaFrequenciaAcumuladaPercentualReal, dadosGerais.totalFrequenciaAcumuladaReal, dadosGerais.totalFrequenciaPercentual);
 
 
            // desenhaTabela(dadosGerais.arr,dadosGerais.varType,dadosGerais.varName,dadosGerais.varDescription);
@@ -185,6 +180,30 @@
                 }
             }
         }
+
+        function sobe(pos){
+            if (pos>0){
+                destroiTabela();
+                dadosGerais.copiaQtdElementos             = trocaElementoDoArray(dadosGerais.copiaQtdElementos             ,pos,pos-1);
+                dadosGerais.copiaElementos                = trocaElementoDoArray(dadosGerais.copiaElementos                ,pos,pos-1);
+                dadosGerais.copiaFrequenciaPercentualReal = trocaElementoDoArray(dadosGerais.copiaFrequenciaPercentualReal ,pos,pos-1);
+                dadosGerais.copiaFrequenciaAcumulada = calcFreqAcum(dadosGerais.copiaQtdElementos);
+                dadosGerais.copiaFrequenciaAcumuladaPercentualReal = calcFreqAcumPerc(dadosGerais.copiaFrequenciaPercentualReal, dadosGerais.copiaQtdElementos);
+                desenhaTabela(dadosGerais.arr, dadosGerais.varType, dadosGerais.varName, dadosGerais.varDescription, dadosGerais.copiaElementos, dadosGerais.copiaQtdElementos, dadosGerais.copiaFrequenciaPercentualReal, dadosGerais.copiaFrequenciaAcumulada, dadosGerais.copiaFrequenciaAcumuladaPercentualReal, dadosGerais.totalFrequenciaAcumuladaReal, dadosGerais.totalFrequenciaPercentual);
+            }
+        }
+        function desce(pos, limite){
+            if (pos<limite){
+                destroiTabela();
+                dadosGerais.copiaQtdElementos             = trocaElementoDoArray(dadosGerais.copiaQtdElementos             ,pos,pos+1);
+                dadosGerais.copiaElementos                = trocaElementoDoArray(dadosGerais.copiaElementos                ,pos,pos+1);
+                dadosGerais.copiaFrequenciaPercentualReal = trocaElementoDoArray(dadosGerais.copiaFrequenciaPercentualReal ,pos,pos+1);
+                dadosGerais.copiaFrequenciaAcumulada = calcFreqAcum(dadosGerais.copiaQtdElementos);
+                dadosGerais.copiaFrequenciaAcumuladaPercentualReal = calcFreqAcumPerc(dadosGerais.copiaFrequenciaPercentualReal, dadosGerais.copiaQtdElementos);
+                desenhaTabela(dadosGerais.arr, dadosGerais.varType, dadosGerais.varName, dadosGerais.varDescription, dadosGerais.copiaElementos, dadosGerais.copiaQtdElementos, dadosGerais.copiaFrequenciaPercentualReal, dadosGerais.copiaFrequenciaAcumulada, dadosGerais.copiaFrequenciaAcumuladaPercentualReal, dadosGerais.totalFrequenciaAcumuladaReal, dadosGerais.totalFrequenciaPercentual);
+            }
+        }
+
     </script>
 </html>
 

@@ -16,7 +16,6 @@ function processaInput(res) {
     if (arr[0]=="" || arr[0]==" "){let r = arr.shift();}
     return arr;
 }
-
 function ordenaVetor(vet) {
     for(let posC = 1; posC<vet.length;posC++){
        for(let posA=0; posA<posC;posA++){
@@ -138,24 +137,24 @@ function calcAmplitude(maior, menor, tipo){
     return res
 }
 function contaElementos(arr){
-    eleVetor=[];
+    elementos=[];
     contVet=[];
-    eleVetor.push(arr[0]);
+    elementos.push(arr[0]);
     contVet.push(1);
     for(let i=1;i<arr.length;i++){
         let existe=false;
-        for(let j=0;j<eleVetor.length;j++){
-            if (eleVetor[j]==arr[i]){
+        for(let j=0;j<elementos.length;j++){
+            if (elementos[j]==arr[i]){
                 existe=true;
                 contVet[j]++;
             }
         }
         if (!existe){
-            eleVetor.push(arr[i]);
+            elementos.push(arr[i]);
             contVet.push(1);
         }
     }
-    return eleVetor;
+    return elementos;
 }
 function quantidadeElementos(){
     return contVet;
@@ -183,11 +182,11 @@ function calcFreqAcum(contVet){
     }
     return freqAcum;
 }
-function calcFreqAcumPerc(){
+function calcFreqAcumPerc(freq,qtd){
     freqAcumPerc=[];
-    freqAcumPerc.push(freqPerc[0]);
-    for(let i=1;i<contVet.length;i++){
-        freqAcumPerc.push(freqAcumPerc[i-1] + freqPerc[i]);
+    freqAcumPerc.push(freq[0]);
+    for(let i=1;i<qtd.length;i++){
+        freqAcumPerc.push(freqAcumPerc[i-1] + freq[i]);
     }
     return freqAcumPerc;
 }
@@ -195,9 +194,11 @@ function calcK(arr){
     return Math.round(Math.sqrt(arr.length));
 }
 function intervaloClasse(amp,k,tam){
+    //debugger;
     r=[];
     let flag=false;
-    let ampOriginal=amp;
+    amp=Math.round(amp);
+    let ampOriginal = amp;
     do {
         amp++;
         if ((amp%k)==0){
@@ -213,48 +214,26 @@ function intervaloClasse(amp,k,tam){
             r.push(amp/(k+1));
             r.push((k+1));
         }
-        if (amp>tam){
-            amp=ampOriginal;
-            k--
-        }
     } while (!flag);
     return r;
 }
 function arredondaTotal(num){
     return Math.round(num);
 }
+function trocaElementoDoArray(arr,pos1, pos2){
+    let temp = arr[pos1];
+    arr[pos1]=arr[pos2];
+    arr[pos2]=temp;
+    return arr;
+}
 
-function desenhaTabela(arr,varType,varName,varDescription,eleVetor,contVet,freqPerc,fqA,fqAcP,total,totalPercentagem){
 
-    //contaElementos(arr);
-    //calcFreqPerc(arr);
-    //let fqA = calcFreqAcum(contVet);
-    //let fqAcP = calcFreqAcumPerc();
+function desenhaTabela(arr,varType,varName,varDescription,elementos,contVet,freqPerc,fqA,fqAcP,total,totalPercentagem){
+
+
+
+
     let div = document.createElement("div");
-    document.body.appendChild(div);
-    let table = document.createElement("table");
-    div.appendChild(table);
-    let trh = document.createElement("tr");
-    table.appendChild(trh);
-
-    trh.innerHTML=`<th>${varName}</th><th>${varDescription}</th><th>Frequencia% (fi%)</th><th>Frequencia Acumulada</th><th>Frequencia Acumulada % (fac%)</th>`;
-
-    let freqAcum=0;
-    if(varType!='Continua'){
-        for(let i=0;i<eleVetor.length;i++){
-            let tr=document.createElement("tr");
-            tr.innerHTML=`<td>${eleVetor[i]}</td><td>${contVet[i]}</td><td>${freqPerc[i].toFixed(2)}%</td><td>${fqA[i]}</td><td>${fqAcP[i].toFixed(2)}%</td>`;
-            table.appendChild(tr);
-        }
-    } else {
-        // CRIAR A TABELA CONTINUA
-    }
-
-
-    let tr=document.createElement("tr");
-    table.appendChild(tr);
-    tr.innerHTML=`<td>Total</td><td>${total}</td><td>${totalPercentagem}%</td><td>${fqA[fqA.length-1]}</td><td></td>`;
-
     if(varType=='Qualitativa'){
         div.setAttribute("id", "tabelaQualitativa");
     } else if (varType=='Discreta'){
@@ -262,5 +241,51 @@ function desenhaTabela(arr,varType,varName,varDescription,eleVetor,contVet,freqP
     }else {
         div.setAttribute("id", "tabelaContinua");
     }
-    //dadosTabela = intervaloClasse(arr,dadosTabela);
+    document.body.appendChild(div);
+
+    let table = document.createElement("table");
+    div.appendChild(table);
+
+    let trh = document.createElement("tr");
+    table.appendChild(trh);
+    trh.innerHTML=`<th>${varName}</th><th>${varDescription}</th><th>Frequencia% (fi%)</th><th>Frequencia <br>Acumulada</th><th>Frequencia <br>Acumulada% (fac%)</th><th></th>`;
+
+
+    if(varType=='Qualitativa'){
+        for(let i=0;i<elementos.length;i++){
+            let tr=document.createElement("tr");
+            tr.innerHTML=`<td>${elementos[i]}</td><td>${contVet[i]}</td><td>${freqPerc[i].toFixed(2)}%</td><td>${fqA[i]}</td><td>${fqAcP[i].toFixed(2)}%</td><td><input type='button' id='sobe${i}' onclick='sobe(${i});' value='Sobe'> <input type='button' id='desce${i}' onclick='desce(${i}, ${elementos.length-1});' value='Desce'></td>`;
+            tr.setAttribute("id",`linha${i}`);
+            table.appendChild(tr);
+        }
+    } else if(varType=='Discreta') {
+        for(let i=0;i<elementos.length;i++){
+            let tr=document.createElement("tr");
+            tr.innerHTML=`<td>${elementos[i]}</td><td>${contVet[i]}</td><td>${freqPerc[i].toFixed(2)}%</td><td>${fqA[i]}</td><td>${fqAcP[i].toFixed(2)}%</td>`;
+            tr.setAttribute("id",`linha${i}`);
+            table.appendChild(tr);
+        }
+    } else {
+         // CRIAR A TABELA CONTINUA
+    }
+
+
+    let tr=document.createElement("tr");
+    table.appendChild(tr);
+    tr.innerHTML=`<td>Total</td><td>${total}</td><td>${totalPercentagem}%</td><td>${fqA[fqA.length-1]}</td>`;
+
+
+}
+
+function destroiTabela(){
+    let temp = document.querySelector("#tabelaQualitativa");
+    if (temp==null){
+        temp = document.querySelector("#tabelaDiscreta");
+        if (temp==null){
+            temp = document.querySelector("#tabelaContinua");
+        }
+    }
+    if (temp!=null){
+        document.body.removeChild(temp);
+    }
 }
