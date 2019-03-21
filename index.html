@@ -69,12 +69,12 @@
                                 <br>
                                 <div>
                                     <label for="nomeVariavel">Informe o nome da varável a ser pesquisada</label>
-                                    <input type="text" name="nomeVariavel" id="nomeVariavel" onchange="dadosGerais.varName=this.value">
+                                    <input type="text" value = 'Variável Pesquisada (xi)' name="nomeVariavel" id="nomeVariavel">
                                 </div>
                                 <br>
                                 <div>
                                     <label for="nomeDescricao">Informe o label da coluna de frequencia (este parametro é opcional)</label>
-                                    <input type="text" name="nomeDescricao" id="nomeDescricao" onchange="dadosGerais.varDescription=this.value">
+                                    <input type="text" name="nomeDescricao" value = 'Frequencia (fi)' id="nomeDescricao">
                                 </div>
                                 <br>
                                 <div>
@@ -93,16 +93,11 @@
                                 <br>
                         </div>
                     </div>
-
                 </div>
             </div>
         </div>
     </body>
-
-
-
     <script>
-
         //Função tryLoad é responsável por importar o arquivo
         function tryLoad(){
             let reader = new FileReader();
@@ -115,7 +110,17 @@
                 dadosGerais.arr=[];
                 imported=false;
             });
-            reader.readAsText(document.querySelector('#inputFile').files[0]);
+            let file = document.querySelector('#inputFile').files[0];
+           // alert(file.name);
+            if (file!=undefined){
+                let ext = file.name.split('.').pop();
+                if (ext =='txt' || ext=='csv') {
+                    reader.readAsText(file);
+                } else {
+                    alert("Arquivo inválido!");
+
+                }
+            }
         };
 
         //Inicío dos cálculos
@@ -123,14 +128,11 @@
             dadosGerais.arr = [];//Vetor Principal
             dadosGerais.typeOfCalculation = 0;// 0-Descritiva, 1-Probabilidade, 2-Correlação
             dadosGerais.tipoDePesquisa = 0; //0-População, 1-Amostra
-            dadosGerais.varName = 'Variável Pesquisada (xi)'; //Nome da variável a ser pesquisada
-            dadosGerais.varDescription = 'Frequencia (fi)';//Nome da coluna de frequencia
+            dadosGerais.varName = document.querySelector("#nomeVariavel").value; //Nome da variável a ser pesquisada
+            dadosGerais.varDescription = document.querySelector("#nomeDescricao").value;//Nome da coluna de frequencia
             dadosGerais.varType='';//Tipo da variável - qualitativa, discreta ou continua
-            if (jaCalculado){
-                destroiTabela();
-            }
+            if (jaCalculado){destroiTabela();}
             jaCalculado = true;
-
             dadosGerais.arr = processaInput(document.querySelector("#inputText").value);
             if (checaSeTemLetras(dadosGerais.arr)==false){dadosGerais.arr=converteEmNumeros(dadosGerais.arr);}
             dadosGerais.arr = ordenaVetor(dadosGerais.arr);
@@ -163,7 +165,7 @@
             desenhaTabela(dadosGerais.arr, dadosGerais.varType, dadosGerais.varName, dadosGerais.varDescription, dadosGerais.copiaElementos, dadosGerais.copiaQtdElementos, dadosGerais.copiaFrequenciaPercentualReal, dadosGerais.copiaFrequenciaAcumulada, dadosGerais.copiaFrequenciaAcumuladaPercentualReal, dadosGerais.totalFrequenciaAcumuladaReal, dadosGerais.totalFrequenciaPercentual);
 
 
-           // desenhaTabela(dadosGerais.arr,dadosGerais.varType,dadosGerais.varName,dadosGerais.varDescription);
+
             if (debug){showDebug();}
         }
 
@@ -184,9 +186,9 @@
         function sobe(pos){
             if (pos>0){
                 destroiTabela();
-                dadosGerais.copiaQtdElementos             = trocaElementoDoArray(dadosGerais.copiaQtdElementos             ,pos,pos-1);
-                dadosGerais.copiaElementos                = trocaElementoDoArray(dadosGerais.copiaElementos                ,pos,pos-1);
-                dadosGerais.copiaFrequenciaPercentualReal = trocaElementoDoArray(dadosGerais.copiaFrequenciaPercentualReal ,pos,pos-1);
+                dadosGerais.copiaQtdElementos = trocaElementoDoArray(dadosGerais.copiaQtdElementos,pos,pos-1);
+                dadosGerais.copiaElementos = trocaElementoDoArray(dadosGerais.copiaElementos,pos,pos-1);
+                dadosGerais.copiaFrequenciaPercentualReal = trocaElementoDoArray(dadosGerais.copiaFrequenciaPercentualReal,pos,pos-1);
                 dadosGerais.copiaFrequenciaAcumulada = calcFreqAcum(dadosGerais.copiaQtdElementos);
                 dadosGerais.copiaFrequenciaAcumuladaPercentualReal = calcFreqAcumPerc(dadosGerais.copiaFrequenciaPercentualReal, dadosGerais.copiaQtdElementos);
                 desenhaTabela(dadosGerais.arr, dadosGerais.varType, dadosGerais.varName, dadosGerais.varDescription, dadosGerais.copiaElementos, dadosGerais.copiaQtdElementos, dadosGerais.copiaFrequenciaPercentualReal, dadosGerais.copiaFrequenciaAcumulada, dadosGerais.copiaFrequenciaAcumuladaPercentualReal, dadosGerais.totalFrequenciaAcumuladaReal, dadosGerais.totalFrequenciaPercentual);

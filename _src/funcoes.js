@@ -92,7 +92,7 @@ function verificaQuantitativa(Vetor){
         flag2 = 'S';
     }
 
-    if(contArr.length < 6){
+    if(contArr.length < 7){
         tipoQuantitativa = 'Discreta';
     } else {
         tipoQuantitativa = 'Continua'
@@ -248,10 +248,11 @@ function desenhaTabela(arr,varType,varName,varDescription,elementos,contVet,freq
 
     let trh = document.createElement("tr");
     table.appendChild(trh);
-    trh.innerHTML=`<th>${varName}</th><th>${varDescription}</th><th>Frequencia% (fi%)</th><th>Frequencia <br>Acumulada</th><th>Frequencia <br>Acumulada% (fac%)</th><th></th>`;
+
 
 
     if(varType=='Qualitativa'){
+        trh.innerHTML=`<th>${varName}</th><th>${varDescription}</th><th>Frequencia% (fi%)</th><th>Frequencia <br>Acumulada</th><th>Frequencia <br>Acumulada% (fac%)</th><th></th>`;
         for(let i=0;i<elementos.length;i++){
             let tr=document.createElement("tr");
             tr.innerHTML=`<td>${elementos[i]}</td><td>${contVet[i]}</td><td>${freqPerc[i].toFixed(2)}%</td><td>${fqA[i]}</td><td>${fqAcP[i].toFixed(2)}%</td><td><input type='button' id='sobe${i}' onclick='sobe(${i});' value='Sobe'> <input type='button' id='desce${i}' onclick='desce(${i}, ${elementos.length-1});' value='Desce'></td>`;
@@ -259,6 +260,7 @@ function desenhaTabela(arr,varType,varName,varDescription,elementos,contVet,freq
             table.appendChild(tr);
         }
     } else if(varType=='Discreta') {
+        trh.innerHTML=`<th>${varName}</th><th>${varDescription}</th><th>Frequencia% (fi%)</th><th>Frequencia <br>Acumulada</th><th>Frequencia <br>Acumulada% (fac%)</th>`;
         for(let i=0;i<elementos.length;i++){
             let tr=document.createElement("tr");
             tr.innerHTML=`<td>${elementos[i]}</td><td>${contVet[i]}</td><td>${freqPerc[i].toFixed(2)}%</td><td>${fqA[i]}</td><td>${fqAcP[i].toFixed(2)}%</td>`;
