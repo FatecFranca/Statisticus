@@ -156,7 +156,8 @@ function contaElementos(arr){
     }
     return elementos;
 }
-function quantidadeElementos(){
+function quantidadeElementos(arr){
+
     return contVet;
 }
 function calcFreqPerc(arr){
@@ -198,7 +199,6 @@ function intervaloClasse(amp,k,tam){
     r=[];
     let flag=false;
     amp=Math.round(amp);
-    let ampOriginal = amp;
     do {
         amp++;
         if ((amp%k)==0){
@@ -226,12 +226,23 @@ function trocaElementoDoArray(arr,pos1, pos2){
     arr[pos2]=temp;
     return arr;
 }
+function retornaElementosIniciaisDasClasses(elementos,intervalo){
+    let res=[];
+    for(let i=0;i<elementos.length;i++){
+        res.push(elementos[0]+(i*intervalo));
+    }
+    return res;
+}
+function retornaElementosFinaisDaClasse(elementosIniciais,intervalo){
+    let res=[];
+    for(let i=0;i<elementosIniciais.length;i++){
+        res.push(elementosIniciais[i]+intervalo);
+    }
+    return res;
+}
 
 
 function desenhaTabela(arr,varType,varName,varDescription,elementos,contVet,freqPerc,fqA,fqAcP,total,totalPercentagem){
-
-
-
 
     let div = document.createElement("div");
     if(varType=='Qualitativa'){
@@ -248,8 +259,6 @@ function desenhaTabela(arr,varType,varName,varDescription,elementos,contVet,freq
 
     let trh = document.createElement("tr");
     table.appendChild(trh);
-
-
 
     if(varType=='Qualitativa'){
         trh.innerHTML=`<th>${varName}</th><th>${varDescription}</th><th>Frequencia% (fi%)</th><th>Frequencia <br>Acumulada</th><th>Frequencia <br>Acumulada% (fac%)</th><th></th>`;
@@ -269,6 +278,7 @@ function desenhaTabela(arr,varType,varName,varDescription,elementos,contVet,freq
         }
     } else {
          // CRIAR A TABELA CONTINUA
+        trh.innerHTML=`<th>${varName}</th><th>${varDescription}</th><th>Frequencia% (fi%)</th><th>Frequencia <br>Acumulada</th><th>Frequencia <br>Acumulada% (fac%)</th><th></th>`;
     }
 
 
