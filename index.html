@@ -2,16 +2,10 @@
     <script>
         //Declaração Variaveis
         let debug=1; //Liga e desliga o debug no F12
-        let dadosTabela=[];//Indice 0 é o intervalo, indice 1 é a quantidade de linhas
-        let elementosDoVetor=[];
-        let contagemDeElementosDoVetor=[];
+        let tipoDeCalculo=0;
+        let opcao=0;
         let jaCalculado = false; //Controla se já foi executado algum calculo para poder apagar as tabelas geradas
-
         let dadosGerais = new Object();
-
-
-
-
     </script>
     <head>
         <meta charset="utf-8">
@@ -57,24 +51,24 @@
                     <div class="collapse" id="ItemColapso1">
                         <div class="card card-body">
                             <div>
-                                    <input type="button" name="bnt_Descritiva" id="bnt_Descritiva" onclick="dadosGerais.typeOfCalculation=0;" value="Estatística Descritiva">
-                                    <input type="button" name="bnt_Probabilidade" id="bnt_Probabilidade" onclick="dadosGerais.typeOfCalculation=1;" value="Probabilidade">
-                                    <input type="button" name="bnt_Correlacao" id="bnt_Correlacao" onclick="dadosGerais.typeOfCalculation=2;" value="Correlação e Regressão">
+                                    <input type="button" name="bnt_Descritiva" id="bnt_Descritiva" onclick="tipoDeCalculo=0;" value="Estatística Descritiva">
+                                    <input type="button" name="bnt_Probabilidade" id="bnt_Probabilidade" onclick="tipoDeCalculo=1;" value="Probabilidade">
+                                    <input type="button" name="bnt_Correlacao" id="bnt_Correlacao" onclick="tipoDeCalculo=2;" value="Correlação e Regressão">
                                 </div>
                                 <br>
                                 <div>
-                                    <input type="radio" name="rad_Pesquisa" value="0" onclick="setaRadioOption(this.value)" checked>População<br>
-                                    <input type="radio" name="rad_Pesquisa" value="1" onclick="setaRadioOption(this.value)">Amostra<br>
+                                    <input type="radio" name="rad_Pesquisa" value="0" onclick="opcao=(this.value)" checked>População<br>
+                                    <input type="radio" name="rad_Pesquisa" value="1" onclick="opcao=(this.value)">Amostra<br>
                                 </div>
                                 <br>
                                 <div>
                                     <label for="nomeVariavel">Informe o nome da varável a ser pesquisada</label>
-                                    <input type="text" name="nomeVariavel" id="nomeVariavel" onchange="dadosGerais.varName=this.value">
+                                    <input type="text" value = 'Variável Pesquisada (xi)' name="nomeVariavel" id="nomeVariavel">
                                 </div>
                                 <br>
                                 <div>
                                     <label for="nomeDescricao">Informe o label da coluna de frequencia (este parametro é opcional)</label>
-                                    <input type="text" name="nomeDescricao" id="nomeDescricao" onchange="dadosGerais.varDescription=this.value">
+                                    <input type="text" name="nomeDescricao" value = 'Frequencia (fi)' id="nomeDescricao">
                                 </div>
                                 <br>
                                 <div>
@@ -93,16 +87,11 @@
                                 <br>
                         </div>
                     </div>
-
                 </div>
             </div>
         </div>
     </body>
-
-
-
     <script>
-
         //Função tryLoad é responsável por importar o arquivo
         function tryLoad(){
             let reader = new FileReader();
@@ -115,95 +104,115 @@
                 dadosGerais.arr=[];
                 imported=false;
             });
-            reader.readAsText(document.querySelector('#inputFile').files[0]);
+            let file = document.querySelector('#inputFile').files[0];
+           // alert(file.name);
+            if (file!=undefined){
+                let ext = file.name.split('.').pop();
+                if (ext =='txt' || ext=='csv') {
+                    reader.readAsText(file);
+                } else {
+                    alert("Arquivo inválido!");
+
+                }
+            }
         };
 
         //Inicío dos cálculos
         function initCalc(){
-            dadosGerais.arr = [];//Vetor Principal
-            dadosGerais.typeOfCalculation = 0;// 0-Descritiva, 1-Probabilidade, 2-Correlação
-            dadosGerais.tipoDePesquisa = 0; //0-População, 1-Amostra
-            dadosGerais.varName = 'Variável Pesquisada (xi)'; //Nome da variável a ser pesquisada
-            dadosGerais.varDescription = 'Frequencia (fi)';//Nome da coluna de frequencia
-            dadosGerais.varType='';//Tipo da variável - qualitativa, discreta ou continua
-            if (jaCalculado){
-                destroiTabela();
+            let inptText = document.querySelector("#inputText");
+            if (inptText.value==""){
+                alert("Você deve informar 1 ou mais valores antes de continuar!");
+
+            } else {
+                if (jaCalculado){destroiTabela();}
+                jaCalculado = true;
+                dadosGerais = new Object();
+                dadosGerais.arr = [];//Vetor Principal
+                dadosGerais.typeOfCalculation =tipoDeCalculo;// 0-Descritiva, 1-Probabilidade, 2-Correlação
+
+                dadosGerais.tipoDePesquisa = opcao; //0-População, 1-Amostra
+
+                dadosGerais.varName = document.querySelector("#nomeVariavel").value; //Nome da variável a ser pesquisada
+                dadosGerais.varDescription = document.querySelector("#nomeDescricao").value;//Nome da coluna de frequencia
+                dadosGerais.varType='';//Tipo da variável - qualitativa, discreta ou continua
+                dadosGerais.arr = processaInput(inptText.value);
+                if (checaSeTemLetras(dadosGerais.arr)==false){dadosGerais.arr=converteEmNumeros(dadosGerais.arr);}
+                dadosGerais.arr = ordenaVetor(dadosGerais.arr);
+                dadosGerais.varType=verificaTipo(dadosGerais.arr); //Tipo da variável - qualitativa, discreta ou continua
+                dadosGerais.maiorElemento = retornaMaior(dadosGerais.arr, dadosGerais.varType);
+                dadosGerais.menorElemento = retornaMenor(dadosGerais.arr, dadosGerais.varType);
+                if (dadosGerais.varType!='Qualitativa') {
+                    dadosGerais.amplitude = calcAmplitude(dadosGerais.maiorElemento, dadosGerais.menorElemento, dadosGerais.varType);
+                }
+                dadosGerais.elementos =  contaElementos(dadosGerais.arr);
+                dadosGerais.qtdElementos = quantidadeElementos();
+                dadosGerais.frequenciaPercentualReal = calcFreqPerc(dadosGerais.qtdElementos, dadosGerais.arr.length);
+                dadosGerais.totalFrequenciaPercentualReal = calcTotalReal(dadosGerais.frequenciaPercentualReal);
+                dadosGerais.frequenciaAcumulada = calcFreqAcum(dadosGerais.qtdElementos);
+                dadosGerais.totalFrequenciaAcumuladaReal = calcTotalReal(dadosGerais.qtdElementos);
+                dadosGerais.frequenciaAcumuladaPercentualReal = calcFreqAcumPerc(dadosGerais.frequenciaPercentualReal, dadosGerais.qtdElementos);
+
+                if (dadosGerais.varType=='Continua') {
+                    dadosGerais.K = calcK(dadosGerais.elementos);//Calcula K original (n linhas) será tualizado abaixo
+                    let temporario = intervaloClasse(dadosGerais.amplitude, dadosGerais.K, dadosGerais.elementos.length);
+                    dadosGerais.K=temporario[1];
+                    dadosGerais.intervaloDeClasse=temporario[0];
+                    dadosGerais.elementosIniciais = retornaElementosIniciaisDasClasses(dadosGerais.elementos,dadosGerais.intervaloDeClasse,dadosGerais.K);
+                    dadosGerais.elementosFinais = retornaElementosFinaisDaClasse(dadosGerais.elementosIniciais,dadosGerais.intervaloDeClasse,dadosGerais.K);
+                    dadosGerais.contagemElementosPorClasse = contaPorClasse(dadosGerais.arr, dadosGerais.elementosIniciais, dadosGerais.elementosFinais);
+                    dadosGerais.frequenciaAcumulada = calcFreqAcum(dadosGerais.contagemElementosPorClasse);
+                    dadosGerais.frequenciaPercentualReal = calcFreqPerc(dadosGerais.contagemElementosPorClasse, dadosGerais.arr.length);
+                    dadosGerais.frequenciaAcumuladaPercentualReal = calcFreqAcumPerc(dadosGerais.frequenciaPercentualReal, dadosGerais.contagemElementosPorClasse);
+                }
+                dadosGerais.totalFrequenciaPercentual = arredondaTotal(dadosGerais.totalFrequenciaPercentualReal);
+                if (dadosGerais.varType=='Qualitativa'){
+                    dadosGerais.copiaFrequenciaPercentualReal = dadosGerais.frequenciaPercentualReal.slice();
+                    dadosGerais.copiaFrequenciaAcumulada = dadosGerais.frequenciaAcumulada.slice();
+                    dadosGerais.copiaFrequenciaAcumuladaPercentualReal = dadosGerais.frequenciaAcumuladaPercentualReal.slice();
+                    dadosGerais.copiaElementos = dadosGerais.elementos.slice();
+                    dadosGerais.copiaQtdElementos = dadosGerais.qtdElementos.slice();
+                    desenhaTabela(dadosGerais.arr, dadosGerais.varType, dadosGerais.varName, dadosGerais.varDescription, dadosGerais.copiaElementos, dadosGerais.copiaQtdElementos, dadosGerais.copiaFrequenciaPercentualReal, dadosGerais.copiaFrequenciaAcumulada, dadosGerais.copiaFrequenciaAcumuladaPercentualReal, dadosGerais.totalFrequenciaAcumuladaReal, dadosGerais.totalFrequenciaPercentual, dadosGerais.K, dadosGerais.elementosIniciais, dadosGerais.elementosFinais, dadosGerais.intervaloDeClasse, dadosGerais.contagemElementosPorClasse );
+                } else {
+                    desenhaTabela(dadosGerais.arr, dadosGerais.varType, dadosGerais.varName, dadosGerais.varDescription, dadosGerais.elementos, dadosGerais.qtdElementos, dadosGerais.frequenciaPercentualReal, dadosGerais.frequenciaAcumulada, dadosGerais.frequenciaAcumuladaPercentualReal, dadosGerais.totalFrequenciaAcumuladaReal, dadosGerais.totalFrequenciaPercentual, dadosGerais.K, dadosGerais.elementosIniciais, dadosGerais.elementosFinais, dadosGerais.intervaloDeClasse, dadosGerais.contagemElementosPorClasse );
+                }
+                if (debug){
+                    showDebug();
+                }
             }
-            jaCalculado = true;
-
-            dadosGerais.arr = processaInput(document.querySelector("#inputText").value);
-            if (checaSeTemLetras(dadosGerais.arr)==false){dadosGerais.arr=converteEmNumeros(dadosGerais.arr);}
-            dadosGerais.arr = ordenaVetor(dadosGerais.arr);
-            dadosGerais.varType=verificaTipo(dadosGerais.arr); //Tipo da variável - qualitativa, discreta ou continua
-            dadosGerais.maiorElemento = retornaMaior(dadosGerais.arr, dadosGerais.varType);
-            dadosGerais.menorElemento = retornaMenor(dadosGerais.arr, dadosGerais.varType);
-            if (dadosGerais.varType!='Qualitativa') {
-                dadosGerais.amplitude = calcAmplitude(dadosGerais.maiorElemento, dadosGerais.menorElemento, dadosGerais.varType);
-            }
-            dadosGerais.elementos =  contaElementos(dadosGerais.arr);
-            dadosGerais.copiaElementos = dadosGerais.elementos.slice();
-            dadosGerais.qtdElementos = quantidadeElementos();
-            dadosGerais.copiaQtdElementos = dadosGerais.qtdElementos.slice();
-            dadosGerais.frequenciaPercentualReal = calcFreqPerc(dadosGerais.arr);
-            dadosGerais.copiaFrequenciaPercentualReal = dadosGerais.frequenciaPercentualReal.slice();
-            dadosGerais.totalFrequenciaPercentualReal = calcTotalReal(dadosGerais.frequenciaPercentualReal);
-            dadosGerais.frequenciaAcumulada = calcFreqAcum(dadosGerais.qtdElementos);
-            dadosGerais.copiaFrequenciaAcumulada = dadosGerais.frequenciaAcumulada.slice();
-            dadosGerais.totalFrequenciaAcumuladaReal = calcTotalReal(dadosGerais.qtdElementos);
-            dadosGerais.frequenciaAcumuladaPercentualReal = calcFreqAcumPerc(dadosGerais.frequenciaPercentualReal, dadosGerais.qtdElementos);
-            dadosGerais.copiaFrequenciaAcumuladaPercentualReal = dadosGerais.frequenciaAcumuladaPercentualReal.slice();
-            if (dadosGerais.varType=='Continua') {
-                dadosGerais.K = calcK(dadosGerais.elementos);//Calcula K original (n linhas) será tualizado abaixo
-                let temporario = intervaloClasse(dadosGerais.amplitude, dadosGerais.K, dadosGerais.elementos.length);
-                dadosGerais.K=temporario[1];
-                dadosGerais.intervaloDeClasse=temporario[0];
-            }
-            dadosGerais.totalFrequenciaPercentual = arredondaTotal(dadosGerais.totalFrequenciaPercentualReal);
-
-            desenhaTabela(dadosGerais.arr, dadosGerais.varType, dadosGerais.varName, dadosGerais.varDescription, dadosGerais.copiaElementos, dadosGerais.copiaQtdElementos, dadosGerais.copiaFrequenciaPercentualReal, dadosGerais.copiaFrequenciaAcumulada, dadosGerais.copiaFrequenciaAcumuladaPercentualReal, dadosGerais.totalFrequenciaAcumuladaReal, dadosGerais.totalFrequenciaPercentual);
-
-
-           // desenhaTabela(dadosGerais.arr,dadosGerais.varType,dadosGerais.varName,dadosGerais.varDescription);
-            if (debug){showDebug();}
         }
 
-        //Transfere a opção escolhida (amostra ou população) para a variável de controle
-        function setaRadioOption(opcao){
-            dadosGerais.tipoDePesquisa=opcao;
-        }
 
         //Exibe as informações de debug
         function showDebug(){
+            console.clear();
             for (let i in dadosGerais) {
                 if (dadosGerais.hasOwnProperty(i)) {
                     console.log("dadosGerais." + i + " = " + dadosGerais[i]);
                 }
             }
         }
-
         function sobe(pos){
             if (pos>0){
-                destroiTabela();
-                dadosGerais.copiaQtdElementos             = trocaElementoDoArray(dadosGerais.copiaQtdElementos             ,pos,pos-1);
-                dadosGerais.copiaElementos                = trocaElementoDoArray(dadosGerais.copiaElementos                ,pos,pos-1);
-                dadosGerais.copiaFrequenciaPercentualReal = trocaElementoDoArray(dadosGerais.copiaFrequenciaPercentualReal ,pos,pos-1);
-                dadosGerais.copiaFrequenciaAcumulada = calcFreqAcum(dadosGerais.copiaQtdElementos);
-                dadosGerais.copiaFrequenciaAcumuladaPercentualReal = calcFreqAcumPerc(dadosGerais.copiaFrequenciaPercentualReal, dadosGerais.copiaQtdElementos);
-                desenhaTabela(dadosGerais.arr, dadosGerais.varType, dadosGerais.varName, dadosGerais.varDescription, dadosGerais.copiaElementos, dadosGerais.copiaQtdElementos, dadosGerais.copiaFrequenciaPercentualReal, dadosGerais.copiaFrequenciaAcumulada, dadosGerais.copiaFrequenciaAcumuladaPercentualReal, dadosGerais.totalFrequenciaAcumuladaReal, dadosGerais.totalFrequenciaPercentual);
+                move(pos,-1);
             }
         }
         function desce(pos, limite){
             if (pos<limite){
-                destroiTabela();
-                dadosGerais.copiaQtdElementos             = trocaElementoDoArray(dadosGerais.copiaQtdElementos             ,pos,pos+1);
-                dadosGerais.copiaElementos                = trocaElementoDoArray(dadosGerais.copiaElementos                ,pos,pos+1);
-                dadosGerais.copiaFrequenciaPercentualReal = trocaElementoDoArray(dadosGerais.copiaFrequenciaPercentualReal ,pos,pos+1);
-                dadosGerais.copiaFrequenciaAcumulada = calcFreqAcum(dadosGerais.copiaQtdElementos);
-                dadosGerais.copiaFrequenciaAcumuladaPercentualReal = calcFreqAcumPerc(dadosGerais.copiaFrequenciaPercentualReal, dadosGerais.copiaQtdElementos);
-                desenhaTabela(dadosGerais.arr, dadosGerais.varType, dadosGerais.varName, dadosGerais.varDescription, dadosGerais.copiaElementos, dadosGerais.copiaQtdElementos, dadosGerais.copiaFrequenciaPercentualReal, dadosGerais.copiaFrequenciaAcumulada, dadosGerais.copiaFrequenciaAcumuladaPercentualReal, dadosGerais.totalFrequenciaAcumuladaReal, dadosGerais.totalFrequenciaPercentual);
+                move(pos,1);
             }
         }
-
+        function move(pos, mult){
+            destroiTabela();
+            dadosGerais.copiaQtdElementos = trocaElementoDoArray(dadosGerais.copiaQtdElementos,pos,pos+mult);
+            dadosGerais.copiaElementos = trocaElementoDoArray(dadosGerais.copiaElementos,pos,pos+mult);
+            dadosGerais.copiaFrequenciaPercentualReal = trocaElementoDoArray(dadosGerais.copiaFrequenciaPercentualReal,pos,pos+mult);
+            dadosGerais.copiaFrequenciaAcumulada = calcFreqAcum(dadosGerais.copiaQtdElementos);
+            dadosGerais.copiaFrequenciaAcumuladaPercentualReal = calcFreqAcumPerc(dadosGerais.copiaFrequenciaPercentualReal, dadosGerais.copiaQtdElementos);
+            desenhaTabela(dadosGerais.arr, dadosGerais.varType, dadosGerais.varName, dadosGerais.varDescription, dadosGerais.copiaElementos, dadosGerais.copiaQtdElementos, dadosGerais.copiaFrequenciaPercentualReal, dadosGerais.copiaFrequenciaAcumulada, dadosGerais.copiaFrequenciaAcumuladaPercentualReal, dadosGerais.totalFrequenciaAcumuladaReal, dadosGerais.totalFrequenciaPercentual);
+            if (debug){
+                showDebug();
+            }
+        }
     </script>
 </html>
 
