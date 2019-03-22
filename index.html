@@ -209,6 +209,9 @@
             dadosGerais.copiaFrequenciaAcumulada = calcFreqAcum(dadosGerais.copiaQtdElementos);
             dadosGerais.copiaFrequenciaAcumuladaPercentualReal = calcFreqAcumPerc(dadosGerais.copiaFrequenciaPercentualReal, dadosGerais.copiaQtdElementos);
             desenhaTabela(dadosGerais.arr, dadosGerais.varType, dadosGerais.varName, dadosGerais.varDescription, dadosGerais.copiaElementos, dadosGerais.copiaQtdElementos, dadosGerais.copiaFrequenciaPercentualReal, dadosGerais.copiaFrequenciaAcumulada, dadosGerais.copiaFrequenciaAcumuladaPercentualReal, dadosGerais.totalFrequenciaAcumuladaReal, dadosGerais.totalFrequenciaPercentual);
+            if (debug){
+                showDebug();
+            }
         }
     </script>
 </html>
