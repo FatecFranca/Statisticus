@@ -1,7 +1,10 @@
 
 
 
-
+        //Transfere a opção escolhida (amostra ou população) para a variável de controle
+        function setaRadioOption(opcao){
+            dadosGerais.tipoDePesquisa=opcao;
+        }
 //Cria o vetor separando os dados importados ou informados pelo paciente
 function processaInput(res) {
     //debugger;
