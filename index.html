@@ -84,6 +84,9 @@
                                 <div>
                                     <input type="button" name="bnt_initCalc" id="bnt_initCalc" onclick="initCalc()" value="initCalc">
                                 </div>
+                                <div>
+                                    <p id="moda"></p>
+                                </div>
                                 <br>
                         </div>
                     </div>
@@ -175,6 +178,10 @@
                 } else {
                     desenhaTabela(dadosGerais.arr, dadosGerais.varType, dadosGerais.varName, dadosGerais.varDescription, dadosGerais.elementos, dadosGerais.qtdElementos, dadosGerais.frequenciaPercentualReal, dadosGerais.frequenciaAcumulada, dadosGerais.frequenciaAcumuladaPercentualReal, dadosGerais.totalFrequenciaAcumuladaReal, dadosGerais.totalFrequenciaPercentual, dadosGerais.K, dadosGerais.elementosIniciais, dadosGerais.elementosFinais, dadosGerais.intervaloDeClasse, dadosGerais.contagemElementosPorClasse );
                 }
+                dadosGerais.moda = retornaModa(dadosGerais.elementos, dadosGerais.qtdElementos, dadosGerais.varType);
+
+                exibeModa(dadosGerais.moda);
+
                 if (debug){
                     showDebug();
                 }
