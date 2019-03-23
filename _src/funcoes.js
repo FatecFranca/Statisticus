@@ -1,10 +1,7 @@
-
-
-
-        //Transfere a opção escolhida (amostra ou população) para a variável de controle
-        function setaRadioOption(opcao){
-            dadosGerais.tipoDePesquisa=opcao;
-        }
+//Transfere a opção escolhida (amostra ou população) para a variável de controle
+function setaRadioOption(opcao){
+    dadosGerais.tipoDePesquisa=opcao;
+}
 //Cria o vetor separando os dados importados ou informados pelo paciente
 function processaInput(res) {
     //debugger;
@@ -317,6 +314,8 @@ function desenhaTabela(arr,varType,varName,varDescription,elementos,contVet,freq
 
 }
 
+
+
 function destroiTabela(){
     let temp = document.querySelector("#tabelaQualitativa");
     if (temp==null){
@@ -328,4 +327,55 @@ function destroiTabela(){
     if (temp!=null){
         document.body.removeChild(temp);
     }
+}
+
+function exibeModa(arr){
+    let p= document.body.querySelector("#moda");
+    let res;
+    if (arr.length==1){
+        res = 'Moda = ';
+    } else {
+        res ='Modas = ';
+    }
+    for (let i=0; i<arr.length;i++){
+        res += arr[i];
+        if (i<(arr.length-2)){
+            res += ', ';
+        }
+        if (i<(arr.length-1) && i>=(arr.length-2)){
+            res += ' e ';
+        }
+    }
+    p.innerHTML = res;
+}
+function retornaModa(elementos, qtdElementos, varType){
+    let res=[];
+    let iguais= true;
+    let x=qtdElementos[0];
+    let maior=qtdElementos[0];
+    let tempElementos = [];
+    let indice = 0;
+    if (varType!='Continua'){
+        for(let i=1;i<qtdElementos.length;i++){ //checa se tem a mesma qtd de elementos em todo o vetor
+            if (x != qtdElementos[i]){
+                iguais = false;
+            }
+            if (maior<qtdElementos[i]){
+                maior = qtdElementos[i];
+            }
+        }
+
+        for(let i=0;i<qtdElementos.length;i++){ //checa se tem a mesma qtd de elementos em todo o vetor
+            if (maior==qtdElementos[i]){
+                res.push(elementos[i]);
+            }
+        }
+
+        if (iguais){
+            res=[];
+            res.push("Série Amodal");
+        }
+    }
+    return res;
+
 }
