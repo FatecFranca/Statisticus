@@ -387,8 +387,8 @@ function retornaModa(elementos, qtdElementos, varType){
 }
 function geraGrafico(classes, frequencia, tipo, tituloVariavel, tituloFrequencia){
     var data = new google.visualization.DataTable();
-
-    if (tipo='Pizza'){
+    //debugger;
+    if (tipo=='Pizza'){
         data.addColumn('string', tituloVariavel);
         data.addColumn('number', tituloFrequencia);
         for (let i=0; i<classes.length;i++){
@@ -398,6 +398,17 @@ function geraGrafico(classes, frequencia, tipo, tituloVariavel, tituloFrequencia
                        'width':600,
                        'height':400};
         var chart = new google.visualization.PieChart(document.getElementById('divGrafico'));
+        chart.draw(data, options);
+    } else if(tipo=='Colunas'){
+        data.addColumn('number', tituloVariavel);
+        data.addColumn('number', tituloFrequencia);
+        for (let i=0; i<classes.length;i++){
+            data.addRow([classes[i],frequencia[i]]);
+        }
+        var options = {'title':tituloVariavel,
+                       'width':600,
+                       'height':400};
+        var chart = new google.visualization.ColumnChart(document.getElementById('divGrafico'));
         chart.draw(data, options);
     }
 

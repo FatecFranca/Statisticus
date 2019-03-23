@@ -186,6 +186,11 @@
 
                 } else {
                     desenhaTabela(dadosGerais.arr, dadosGerais.varType, dadosGerais.varName, dadosGerais.varDescription, dadosGerais.elementos, dadosGerais.qtdElementos, dadosGerais.frequenciaPercentualReal, dadosGerais.frequenciaAcumulada, dadosGerais.frequenciaAcumuladaPercentualReal, dadosGerais.totalFrequenciaAcumuladaReal, dadosGerais.totalFrequenciaPercentual, dadosGerais.K, dadosGerais.elementosIniciais, dadosGerais.elementosFinais, dadosGerais.intervaloDeClasse, dadosGerais.contagemElementosPorClasse );
+                    if (dadosGerais.varType!='Continua'){
+                       geraGrafico(dadosGerais.elementos,dadosGerais.frequenciaPercentualReal,'Colunas', dadosGerais.varName, dadosGerais.varDescription);
+                    } else {
+                        //FAZER OS GRAFICOS DA CONTINUA
+                    }
                 }
                 dadosGerais.moda = retornaModa(dadosGerais.elementos, dadosGerais.qtdElementos, dadosGerais.varType);
 
