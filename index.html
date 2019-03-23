@@ -15,6 +15,7 @@
         <script src="js/jquery-3.2.1.min.js"></script>
         <script src="js/popper.min.js"></script>
         <script src="js/bootstrap.min.js"></script>
+        <script src="https://www.gstatic.com/charts/loader.js"></script>
         <script src="_src/funcoes.js"></script>
         <style>
 
@@ -87,6 +88,9 @@
                                 <div>
                                     <p id="moda"></p>
                                 </div>
+                                <div id="divGrafico">
+
+                                </div>
                                 <br>
                         </div>
                     </div>
@@ -95,6 +99,8 @@
         </div>
     </body>
     <script>
+        google.charts.load('current', {'packages':['corechart']});
+        google.charts.setOnLoadCallback(geraGrafico);
         //Função tryLoad é responsável por importar o arquivo
         function tryLoad(){
             let reader = new FileReader();
@@ -175,12 +181,17 @@
                     dadosGerais.copiaElementos = dadosGerais.elementos.slice();
                     dadosGerais.copiaQtdElementos = dadosGerais.qtdElementos.slice();
                     desenhaTabela(dadosGerais.arr, dadosGerais.varType, dadosGerais.varName, dadosGerais.varDescription, dadosGerais.copiaElementos, dadosGerais.copiaQtdElementos, dadosGerais.copiaFrequenciaPercentualReal, dadosGerais.copiaFrequenciaAcumulada, dadosGerais.copiaFrequenciaAcumuladaPercentualReal, dadosGerais.totalFrequenciaAcumuladaReal, dadosGerais.totalFrequenciaPercentual, dadosGerais.K, dadosGerais.elementosIniciais, dadosGerais.elementosFinais, dadosGerais.intervaloDeClasse, dadosGerais.contagemElementosPorClasse );
+                    geraGrafico(dadosGerais.elementos,dadosGerais.qtdElementos,'Pizza', dadosGerais.varName, dadosGerais.varDescription);
+
+
                 } else {
                     desenhaTabela(dadosGerais.arr, dadosGerais.varType, dadosGerais.varName, dadosGerais.varDescription, dadosGerais.elementos, dadosGerais.qtdElementos, dadosGerais.frequenciaPercentualReal, dadosGerais.frequenciaAcumulada, dadosGerais.frequenciaAcumuladaPercentualReal, dadosGerais.totalFrequenciaAcumuladaReal, dadosGerais.totalFrequenciaPercentual, dadosGerais.K, dadosGerais.elementosIniciais, dadosGerais.elementosFinais, dadosGerais.intervaloDeClasse, dadosGerais.contagemElementosPorClasse );
                 }
                 dadosGerais.moda = retornaModa(dadosGerais.elementos, dadosGerais.qtdElementos, dadosGerais.varType);
 
                 exibeModa(dadosGerais.moda);
+
+
 
                 if (debug){
                     showDebug();

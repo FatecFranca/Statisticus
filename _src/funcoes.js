@@ -12,8 +12,14 @@ function processaInput(res) {
     let t = u.replace(/[ ]+/g,' '); //Substitui . duplicados
 
     let arr=t.split(/;| |\r?\n|\r/); // Expressão regular para filtrar os espaços, ponto e virgulas e quebras de linha
-    if (arr[arr.length-1]==""){let r = arr.pop();}
-    if (arr[0]=="" || arr[0]==" "){let r = arr.shift();}
+    //debugger;
+    for (let i=0; i<arr.length;i++){
+        if (arr[i]=="" || arr[i]==" ") {
+            arr.splice(i,1);
+        }
+    }
+
+
     return arr;
 }
 function ordenaVetor(vet) {
@@ -377,5 +383,26 @@ function retornaModa(elementos, qtdElementos, varType){
         }
     }
     return res;
+
+}
+function geraGrafico(classes, frequencia, tipo, tituloVariavel, tituloFrequencia){
+    var data = new google.visualization.DataTable();
+
+    if (tipo='Pizza'){
+        data.addColumn('string', tituloVariavel);
+        data.addColumn('number', tituloFrequencia);
+        for (let i=0; i<classes.length;i++){
+            data.addRow([classes[i],frequencia[i]]);
+        }
+        var options = {'title':'',
+                       'width':600,
+                       'height':400};
+        var chart = new google.visualization.PieChart(document.getElementById('divGrafico'));
+        chart.draw(data, options);
+    }
+
+
+
+
 
 }
