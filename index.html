@@ -86,7 +86,13 @@
                                     <input type="button" name="bnt_initCalc" id="bnt_initCalc" onclick="initCalc()" value="initCalc">
                                 </div>
                                 <div>
+                                    <p id="media"></p>
+                                </div>
+                                <div>
                                     <p id="moda"></p>
+                                </div>
+                                <div>
+                                    <p id="mediana"></p>
                                 </div>
                                 <div id="divGrafico">
 
@@ -99,8 +105,11 @@
         </div>
     </body>
     <script>
+
         google.charts.load('current', {'packages':['corechart']});
         google.charts.setOnLoadCallback(geraGrafico);
+
+
         //Função tryLoad é responsável por importar o arquivo
         function tryLoad(){
             let reader = new FileReader();
@@ -133,7 +142,10 @@
                 alert("Você deve informar 1 ou mais valores antes de continuar!");
 
             } else {
-                if (jaCalculado){destroiTabela();}
+                if (jaCalculado){
+                    destroiTabela();
+                    destroiGrafico();
+                }
                 jaCalculado = true;
                 dadosGerais = new Object();
                 dadosGerais.arr = [];//Vetor Principal
@@ -150,6 +162,7 @@
                 dadosGerais.varType=verificaTipo(dadosGerais.arr); //Tipo da variável - qualitativa, discreta ou continua
                 dadosGerais.maiorElemento = retornaMaior(dadosGerais.arr, dadosGerais.varType);
                 dadosGerais.menorElemento = retornaMenor(dadosGerais.arr, dadosGerais.varType);
+                dadosGerais.totalDeElementos = dadosGerais.arr.length;
                 if (dadosGerais.varType!='Qualitativa') {
                     dadosGerais.amplitude = calcAmplitude(dadosGerais.maiorElemento, dadosGerais.menorElemento, dadosGerais.varType);
                 }
@@ -191,11 +204,17 @@
                     } else {
                         //FAZER OS GRAFICOS DA CONTINUA
                     }
+
                 }
+
+                dadosGerais.pontoMedio = retornaPontoMedio(dadosGerais.varType, dadosGerais.elementosIniciais, dadosGerais.elementosFinais);
+                dadosGerais.media = retornaMedia(dadosGerais.varType, dadosGerais.elementos, dadosGerais.qtdElementos, dadosGerais.pontoMedio, dadosGerais.totalDeElementos );
+
                 dadosGerais.moda = retornaModa(dadosGerais.elementos, dadosGerais.qtdElementos, dadosGerais.varType);
 
-                exibeModa(dadosGerais.moda);
 
+                exibeModa(dadosGerais.moda);
+                exibeMedia(dadosGerais.media);
 
 
                 if (debug){

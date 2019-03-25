@@ -320,6 +320,47 @@ function desenhaTabela(arr,varType,varName,varDescription,elementos,contVet,freq
 
 }
 
+function retornaPontoMedio(varType, elementosIniciais, elementosFinais){
+    let pontoMedio = [];
+    if (varType=='Continua'){
+        for (let i=0;i<elementosIniciais.length;i++){
+            pontoMedio.push((elementosIniciais[i]+elementosFinais[i])/2);
+        }
+    }
+    return pontoMedio;
+}
+
+function retornaMedia(varType, elementos, qtdElementos, pontoMedio, totalDeElementos){
+    let res='';
+    let soma=0;
+    //debugger;
+    if (varType=='Continua'){
+        for(let i=0;i<pontoMedio.length;i++){
+            soma+=pontoMedio[i]*qtdElementos[i];
+        }
+        res=soma/totalDeElementos;
+    }else if (varType=='Qualitativa'){
+        res = 'A média não existe!';
+    } else {
+       for (let i=0;i<elementos.length;i++){
+           soma+=elementos[i];
+       }
+        res=soma/totalDeElementos;
+    }
+
+    return res;
+}
+
+function exibeMedia(media){
+    let p= document.body.querySelector("#media");
+    if (isNaN(media)){
+        res=media;
+    } else {
+        res=`Média = ${media}`;
+    }
+    p.innerHTML = res;
+}
+
 
 
 function destroiTabela(){
@@ -333,6 +374,11 @@ function destroiTabela(){
     if (temp!=null){
         document.body.removeChild(temp);
     }
+}
+
+function destroiGrafico(){
+    let temp = document.querySelector("#divGrafico");
+    temp.innerHTML="";
 }
 
 function exibeModa(arr){
@@ -354,6 +400,7 @@ function exibeModa(arr){
     }
     p.innerHTML = res;
 }
+
 function retornaModa(elementos, qtdElementos, varType){
     let res=[];
     let iguais= true;
@@ -376,15 +423,16 @@ function retornaModa(elementos, qtdElementos, varType){
                 res.push(elementos[i]);
             }
         }
-
         if (iguais){
             res=[];
             res.push("Série Amodal");
         }
+    } else {
+        //FAZER A MODA DA CONTINUA
     }
     return res;
-
 }
+
 function geraGrafico(classes, frequencia, tipo, tituloVariavel, tituloFrequencia){
     var data = new google.visualization.DataTable();
     //debugger;
@@ -411,9 +459,4 @@ function geraGrafico(classes, frequencia, tipo, tituloVariavel, tituloFrequencia
         var chart = new google.visualization.ColumnChart(document.getElementById('divGrafico'));
         chart.draw(data, options);
     }
-
-
-
-
-
 }
