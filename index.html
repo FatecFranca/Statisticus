@@ -215,12 +215,13 @@
 
                 dadosGerais.pontoMedio = retornaPontoMedio(dadosGerais.varType, dadosGerais.elementosIniciais, dadosGerais.elementosFinais);
                 dadosGerais.media = retornaMedia(dadosGerais.varType, dadosGerais.elementos, dadosGerais.qtdElementos, dadosGerais.pontoMedio, dadosGerais.totalDeElementos, dadosGerais.arr, dadosGerais.contagemElementosPorClasse);
-
                 dadosGerais.moda = retornaModa(dadosGerais.elementos, dadosGerais.qtdElementos, dadosGerais.varType, dadosGerais.contagemElementosPorClasse, dadosGerais.pontoMedio);
+                dadosGerais.mediana = retornaMediana(dadosGerais.varType, dadosGerais.elementosIniciais, dadosGerais.totalDeElementos, dadosGerais.frequenciaAcumulada, dadosGerais.contagemElementosPorClasse, dadosGerais.intervaloDeClasse, dadosGerais.arr);
 
 
                 exibeModa(dadosGerais.moda);
                 exibeMedia(dadosGerais.media);
+                exibeMediana(dadosGerais.mediana);
 
 
                 if (debug){

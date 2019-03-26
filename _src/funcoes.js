@@ -1,3 +1,6 @@
+let numCasasDecimaisMediaModaMediana = 5;
+
+
 //Transfere a opção escolhida (amostra ou população) para a variável de controle
 function setaRadioOption(opcao){
     dadosGerais.tipoDePesquisa=opcao;
@@ -355,7 +358,7 @@ function exibeMedia(media){
     if (isNaN(media)){
         res=media;
     } else {
-        res=`Média = ${media}`;
+        res=`Média = ${media.toFixed(numCasasDecimaisMediaModaMediana)}`;
     }
     p.innerHTML = res;
 }
@@ -377,6 +380,47 @@ function destroiTabela(){
 function destroiGrafico(){
     let temp = document.querySelector("#divGrafico");
     temp.innerHTML="";
+}
+
+function retornaMediana(varType, limitesIniciais, totalDeElementos, frequenciaAcumulada, contagemElementosPorClasse, intervaloDeClasse, elementos){
+
+    debugger;
+    let pos = totalDeElementos/2;
+    let posArr = Math.round(pos);
+    let limInferiorClasse;
+    let indice=0;
+    let feAcumuladaAnterior=0
+    let mediana;
+    if (varType=='Continua'){
+        for (let i=0; i<limitesIniciais.length; i++){
+            if (posArr<=limitesIniciais[i]){
+                limInferiorClasse=limitesIniciais[i];
+                indice=i;
+                break;
+            }
+        }
+        if (indice>0){
+            feAcumuladaAnterior=frequenciaAcumulada[indice-1];
+        }
+        mediana = limInferiorClasse + ((pos - feAcumuladaAnterior)/contagemElementosPorClasse[indice]) * intervaloDeClasse;
+    } else {
+
+        if (totalDeElementos%2==0){
+            mediana=(elementos[posArr] + elementos[posArr-1])/2;
+        } else {
+            mediana=elementos[pos];
+        }
+
+    }
+
+    return mediana;
+}
+
+function exibeMediana(arr){
+    let p= document.body.querySelector("#mediana");
+    let res;
+    res = 'Mediana = ' + arr.toFixed(numCasasDecimaisMediaModaMediana);
+    p.innerHTML = res;
 }
 
 function exibeModa(arr){
