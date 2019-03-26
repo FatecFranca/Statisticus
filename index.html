@@ -216,7 +216,7 @@
                 dadosGerais.pontoMedio = retornaPontoMedio(dadosGerais.varType, dadosGerais.elementosIniciais, dadosGerais.elementosFinais);
                 dadosGerais.media = retornaMedia(dadosGerais.varType, dadosGerais.elementos, dadosGerais.qtdElementos, dadosGerais.pontoMedio, dadosGerais.totalDeElementos, dadosGerais.arr, dadosGerais.contagemElementosPorClasse);
                 dadosGerais.moda = retornaModa(dadosGerais.elementos, dadosGerais.qtdElementos, dadosGerais.varType, dadosGerais.contagemElementosPorClasse, dadosGerais.pontoMedio);
-                dadosGerais.mediana = retornaMediana(dadosGerais.varType, dadosGerais.elementosIniciais, dadosGerais.totalDeElementos, dadosGerais.frequenciaAcumulada, dadosGerais.contagemElementosPorClasse, dadosGerais.intervaloDeClasse, dadosGerais.arr);
+                dadosGerais.mediana = retornaMediana(dadosGerais.varType, dadosGerais.elementosIniciais, dadosGerais.totalDeElementos, dadosGerais.frequenciaAcumulada, dadosGerais.contagemElementosPorClasse, dadosGerais.intervaloDeClasse, dadosGerais.arr, dadosGerais.qtdElementos, dadosGerais.elementos);
 
 
                 exibeModa(dadosGerais.moda);
@@ -256,6 +256,11 @@
             dadosGerais.copiaFrequenciaAcumulada = calcFreqAcum(dadosGerais.copiaQtdElementos);
             dadosGerais.copiaFrequenciaAcumuladaPercentualReal = calcFreqAcumPerc(dadosGerais.copiaFrequenciaPercentualReal, dadosGerais.copiaQtdElementos);
             desenhaTabela(dadosGerais.arr, dadosGerais.varType, dadosGerais.varName, dadosGerais.varDescription, dadosGerais.copiaElementos, dadosGerais.copiaQtdElementos, dadosGerais.copiaFrequenciaPercentualReal, dadosGerais.copiaFrequenciaAcumulada, dadosGerais.copiaFrequenciaAcumuladaPercentualReal, dadosGerais.totalFrequenciaAcumuladaReal, dadosGerais.totalFrequenciaPercentual);
+
+            dadosGerais.mediana = retornaMediana(dadosGerais.varType, dadosGerais.elementosIniciais, dadosGerais.totalDeElementos, dadosGerais.frequenciaAcumulada, dadosGerais.contagemElementosPorClasse, dadosGerais.intervaloDeClasse, dadosGerais.arr, dadosGerais.copiaQtdElementos, dadosGerais.copiaElementos);
+
+            exibeMediana(dadosGerais.mediana);
+
             if (debug){
                 showDebug();
             }

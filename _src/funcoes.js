@@ -382,7 +382,7 @@ function destroiGrafico(){
     temp.innerHTML="";
 }
 
-function retornaMediana(varType, limitesIniciais, totalDeElementos, frequenciaAcumulada, contagemElementosPorClasse, intervaloDeClasse, elementos){
+function retornaMediana(varType, limitesIniciais, totalDeElementos, frequenciaAcumulada, contagemElementosPorClasse, intervaloDeClasse, arr, qtdElementos, elementos){
 
 
     let pos = totalDeElementos/2;
@@ -403,14 +403,30 @@ function retornaMediana(varType, limitesIniciais, totalDeElementos, frequenciaAc
             feAcumuladaAnterior=frequenciaAcumulada[indice-1];
         }
         mediana = limInferiorClasse + ((pos - feAcumuladaAnterior)/contagemElementosPorClasse[indice]) * intervaloDeClasse;
-    } else {
+    } else if (varType=='Discreta'){
 
         if (totalDeElementos%2==0){
-            mediana=(elementos[posArr] + elementos[posArr-1])/2;
+            mediana=(arr[posArr] + arr[posArr-1])/2;
         } else {
-            mediana=elementos[pos];
+            mediana=arr[pos];
         }
 
+    } else {
+
+        let arrTemp=[];
+        for (let i=0;i<elementos.length;i++){
+            for (let j=0;j<qtdElementos[i];j++){
+                arrTemp.push(elementos[i]);
+            }
+        }
+
+
+        mediana = arrTemp[posArr-1];
+        if (totalDeElementos%2==0){
+            if (arrTemp[posArr-1]!=arrTemp[posArr]){
+                mediana+=' ' + arrTemp[posArr];
+            }
+        }
     }
 
     return mediana;
@@ -419,7 +435,12 @@ function retornaMediana(varType, limitesIniciais, totalDeElementos, frequenciaAc
 function exibeMediana(arr){
     let p= document.body.querySelector("#mediana");
     let res;
-    res = 'Mediana = ' + arr.toFixed(numCasasDecimaisMediaModaMediana);
+    if (isNaN(arr)){
+        res = 'Mediana = ' + arr;
+    } else {
+        res = 'Mediana = ' + arr.toFixed(numCasasDecimaisMediaModaMediana);
+    }
+
     p.innerHTML = res;
 }
 
