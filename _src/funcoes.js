@@ -1,10 +1,13 @@
+let numCasasDecimaisMediaModaMediana = 5;
+
+
 //Transfere a opção escolhida (amostra ou população) para a variável de controle
 function setaRadioOption(opcao){
     dadosGerais.tipoDePesquisa=opcao;
 }
 //Cria o vetor separando os dados importados ou informados pelo paciente
 function processaInput(res) {
-    //debugger;
+
     res.trim();
     let u = res.replace(/,/g, ".");  //Substitui a "," pelo "."
     u = u.replace(/[.]+/g,'.'); //Substitui . duplicados
@@ -12,8 +15,14 @@ function processaInput(res) {
     let t = u.replace(/[ ]+/g,' '); //Substitui . duplicados
 
     let arr=t.split(/;| |\r?\n|\r/); // Expressão regular para filtrar os espaços, ponto e virgulas e quebras de linha
-    if (arr[arr.length-1]==""){let r = arr.pop();}
-    if (arr[0]=="" || arr[0]==" "){let r = arr.shift();}
+
+    for (let i=0; i<arr.length;i++){
+        if (arr[i]=="" || arr[i]==" ") {
+            arr.splice(i,1);
+        }
+    }
+
+
     return arr;
 }
 function ordenaVetor(vet) {
@@ -92,7 +101,7 @@ function verificaQuantitativa(Vetor){
         flag2 = 'S';
     }
 
-    if(contArr.length < 7){
+    if(contArr.length < 6){
         tipoQuantitativa = 'Discreta';
     } else {
         tipoQuantitativa = 'Continua'
@@ -192,10 +201,10 @@ function calcFreqAcumPerc(freq,qtd){
     return freqAcumPerc;
 }
 function calcK(arr){
-    return Math.round(Math.sqrt(arr.length));
+    return Math.trunc(Math.sqrt(arr.length));
 }
 function intervaloClasse(amp,k,tam){
-    //debugger;
+
     r=[];
     let flag=false;
     amp=Math.round(amp);
@@ -307,11 +316,51 @@ function desenhaTabela(arr,varType,varName,varDescription,elementos,contVet,freq
     if (varType!='Continua'){
         tr.innerHTML=`<td>Total</td><td>${total}</td><td>${totalPercentagem}%</td><td>${fqA[fqA.length-1]}</td>`;
     } else {
-        tr.innerHTML=`<td>Total:</td><td>Tamanho: ${intervaloDeClasse}</td><td>${total}</td><td>${totalPercentagem}%</td><td>${fqA[fqA.length-1]}</td>`;
+        tr.innerHTML=`<td>Total:</td><td>Tam. Intervalo: ${intervaloDeClasse}</td><td>${total}</td><td>${totalPercentagem}%</td><td>${fqA[fqA.length-1]}</td>`;
     }
 
 
 
+}
+
+function retornaPontoMedio(varType, elementosIniciais, elementosFinais){
+    let pontoMedio = [];
+    if (varType=='Continua'){
+        for (let i=0;i<elementosIniciais.length;i++){
+
+            pontoMedio.push((elementosIniciais[i]+elementosFinais[i])/2);
+        }
+    }
+    return pontoMedio;
+}
+function retornaMedia(varType, elementos, qtdElementos, pontoMedio, totalDeElementos, arr, contagem){
+    let res=0;
+    let soma=0;
+
+    if (varType=='Continua'){
+        for(let i=0;i<pontoMedio.length;i++){
+            let temp=[pontoMedio[i]];
+            soma+=pontoMedio[i]*contagem[i];
+        }
+        res=soma/totalDeElementos;
+    }else if (varType=='Qualitativa'){
+        res = 'A média não existe!';
+    } else {
+       for (let i=0;i<arr.length;i++){
+           soma+=arr[i];
+       }
+        res=soma/arr.length;
+    }
+    return res;
+}
+function exibeMedia(media){
+    let p= document.body.querySelector("#media");
+    if (isNaN(media)){
+        res=media;
+    } else {
+        res=`Média = ${media.toFixed(numCasasDecimaisMediaModaMediana)}`;
+    }
+    p.innerHTML = res;
 }
 
 
@@ -327,6 +376,51 @@ function destroiTabela(){
     if (temp!=null){
         document.body.removeChild(temp);
     }
+}
+function destroiGrafico(){
+    let temp = document.querySelector("#divGrafico");
+    temp.innerHTML="";
+}
+
+function retornaMediana(varType, limitesIniciais, totalDeElementos, frequenciaAcumulada, contagemElementosPorClasse, intervaloDeClasse, elementos){
+
+
+    let pos = totalDeElementos/2;
+    let posArr = Math.round(pos);
+    let limInferiorClasse;
+    let indice=0;
+    let feAcumuladaAnterior=0
+    let mediana;
+    if (varType=='Continua'){
+        for (let i=0; i<limitesIniciais.length; i++){
+            if (posArr<=limitesIniciais[i]){
+                limInferiorClasse=limitesIniciais[i];
+                indice=i;
+                break;
+            }
+        }
+        if (indice>0){
+            feAcumuladaAnterior=frequenciaAcumulada[indice-1];
+        }
+        mediana = limInferiorClasse + ((pos - feAcumuladaAnterior)/contagemElementosPorClasse[indice]) * intervaloDeClasse;
+    } else {
+
+        if (totalDeElementos%2==0){
+            mediana=(elementos[posArr] + elementos[posArr-1])/2;
+        } else {
+            mediana=elementos[pos];
+        }
+
+    }
+
+    return mediana;
+}
+
+function exibeMediana(arr){
+    let p= document.body.querySelector("#mediana");
+    let res;
+    res = 'Mediana = ' + arr.toFixed(numCasasDecimaisMediaModaMediana);
+    p.innerHTML = res;
 }
 
 function exibeModa(arr){
@@ -348,8 +442,10 @@ function exibeModa(arr){
     }
     p.innerHTML = res;
 }
-function retornaModa(elementos, qtdElementos, varType){
+
+function retornaModa(elementos, qtdElementos, varType, contagemElementosPorClasse, pontoMedio){
     let res=[];
+
     let iguais= true;
     let x=qtdElementos[0];
     let maior=qtdElementos[0];
@@ -370,12 +466,57 @@ function retornaModa(elementos, qtdElementos, varType){
                 res.push(elementos[i]);
             }
         }
+        if (iguais){
+            res=[];
+            res.push("Série Amodal");
+        }
+    } else {
+       for(let i=1;i<contagemElementosPorClasse.length;i++){ //checa se tem a mesma qtd de elementos em todo o vetor
+            if (x != contagemElementosPorClasse[i]){
+                iguais = false;
+            }
+            if (maior<contagemElementosPorClasse[i]){
+                maior = contagemElementosPorClasse[i];
+            }
+        }
 
+        for(let i=0;i<contagemElementosPorClasse.length;i++){ //checa se tem a mesma qtd de elementos em todo o vetor
+            if (maior==contagemElementosPorClasse[i]){
+                res.push(pontoMedio[i]);
+            }
+        }
         if (iguais){
             res=[];
             res.push("Série Amodal");
         }
     }
     return res;
+}
 
+function geraGrafico(classes, frequencia, tipo, tituloVariavel, tituloFrequencia){
+    var data = new google.visualization.DataTable();
+
+    if (tipo=='Pizza'){
+        data.addColumn('string', tituloVariavel);
+        data.addColumn('number', tituloFrequencia);
+        for (let i=0; i<classes.length;i++){
+            data.addRow([classes[i],frequencia[i]]);
+        }
+        var options = {'title':'',
+                       'width':600,
+                       'height':400};
+        var chart = new google.visualization.PieChart(document.getElementById('divGrafico'));
+        chart.draw(data, options);
+    } else if(tipo=='Colunas'){
+        data.addColumn('number', tituloVariavel);
+        data.addColumn('number', tituloFrequencia);
+        for (let i=0; i<classes.length;i++){
+            data.addRow([classes[i],frequencia[i]]);
+        }
+        var options = {'title':tituloVariavel,
+                       'width':600,
+                       'height':400};
+        var chart = new google.visualization.ColumnChart(document.getElementById('divGrafico'));
+        chart.draw(data, options);
+    }
 }

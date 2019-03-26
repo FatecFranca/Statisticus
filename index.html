@@ -15,6 +15,7 @@
         <script src="js/jquery-3.2.1.min.js"></script>
         <script src="js/popper.min.js"></script>
         <script src="js/bootstrap.min.js"></script>
+        <script src="https://www.gstatic.com/charts/loader.js"></script>
         <script src="_src/funcoes.js"></script>
         <style>
 
@@ -84,8 +85,24 @@
                                 <div>
                                     <input type="button" name="bnt_initCalc" id="bnt_initCalc" onclick="initCalc()" value="initCalc">
                                 </div>
+                            <!--
+                                <div>
+                                    <label for="numLinhas">Informe o número de classes para variavel continua</label>
+                                    <input type="text" name="numLinhas" value = "" id="numLinhas">
+                                </div>
+                            -->
+                                <br>
+                                <div>
+                                    <p id="media"></p>
+                                </div>
                                 <div>
                                     <p id="moda"></p>
+                                </div>
+                                <div>
+                                    <p id="mediana"></p>
+                                </div>
+                                <div id="divGrafico">
+
                                 </div>
                                 <br>
                         </div>
@@ -95,6 +112,11 @@
         </div>
     </body>
     <script>
+
+        google.charts.load('current', {'packages':['corechart']});
+        google.charts.setOnLoadCallback(geraGrafico);
+
+
         //Função tryLoad é responsável por importar o arquivo
         function tryLoad(){
             let reader = new FileReader();
@@ -127,7 +149,10 @@
                 alert("Você deve informar 1 ou mais valores antes de continuar!");
 
             } else {
-                if (jaCalculado){destroiTabela();}
+                if (jaCalculado){
+                    destroiTabela();
+                    destroiGrafico();
+                }
                 jaCalculado = true;
                 dadosGerais = new Object();
                 dadosGerais.arr = [];//Vetor Principal
@@ -144,6 +169,7 @@
                 dadosGerais.varType=verificaTipo(dadosGerais.arr); //Tipo da variável - qualitativa, discreta ou continua
                 dadosGerais.maiorElemento = retornaMaior(dadosGerais.arr, dadosGerais.varType);
                 dadosGerais.menorElemento = retornaMenor(dadosGerais.arr, dadosGerais.varType);
+                dadosGerais.totalDeElementos = dadosGerais.arr.length;
                 if (dadosGerais.varType!='Qualitativa') {
                     dadosGerais.amplitude = calcAmplitude(dadosGerais.maiorElemento, dadosGerais.menorElemento, dadosGerais.varType);
                 }
@@ -156,12 +182,12 @@
                 dadosGerais.frequenciaAcumuladaPercentualReal = calcFreqAcumPerc(dadosGerais.frequenciaPercentualReal, dadosGerais.qtdElementos);
 
                 if (dadosGerais.varType=='Continua') {
-                    dadosGerais.K = calcK(dadosGerais.elementos);//Calcula K original (n linhas) será tualizado abaixo
-                    let temporario = intervaloClasse(dadosGerais.amplitude, dadosGerais.K, dadosGerais.elementos.length);
+                    dadosGerais.K = calcK(dadosGerais.arr);//Calcula K original (n linhas) será tualizado abaixo
+                    let temporario = intervaloClasse(dadosGerais.amplitude, dadosGerais.K, dadosGerais.arr.length);
                     dadosGerais.K=temporario[1];
                     dadosGerais.intervaloDeClasse=temporario[0];
                     dadosGerais.elementosIniciais = retornaElementosIniciaisDasClasses(dadosGerais.elementos,dadosGerais.intervaloDeClasse,dadosGerais.K);
-                    dadosGerais.elementosFinais = retornaElementosFinaisDaClasse(dadosGerais.elementosIniciais,dadosGerais.intervaloDeClasse,dadosGerais.K);
+                    dadosGerais.elementosFinais = retornaElementosFinaisDaClasse(dadosGerais.elementosIniciais, dadosGerais.intervaloDeClasse, dadosGerais.K);
                     dadosGerais.contagemElementosPorClasse = contaPorClasse(dadosGerais.arr, dadosGerais.elementosIniciais, dadosGerais.elementosFinais);
                     dadosGerais.frequenciaAcumulada = calcFreqAcum(dadosGerais.contagemElementosPorClasse);
                     dadosGerais.frequenciaPercentualReal = calcFreqPerc(dadosGerais.contagemElementosPorClasse, dadosGerais.arr.length);
@@ -175,20 +201,34 @@
                     dadosGerais.copiaElementos = dadosGerais.elementos.slice();
                     dadosGerais.copiaQtdElementos = dadosGerais.qtdElementos.slice();
                     desenhaTabela(dadosGerais.arr, dadosGerais.varType, dadosGerais.varName, dadosGerais.varDescription, dadosGerais.copiaElementos, dadosGerais.copiaQtdElementos, dadosGerais.copiaFrequenciaPercentualReal, dadosGerais.copiaFrequenciaAcumulada, dadosGerais.copiaFrequenciaAcumuladaPercentualReal, dadosGerais.totalFrequenciaAcumuladaReal, dadosGerais.totalFrequenciaPercentual, dadosGerais.K, dadosGerais.elementosIniciais, dadosGerais.elementosFinais, dadosGerais.intervaloDeClasse, dadosGerais.contagemElementosPorClasse );
+                    geraGrafico(dadosGerais.elementos,dadosGerais.qtdElementos,'Pizza', dadosGerais.varName, dadosGerais.varDescription);
+
+
                 } else {
                     desenhaTabela(dadosGerais.arr, dadosGerais.varType, dadosGerais.varName, dadosGerais.varDescription, dadosGerais.elementos, dadosGerais.qtdElementos, dadosGerais.frequenciaPercentualReal, dadosGerais.frequenciaAcumulada, dadosGerais.frequenciaAcumuladaPercentualReal, dadosGerais.totalFrequenciaAcumuladaReal, dadosGerais.totalFrequenciaPercentual, dadosGerais.K, dadosGerais.elementosIniciais, dadosGerais.elementosFinais, dadosGerais.intervaloDeClasse, dadosGerais.contagemElementosPorClasse );
+                    if (dadosGerais.varType!='Continua'){
+                       geraGrafico(dadosGerais.elementos,dadosGerais.frequenciaPercentualReal,'Colunas', dadosGerais.varName, dadosGerais.varDescription);
+                    } else {
+                        //FAZER OS GRAFICOS DA CONTINUA
+                    }
                 }
-                dadosGerais.moda = retornaModa(dadosGerais.elementos, dadosGerais.qtdElementos, dadosGerais.varType);
+
+                dadosGerais.pontoMedio = retornaPontoMedio(dadosGerais.varType, dadosGerais.elementosIniciais, dadosGerais.elementosFinais);
+                dadosGerais.media = retornaMedia(dadosGerais.varType, dadosGerais.elementos, dadosGerais.qtdElementos, dadosGerais.pontoMedio, dadosGerais.totalDeElementos, dadosGerais.arr, dadosGerais.contagemElementosPorClasse);
+                dadosGerais.moda = retornaModa(dadosGerais.elementos, dadosGerais.qtdElementos, dadosGerais.varType, dadosGerais.contagemElementosPorClasse, dadosGerais.pontoMedio);
+                dadosGerais.mediana = retornaMediana(dadosGerais.varType, dadosGerais.elementosIniciais, dadosGerais.totalDeElementos, dadosGerais.frequenciaAcumulada, dadosGerais.contagemElementosPorClasse, dadosGerais.intervaloDeClasse, dadosGerais.arr);
+
 
                 exibeModa(dadosGerais.moda);
+                exibeMedia(dadosGerais.media);
+                exibeMediana(dadosGerais.mediana);
+
 
                 if (debug){
                     showDebug();
                 }
             }
         }
-
-
         //Exibe as informações de debug
         function showDebug(){
             console.clear();
