@@ -324,17 +324,16 @@ function retornaPontoMedio(varType, elementosIniciais, elementosFinais){
     let pontoMedio = [];
     if (varType=='Continua'){
         for (let i=0;i<elementosIniciais.length;i++){
-            debugger;
+
             pontoMedio.push((elementosIniciais[i]+elementosFinais[i])/2);
         }
     }
     return pontoMedio;
 }
-
 function retornaMedia(varType, elementos, qtdElementos, pontoMedio, totalDeElementos, arr, contagem){
     let res=0;
     let soma=0;
-    debugger;
+
     if (varType=='Continua'){
         for(let i=0;i<pontoMedio.length;i++){
             let temp=[pontoMedio[i]];
@@ -351,7 +350,6 @@ function retornaMedia(varType, elementos, qtdElementos, pontoMedio, totalDeEleme
     }
     return res;
 }
-
 function exibeMedia(media){
     let p= document.body.querySelector("#media");
     if (isNaN(media)){
@@ -376,7 +374,6 @@ function destroiTabela(){
         document.body.removeChild(temp);
     }
 }
-
 function destroiGrafico(){
     let temp = document.querySelector("#divGrafico");
     temp.innerHTML="";
@@ -402,8 +399,9 @@ function exibeModa(arr){
     p.innerHTML = res;
 }
 
-function retornaModa(elementos, qtdElementos, varType){
+function retornaModa(elementos, qtdElementos, varType, contagemElementosPorClasse, pontoMedio){
     let res=[];
+
     let iguais= true;
     let x=qtdElementos[0];
     let maior=qtdElementos[0];
@@ -429,7 +427,24 @@ function retornaModa(elementos, qtdElementos, varType){
             res.push("Série Amodal");
         }
     } else {
-        //FAZER A MODA DA CONTINUA
+       for(let i=1;i<contagemElementosPorClasse.length;i++){ //checa se tem a mesma qtd de elementos em todo o vetor
+            if (x != contagemElementosPorClasse[i]){
+                iguais = false;
+            }
+            if (maior<contagemElementosPorClasse[i]){
+                maior = contagemElementosPorClasse[i];
+            }
+        }
+
+        for(let i=0;i<contagemElementosPorClasse.length;i++){ //checa se tem a mesma qtd de elementos em todo o vetor
+            if (maior==contagemElementosPorClasse[i]){
+                res.push(pontoMedio[i]);
+            }
+        }
+        if (iguais){
+            res=[];
+            res.push("Série Amodal");
+        }
     }
     return res;
 }

@@ -211,13 +211,12 @@
                     } else {
                         //FAZER OS GRAFICOS DA CONTINUA
                     }
-
                 }
 
                 dadosGerais.pontoMedio = retornaPontoMedio(dadosGerais.varType, dadosGerais.elementosIniciais, dadosGerais.elementosFinais);
                 dadosGerais.media = retornaMedia(dadosGerais.varType, dadosGerais.elementos, dadosGerais.qtdElementos, dadosGerais.pontoMedio, dadosGerais.totalDeElementos, dadosGerais.arr, dadosGerais.contagemElementosPorClasse);
 
-                dadosGerais.moda = retornaModa(dadosGerais.elementos, dadosGerais.qtdElementos, dadosGerais.varType);
+                dadosGerais.moda = retornaModa(dadosGerais.elementos, dadosGerais.qtdElementos, dadosGerais.varType, dadosGerais.contagemElementosPorClasse, dadosGerais.pontoMedio);
 
 
                 exibeModa(dadosGerais.moda);
@@ -229,8 +228,6 @@
                 }
             }
         }
-
-
         //Exibe as informações de debug
         function showDebug(){
             console.clear();
