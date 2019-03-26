@@ -7,7 +7,7 @@ function setaRadioOption(opcao){
 }
 //Cria o vetor separando os dados importados ou informados pelo paciente
 function processaInput(res) {
-    //debugger;
+
     res.trim();
     let u = res.replace(/,/g, ".");  //Substitui a "," pelo "."
     u = u.replace(/[.]+/g,'.'); //Substitui . duplicados
@@ -15,7 +15,7 @@ function processaInput(res) {
     let t = u.replace(/[ ]+/g,' '); //Substitui . duplicados
 
     let arr=t.split(/;| |\r?\n|\r/); // Expressão regular para filtrar os espaços, ponto e virgulas e quebras de linha
-    //debugger;
+
     for (let i=0; i<arr.length;i++){
         if (arr[i]=="" || arr[i]==" ") {
             arr.splice(i,1);
@@ -101,7 +101,7 @@ function verificaQuantitativa(Vetor){
         flag2 = 'S';
     }
 
-    if(contArr.length < 7){
+    if(contArr.length < 6){
         tipoQuantitativa = 'Discreta';
     } else {
         tipoQuantitativa = 'Continua'
@@ -204,7 +204,7 @@ function calcK(arr){
     return Math.trunc(Math.sqrt(arr.length));
 }
 function intervaloClasse(amp,k,tam){
-    //debugger;
+
     r=[];
     let flag=false;
     amp=Math.round(amp);
@@ -384,7 +384,7 @@ function destroiGrafico(){
 
 function retornaMediana(varType, limitesIniciais, totalDeElementos, frequenciaAcumulada, contagemElementosPorClasse, intervaloDeClasse, elementos){
 
-    debugger;
+
     let pos = totalDeElementos/2;
     let posArr = Math.round(pos);
     let limInferiorClasse;
@@ -495,7 +495,7 @@ function retornaModa(elementos, qtdElementos, varType, contagemElementosPorClass
 
 function geraGrafico(classes, frequencia, tipo, tituloVariavel, tituloFrequencia){
     var data = new google.visualization.DataTable();
-    //debugger;
+
     if (tipo=='Pizza'){
         data.addColumn('string', tituloVariavel);
         data.addColumn('number', tituloFrequencia);
