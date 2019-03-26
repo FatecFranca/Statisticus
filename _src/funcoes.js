@@ -198,7 +198,7 @@ function calcFreqAcumPerc(freq,qtd){
     return freqAcumPerc;
 }
 function calcK(arr){
-    return Math.round(Math.sqrt(arr.length));
+    return Math.trunc(Math.sqrt(arr.length));
 }
 function intervaloClasse(amp,k,tam){
     //debugger;
@@ -313,7 +313,7 @@ function desenhaTabela(arr,varType,varName,varDescription,elementos,contVet,freq
     if (varType!='Continua'){
         tr.innerHTML=`<td>Total</td><td>${total}</td><td>${totalPercentagem}%</td><td>${fqA[fqA.length-1]}</td>`;
     } else {
-        tr.innerHTML=`<td>Total:</td><td>Tamanho: ${intervaloDeClasse}</td><td>${total}</td><td>${totalPercentagem}%</td><td>${fqA[fqA.length-1]}</td>`;
+        tr.innerHTML=`<td>Total:</td><td>Tam. Intervalo: ${intervaloDeClasse}</td><td>${total}</td><td>${totalPercentagem}%</td><td>${fqA[fqA.length-1]}</td>`;
     }
 
 
@@ -324,30 +324,31 @@ function retornaPontoMedio(varType, elementosIniciais, elementosFinais){
     let pontoMedio = [];
     if (varType=='Continua'){
         for (let i=0;i<elementosIniciais.length;i++){
+            debugger;
             pontoMedio.push((elementosIniciais[i]+elementosFinais[i])/2);
         }
     }
     return pontoMedio;
 }
 
-function retornaMedia(varType, elementos, qtdElementos, pontoMedio, totalDeElementos){
-    let res='';
+function retornaMedia(varType, elementos, qtdElementos, pontoMedio, totalDeElementos, arr, contagem){
+    let res=0;
     let soma=0;
-    //debugger;
+    debugger;
     if (varType=='Continua'){
         for(let i=0;i<pontoMedio.length;i++){
-            soma+=pontoMedio[i]*qtdElementos[i];
+            let temp=[pontoMedio[i]];
+            soma+=pontoMedio[i]*contagem[i];
         }
         res=soma/totalDeElementos;
     }else if (varType=='Qualitativa'){
         res = 'A média não existe!';
     } else {
-       for (let i=0;i<elementos.length;i++){
-           soma+=elementos[i];
+       for (let i=0;i<arr.length;i++){
+           soma+=arr[i];
        }
-        res=soma/totalDeElementos;
+        res=soma/arr.length;
     }
-
     return res;
 }
 
