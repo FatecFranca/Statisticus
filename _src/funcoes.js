@@ -1,9 +1,10 @@
+let qtdElementosParaSerContinua=7;
 let numCasasDecimaisMediaModaMediana = 5;
 
 
 //Transfere a opção escolhida (amostra ou população) para a variável de controle
 function setaRadioOption(opcao){
-    dadosGerais.tipoDePesquisa=opcao;
+    dadosGerais.tipoDePesquisa=parseInt(opcao);
 }
 //Cria o vetor separando os dados importados ou informados pelo paciente
 function processaInput(res) {
@@ -101,7 +102,7 @@ function verificaQuantitativa(Vetor){
         flag2 = 'S';
     }
 
-    if(contArr.length < 6){
+    if(contArr.length < qtdElementosParaSerContinua){
         tipoQuantitativa = 'Discreta';
     } else {
         tipoQuantitativa = 'Continua'
@@ -314,9 +315,9 @@ function desenhaTabela(arr,varType,varName,varDescription,elementos,contVet,freq
     table.appendChild(tr);
 
     if (varType!='Continua'){
-        tr.innerHTML=`<td>Total</td><td>${total}</td><td>${totalPercentagem}%</td><td>${fqA[fqA.length-1]}</td>`;
+        tr.innerHTML=`<td>Total</td><td>${total}</td><td>${totalPercentagem}%</td>`;
     } else {
-        tr.innerHTML=`<td>Total:</td><td>Tam. Intervalo: ${intervaloDeClasse}</td><td>${total}</td><td>${totalPercentagem}%</td><td>${fqA[fqA.length-1]}</td>`;
+        tr.innerHTML=`<td>Total:</td><td>Tam. Intervalo: ${intervaloDeClasse}</td><td>${total}</td><td>${totalPercentagem}%</td>`;
     }
 
 
@@ -363,6 +364,12 @@ function exibeMedia(media){
     p.innerHTML = res;
 }
 
+function exibeDesvioPadrao(dp){
+    let p= document.body.querySelector("#dp");
+    res=`Desvio Padrão = ${dp.toFixed(numCasasDecimaisMediaModaMediana)}`;
+    p.innerHTML = res;
+}
+
 
 
 function destroiTabela(){
@@ -384,7 +391,7 @@ function destroiGrafico(){
 
 function retornaMediana(varType, limitesIniciais, totalDeElementos, frequenciaAcumulada, contagemElementosPorClasse, intervaloDeClasse, arr, qtdElementos, elementos){
 
-
+    debugger;
     let pos = totalDeElementos/2;
     let posArr = Math.round(pos);
     let limInferiorClasse;
@@ -392,9 +399,9 @@ function retornaMediana(varType, limitesIniciais, totalDeElementos, frequenciaAc
     let feAcumuladaAnterior=0
     let mediana;
     if (varType=='Continua'){
-        for (let i=0; i<limitesIniciais.length; i++){
-            if (posArr<=limitesIniciais[i]){
-                limInferiorClasse=limitesIniciais[i];
+        for (let i=0; i<frequenciaAcumulada.length; i++){
+            if (posArr<=frequenciaAcumulada[i]){
+                limInferiorClasse=frequenciaAcumulada[i];
                 indice=i;
                 break;
             }
@@ -408,7 +415,7 @@ function retornaMediana(varType, limitesIniciais, totalDeElementos, frequenciaAc
         if (totalDeElementos%2==0){
             mediana=(arr[posArr] + arr[posArr-1])/2;
         } else {
-            mediana=arr[pos];
+            mediana=arr[posArr];
         }
 
     } else {
@@ -540,4 +547,23 @@ function geraGrafico(classes, frequencia, tipo, tituloVariavel, tituloFrequencia
         var chart = new google.visualization.ColumnChart(document.getElementById('divGrafico'));
         chart.draw(data, options);
     }
+}
+
+function retornaDesvioPadrao(varType, elementos, qtdElementos, media, totalDeElementos, pontoMedio, tipoDePesquisa, contagemElementosPorClasse){
+    let res;
+    let soma1=0;
+    let soma2=0;
+
+    if (varType=='Discreta'){
+        for (let i=0; i<elementos.length;i++){
+            soma1+=((elementos[i]-media)*(elementos[i]-media))*qtdElementos[i];
+        }
+    } else if (varType=='Continua'){
+        for (let i=0; i<pontoMedio.length;i++){
+            soma1+=((pontoMedio[i]-media)*(pontoMedio[i]-media))*contagemElementosPorClasse[i];
+        }
+    }
+    res=soma1/(totalDeElementos+parseInt(tipoDePesquisa));
+    res=Math.sqrt(res);
+    return res;
 }
