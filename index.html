@@ -59,7 +59,7 @@
                                 <br>
                                 <div>
                                     <input type="radio" name="rad_Pesquisa" value="0" onclick="opcao=(this.value)" checked>População<br>
-                                    <input type="radio" name="rad_Pesquisa" value="1" onclick="opcao=(this.value)">Amostra<br>
+                                    <input type="radio" name="rad_Pesquisa" value="-1" onclick="opcao=(this.value)">Amostra<br>
                                 </div>
                                 <br>
                                 <div>
@@ -100,6 +100,9 @@
                                 </div>
                                 <div>
                                     <p id="mediana"></p>
+                                </div>
+                                <div>
+                                    <p id="dp"></p>
                                 </div>
                                 <div id="divGrafico">
 
@@ -218,10 +221,13 @@
                 dadosGerais.moda = retornaModa(dadosGerais.elementos, dadosGerais.qtdElementos, dadosGerais.varType, dadosGerais.contagemElementosPorClasse, dadosGerais.pontoMedio);
                 dadosGerais.mediana = retornaMediana(dadosGerais.varType, dadosGerais.elementosIniciais, dadosGerais.totalDeElementos, dadosGerais.frequenciaAcumulada, dadosGerais.contagemElementosPorClasse, dadosGerais.intervaloDeClasse, dadosGerais.arr, dadosGerais.qtdElementos, dadosGerais.elementos);
 
+                dadosGerais.desvioPadrao = retornaDesvioPadrao(dadosGerais.varType, dadosGerais.elementos, dadosGerais.qtdElementos, dadosGerais.media, dadosGerais.totalDeElementos, dadosGerais.pontoMedio, dadosGerais.tipoDePesquisa, dadosGerais.contagemElementosPorClasse);
+
 
                 exibeModa(dadosGerais.moda);
                 exibeMedia(dadosGerais.media);
                 exibeMediana(dadosGerais.mediana);
+                exibeDesvioPadrao(dadosGerais.desvioPadrao);
 
 
                 if (debug){
