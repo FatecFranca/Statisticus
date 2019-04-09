@@ -2,6 +2,26 @@ let qtdElementosParaSerContinua=7;
 let numCasasDecimaisMediaModaMediana = 5;
 
 
+//Retorna medida separatriz
+function retornaMedidaSeparatriz(){
+    let res;
+    let combo = document.querySelector("#cmb_separatirz");
+    if (combo.value=="4"){
+        res='Quartil';
+    } else if (combo.value=="5"){
+        res='Quintil';
+    } else if (combo.value=="10"){
+        res='Decil';
+    } else {
+        res='Percentil';
+    }
+    return res;
+}
+
+
+
+
+
 //Transfere a opção escolhida (amostra ou população) para a variável de controle
 function setaRadioOption(opcao){
     dadosGerais.tipoDePesquisa=parseInt(opcao);

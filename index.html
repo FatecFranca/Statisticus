@@ -91,6 +91,25 @@
                                 </div>
 
                                 <br>
+                                <div class="form-group">
+                                    <label for="quartil">Escolha uma medida Separatriz:</label>
+                                    <select class="form-control col-md-2" id="cmb_separatirz" onchange="changeComboSeparatriz(this.value)">
+                                        <option value="4" >Quartil</option>
+                                        <option value="5" >Quintil</option>
+                                        <option value="10" >Decil</option>
+                                        <option value="100" >Percentil</option>
+                                        <option value="1000" >Personalizado</option>
+                                    </select>
+                                    <div class="slidecontainer">
+                                        <label id="lblMin">1</label>
+                                        <input type="button" value="-" id="btnSub" onclick="changeSlideValue(this.value)">
+                                        <input type="range" min="1" max="4" value="1" class="slider" id="slider" onchange="setSlideValue(this.value)" oninput="setSlideValue(this.value)"; >
+                                        <input type="button" value="+" id="btnAdd" onclick="changeSlideValue(this.value)">
+                                        <label id="lblMax">4</label><br>
+                                        <input type="text" id="txtPersonalizado" value="1">
+                                    </div>
+                                </div>
+
                                 <div>
                                     <p id="media"></p>
                                 </div>
@@ -117,7 +136,7 @@
 
         google.charts.load('current', {'packages':['corechart']});
         google.charts.setOnLoadCallback(geraGrafico);
-
+        iniciaControlesSeparatriz();
 
         //Função tryLoad é responsável por importar o arquivo
         function tryLoad(){
@@ -143,6 +162,78 @@
                 }
             }
         };
+
+        function iniciaControlesSeparatriz() {
+            desligaSlide(false);
+            changeComboSeparatriz(04);
+        }
+
+        function desligaSlide(val){
+            let slider = document.querySelector("#slider");
+            let btnSub = document.querySelector("#btnSub");
+            let btnAdd = document.querySelector("#btnAdd");
+            let personalizado = document.querySelector("#txtPersonalizado");
+
+            btnAdd.disabled=val;
+            btnSub.disabled=val;
+            slider.disabled=val;
+            personalizado.disabled=!val;
+        }
+
+        //Controle do slider
+        function setSlider(max){
+
+            max=parseInt(max);
+            slider = document.querySelector("#slider");
+            slider.value=1;
+            slider.max = max;
+            document.querySelector("#lblMin").innerHTML = slider.min;
+            document.querySelector("#lblMax").innerHTML = slider.max;
+            document.querySelector("#txtPersonalizado").value = slider.value;
+            slideHasChange();
+        }
+
+        function setSlideValue(valor){
+            document.querySelector('#txtPersonalizado').value=valor;
+            slideHasChange();
+        }
+
+        function changeComboSeparatriz(valor){
+            dadosGerais.medidaSeparatriz = retornaMedidaSeparatriz();
+            if (valor!=1000) {
+                desligaSlide(false);
+
+                setSlider(valor);
+            } else {
+                setSlider(100);
+                desligaSlide(true);
+
+            }
+             if (debug){
+                showDebug();
+            }
+        }
+
+        function slideHasChange(){
+            dadosGerais.valorDaSeparatriz = document.querySelector("#slider").value;
+            if (debug){
+                showDebug();
+            }
+        }
+
+
+        function changeSlideValue(tipo){
+            slider = document.querySelector("#slider");
+            if (tipo=='-'){
+                if (slider.value>1){
+                    setSlideValue(--slider.value);
+                }
+            }else {
+                if (slider.value<parseInt(slider.max)){
+                     setSlideValue(++slider.value);
+                }
+            }
+        }
 
         //Inicío dos cálculos
         function initCalc(){
@@ -227,6 +318,8 @@
                 exibeMedia(dadosGerais.media);
                 exibeMediana(dadosGerais.mediana);
                 exibeDesvioPadrao(dadosGerais.desvioPadrao);
+
+                dadosGerais.medidaSeparatriz = retornaMedidaSeparatriz();
 
 
                 if (debug){
