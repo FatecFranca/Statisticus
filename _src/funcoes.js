@@ -276,7 +276,7 @@ function desenhaTabela(arr,varType,varName,varDescription,elementos,contVet,freq
     }else {
         div.setAttribute("id", "tabelaContinua");
     }
-    document.body.appendChild(div);
+    document.querySelector("#tabela").appendChild(div);
 
     let table = document.createElement("table");
     div.appendChild(table);
@@ -381,7 +381,7 @@ function destroiTabela(){
         }
     }
     if (temp!=null){
-        document.body.removeChild(temp);
+        document.querySelector("#tabela").removeChild(temp);
     }
 }
 function destroiGrafico(){
@@ -391,7 +391,7 @@ function destroiGrafico(){
 
 function retornaMediana(varType, limitesIniciais, totalDeElementos, frequenciaAcumulada, contagemElementosPorClasse, intervaloDeClasse, arr, qtdElementos, elementos){
 
-    debugger;
+
     let pos = totalDeElementos/2;
     let posArr = Math.round(pos);
     let limInferiorClasse;
