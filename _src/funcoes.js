@@ -12,10 +12,101 @@ function retornaMedidaSeparatriz(){
         res='Quintil';
     } else if (combo.value=="10"){
         res='Decil';
-    } else {
+    } else if(combo.value=="100"){
         res='Percentil';
+    } else {
+        res='Personalizado';
     }
     return res;
+}
+
+function retornaPorcentagemSeparatriz(medidaSeparatriz, valorDaSeparatriz ){
+    let valorEmPorcentagem=0;
+    switch(medidaSeparatriz){
+        case 'Quartil':
+            valorEmPorcentagem = valorDaSeparatriz * 25;
+            break;
+        case 'Quintil':
+            valorEmPorcentagem = valorDaSeparatriz * 20;
+            break;
+        case 'Decil':
+            valorEmPorcentagem = valorDaSeparatriz * 10;
+            break;
+        case 'Percentil':
+            valorEmPorcentagem = valorDaSeparatriz;
+            break;
+        case 'Personalizado':
+            valorEmPorcentagem = valorDaSeparatriz;
+            break;
+    }
+    return parseFloat(valorEmPorcentagem);
+}
+
+function calculaSeparatriz(varType, valorDaSeparatriz, medidaSeparatriz, totalDeElementos, frequenciaAcumulada, elementos ){
+
+    let valorEmPorcentagem;
+    let posicao;
+
+    valorEmPorcentagem = retornaPorcentagemSeparatriz(medidaSeparatriz, valorDaSeparatriz);
+
+
+
+
+
+    if (varType!="Continua"){
+        posicao=valorEmPorcentagem*totalDeElementos/100;
+
+        for(let i=0;i<frequenciaAcumulada.length;i++){
+            if (posicao<=frequenciaAcumulada[i]){
+                return elementos[i];
+                break;
+            }
+        }
+
+
+    } else {
+       /*
+       if(varType == 'Continua'){
+
+        //acha qual a Fac do elemento e do anterior
+        for(let i = 0; i<frequenciaAcumulada.length; i++){
+            if(frequenciaAcumulada[i] >= resPosicao && !achou){
+                achou = true;
+                posicao =  i;
+                if(frequenciaAcumulada[i - 1] > 0){
+                    facAnterior = frequenciaAcumulada[i - 1];
+                }
+                break;
+            }
+        }
+        //Acha o limite inferior
+        for(let j = 0; j < elementosIniciais.length; j++){
+            if(j = posicao){
+                limiteInferior =  elementosIniciais[j];
+                break;
+            }
+        }
+        //Acha FI
+        for(let x = 0; x < contagemElementosPorClasse.length; x++){
+            if(x = posicao){
+                fiClasse = contagemElementosPorClasse[x];
+                break;
+            }
+        }
+
+        elemento = limiteInferior + ((resPosicao - facAnterior) / fiClasse * intervaloDeClasse);
+
+       */
+    }
+
+}
+
+function exibeSeparatriz(valor){
+    let p= document.body.querySelector("#separatriz");
+    let res;
+    res = 'Separatriz = ' + valor;
+
+    p.innerHTML = res;
 }
 
 
@@ -387,6 +478,16 @@ function exibeMedia(media){
 function exibeDesvioPadrao(dp){
     let p= document.body.querySelector("#dp");
     res=`Desvio Padrão = ${dp.toFixed(numCasasDecimaisMediaModaMediana)}`;
+    p.innerHTML = res;
+}
+
+function retornaCoeficienteVariacao(desvioPadrao, media){
+    return (desvioPadrao/media)*100;
+}
+
+function exiveCoeficienteVariacao(cf){
+    let p= document.body.querySelector("#coeficienteVariacao");
+    res=`Coeficiente de Variação = ${cf.toFixed(numCasasDecimaisMediaModaMediana)}%`;
     p.innerHTML = res;
 }
 
