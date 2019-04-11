@@ -2,6 +2,107 @@ let qtdElementosParaSerContinua=7;
 let numCasasDecimaisMediaModaMediana = 5;
 
 
+//Retorna medida separatriz
+function retornaMedidaSeparatriz(){
+    let res;
+    let combo = document.querySelector("#cmb_separatirz");
+    if (combo.value=="4"){
+        res='Quartil';
+    } else if (combo.value=="5"){
+        res='Quintil';
+    } else if (combo.value=="10"){
+        res='Decil';
+    } else if(combo.value=="100"){
+        res='Percentil';
+    } else {
+        res='Personalizado';
+    }
+    return res;
+}
+
+function retornaPorcentagemSeparatriz(medidaSeparatriz, valorDaSeparatriz ){
+    let valorEmPorcentagem=0;
+    switch(medidaSeparatriz){
+        case 'Quartil':
+            valorEmPorcentagem = valorDaSeparatriz * 25;
+            break;
+        case 'Quintil':
+            valorEmPorcentagem = valorDaSeparatriz * 20;
+            break;
+        case 'Decil':
+            valorEmPorcentagem = valorDaSeparatriz * 10;
+            break;
+        case 'Percentil':
+            valorEmPorcentagem = valorDaSeparatriz;
+            break;
+        case 'Personalizado':
+            valorEmPorcentagem = valorDaSeparatriz;
+            break;
+    }
+    return parseFloat(valorEmPorcentagem);
+}
+
+function calculaSeparatriz(varType, valorDaSeparatriz, medidaSeparatriz, totalDeElementos, frequenciaAcumulada, elementos,contagemElementosPorClasse, intervaloDeClasse, elementosIniciais ){
+
+    let valorEmPorcentagem;
+    let posicao;
+
+    valorEmPorcentagem = retornaPorcentagemSeparatriz(medidaSeparatriz, valorDaSeparatriz);
+
+
+
+    posicao=valorEmPorcentagem*totalDeElementos/100;
+
+    if (varType!="Continua"){
+
+
+        for(let i=0;i<frequenciaAcumulada.length;i++){
+            if (posicao<=frequenciaAcumulada[i]){
+                return elementos[i];
+                break;
+            }
+        }
+
+
+    } else {
+
+        debugger;
+        return calcMedianaOuSeparatrizContinua(posicao, frequenciaAcumulada, elementosIniciais, contagemElementosPorClasse, intervaloDeClasse);
+
+
+    }
+}
+
+function calcMedianaOuSeparatrizContinua(posicao, frequenciaAcumulada, elementosIniciais, contagemElementosPorClasse, intervaloDeClasse){
+    let posArr = Math.ceil(posicao);
+    let limInferiorClasse;
+    let indice=0;
+    let feAcumuladaAnterior=0
+    for (let i=0; i<frequenciaAcumulada.length; i++){
+        if (posArr<=frequenciaAcumulada[i]){
+            limInferiorClasse=elementosIniciais[i];
+            indice=i;
+            break;
+        }
+    }
+    if (indice>0){
+        feAcumuladaAnterior=frequenciaAcumulada[indice-1];
+    }
+    return (limInferiorClasse + ((posicao - feAcumuladaAnterior)/contagemElementosPorClasse[indice]) * intervaloDeClasse);
+}
+
+function exibeSeparatriz(valor){
+    let p= document.body.querySelector("#separatriz");
+    let res;
+    res = 'Separatriz = ' + valor;
+
+    p.innerHTML = res;
+}
+
+
+
+
+
 //Transfere a opção escolhida (amostra ou população) para a variável de controle
 function setaRadioOption(opcao){
     dadosGerais.tipoDePesquisa=parseInt(opcao);
@@ -276,7 +377,7 @@ function desenhaTabela(arr,varType,varName,varDescription,elementos,contVet,freq
     }else {
         div.setAttribute("id", "tabelaContinua");
     }
-    document.body.appendChild(div);
+    document.querySelector("#tabela").appendChild(div);
 
     let table = document.createElement("table");
     div.appendChild(table);
@@ -370,6 +471,16 @@ function exibeDesvioPadrao(dp){
     p.innerHTML = res;
 }
 
+function retornaCoeficienteVariacao(desvioPadrao, media){
+    return (desvioPadrao/media)*100;
+}
+
+function exiveCoeficienteVariacao(cf){
+    let p= document.body.querySelector("#coeficienteVariacao");
+    res=`Coeficiente de Variação = ${cf.toFixed(numCasasDecimaisMediaModaMediana)}%`;
+    p.innerHTML = res;
+}
+
 
 
 function destroiTabela(){
@@ -381,7 +492,7 @@ function destroiTabela(){
         }
     }
     if (temp!=null){
-        document.body.removeChild(temp);
+        document.querySelector("#tabela").removeChild(temp);
     }
 }
 function destroiGrafico(){
@@ -391,25 +502,16 @@ function destroiGrafico(){
 
 function retornaMediana(varType, limitesIniciais, totalDeElementos, frequenciaAcumulada, contagemElementosPorClasse, intervaloDeClasse, arr, qtdElementos, elementos){
 
-    debugger;
-    let pos = totalDeElementos/2;
+
+    let pos = 50*totalDeElementos/100;;
     let posArr = Math.round(pos);
     let limInferiorClasse;
     let indice=0;
     let feAcumuladaAnterior=0
     let mediana;
     if (varType=='Continua'){
-        for (let i=0; i<frequenciaAcumulada.length; i++){
-            if (posArr<=frequenciaAcumulada[i]){
-                limInferiorClasse=frequenciaAcumulada[i];
-                indice=i;
-                break;
-            }
-        }
-        if (indice>0){
-            feAcumuladaAnterior=frequenciaAcumulada[indice-1];
-        }
-        mediana = limInferiorClasse + ((pos - feAcumuladaAnterior)/contagemElementosPorClasse[indice]) * intervaloDeClasse;
+
+        mediana = calcMedianaOuSeparatrizContinua(pos, frequenciaAcumulada, limitesIniciais, contagemElementosPorClasse, intervaloDeClasse);
     } else if (varType=='Discreta'){
 
         if (totalDeElementos%2==0){

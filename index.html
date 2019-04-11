@@ -5,7 +5,9 @@
         let tipoDeCalculo=0;
         let opcao=0;
         let jaCalculado = false; //Controla se já foi executado algum calculo para poder apagar as tabelas geradas
+        let temCopia = false; //Controla se tem copia dos dados da tabela quali
         let dadosGerais = new Object();
+
     </script>
     <head>
         <meta charset="utf-8">
@@ -85,13 +87,34 @@
                                 <div>
                                     <input type="button" name="bnt_initCalc" id="bnt_initCalc" onclick="initCalc()" value="initCalc">
                                 </div>
-                            <!--
-                                <div>
-                                    <label for="numLinhas">Informe o número de classes para variavel continua</label>
-                                    <input type="text" name="numLinhas" value = "" id="numLinhas">
+
+                                <div id="tabela">
+
                                 </div>
-                            -->
+
                                 <br>
+                                <div class="form-group">
+                                    <label for="quartil">Escolha uma medida Separatriz:</label>
+                                    <select class="form-control col-md-2" id="cmb_separatirz" onchange="changeComboSeparatriz(this.value)">
+                                        <option value="4" >Quartil</option>
+                                        <option value="5" >Quintil</option>
+                                        <option value="10" >Decil</option>
+                                        <option value="100" >Percentil</option>
+                                        <option value="1000" >Personalizado</option>
+                                    </select>
+                                    <div class="slidecontainer">
+                                        <label id="lblMin">1</label>
+                                        <input type="button" value="-" id="btnSub" onclick="changeSlideValue(this.value)">
+                                        <input type="range" min="1" max="4" value="1" class="slider" id="slider" onchange="setSlideValue(this.value)" oninput="setSlideValue(this.value)"; >
+                                        <input type="button" value="+" id="btnAdd" onclick="changeSlideValue(this.value)">
+                                        <label id="lblMax">4</label><br>
+                                        <input type="text" id="txtPersonalizado" value="1" onkeyup="setValorPersonalizado(this.value)">
+                                        <input type="button" value="Calcular Separatriz" onclick="calculaS()" id="bntCalcularSeparatriz">
+                                    </div>
+                                </div>
+                                <div>
+                                    <p id="separatriz"></p>
+                                </div>
                                 <div>
                                     <p id="media"></p>
                                 </div>
@@ -103,6 +126,9 @@
                                 </div>
                                 <div>
                                     <p id="dp"></p>
+                                </div>
+                                <div>
+                                    <p id="coeficienteVariacao"></p>
                                 </div>
                                 <div id="divGrafico">
 
@@ -118,7 +144,7 @@
 
         google.charts.load('current', {'packages':['corechart']});
         google.charts.setOnLoadCallback(geraGrafico);
-
+        iniciaControlesSeparatriz();
 
         //Função tryLoad é responsável por importar o arquivo
         function tryLoad(){
@@ -145,8 +171,123 @@
             }
         };
 
+        function iniciaControlesSeparatriz() {
+            desligaSlide(false);
+            changeComboSeparatriz(04);
+        }
+
+        function desligaSlide(val){
+            let slider = document.querySelector("#slider");
+            let btnSub = document.querySelector("#btnSub");
+            let btnAdd = document.querySelector("#btnAdd");
+            let personalizado = document.querySelector("#txtPersonalizado");
+
+            btnAdd.disabled=val;
+            btnSub.disabled=val;
+            slider.disabled=val;
+            personalizado.disabled=!val;
+        }
+
+        //Controle do slider
+        function setSlider(max){
+            max=parseInt(max);
+            slider = document.querySelector("#slider");
+            slider.value=1;
+            slider.max = max;
+            document.querySelector("#lblMin").innerHTML = slider.min;
+            document.querySelector("#lblMax").innerHTML = slider.max;
+            document.querySelector("#txtPersonalizado").value = slider.value;
+            slideHasChange();
+        }
+
+        function setSlideValue(valor){
+            document.querySelector('#txtPersonalizado').value=valor;
+            slideHasChange();
+        }
+
+        function setValorPersonalizado(valor){
+
+            let txt = document.querySelector('#txtPersonalizado');
+            if(event.keyCode == 13) {
+                if (isNaN(valor) || valor<1 || valor >100){
+                    valor=1;
+                    alert("O valor da separatriz deve ser um número entre 1 e 100.");
+                    txt.value=1;
+                    txt.focus();
+                    txt.select();
+                }
+                if (valor>=1 && valor<=100){
+                    txt.value=valor;
+                    dadosGerais.valorDaSeparatriz = parseFloat(valor);
+                    calculaS();
+                }
+            }
+            if (debug){
+                showDebug();
+            }
+        }
+
+        function calculaS(){
+            let fa;
+
+            if (jaCalculado){
+                if (temCopia){
+                    fa=dadosGerais.copiaFrequenciaAcumulada;
+                } else {
+                    fa=dadosGerais.frequenciaAcumulada;
+                }
+                dadosGerais.resultadoDaSeparatrizEscolhida = calculaSeparatriz(dadosGerais.varType, dadosGerais.valorDaSeparatriz, dadosGerais.medidaSeparatriz, dadosGerais.totalDeElementos, fa, dadosGerais.elementos, dadosGerais.contagemElementosPorClasse, dadosGerais.intervaloDeClasse, dadosGerais.elementosIniciais);
+                dadosGerais.valorEmPorcentagemSeparatriz = retornaPorcentagemSeparatriz(dadosGerais.medidaSeparatriz, dadosGerais.valorDaSeparatriz);
+                exibeSeparatriz(dadosGerais.resultadoDaSeparatrizEscolhida);
+
+            }
+            if(debug){
+                showDebug();
+            }
+        }
+
+        function changeComboSeparatriz(valor){
+            dadosGerais.medidaSeparatriz = retornaMedidaSeparatriz();
+            if (valor!=1000) {
+                desligaSlide(false);
+                setSlider(valor);
+
+            } else {
+                setSlider(100);
+                desligaSlide(true);
+                document.querySelector("#txtPersonalizado").focus();
+                document.querySelector("#txtPersonalizado").select();
+
+            }
+             if (debug){
+                showDebug();
+            }
+        }
+
+        function slideHasChange(){
+            dadosGerais.valorDaSeparatriz = document.querySelector("#slider").value;
+            if (debug){
+                showDebug();
+            }
+        }
+
+
+        function changeSlideValue(tipo){
+            slider = document.querySelector("#slider");
+            if (tipo=='-'){
+                if (slider.value>1){
+                    setSlideValue(--slider.value);
+                }
+            }else {
+                if (slider.value<parseInt(slider.max)){
+                     setSlideValue(++slider.value);
+                }
+            }
+        }
+
         //Inicío dos cálculos
         function initCalc(){
+            temCopia=false;
             let inptText = document.querySelector("#inputText");
             if (inptText.value==""){
                 alert("Você deve informar 1 ou mais valores antes de continuar!");
@@ -159,6 +300,8 @@
                 jaCalculado = true;
                 dadosGerais = new Object();
                 dadosGerais.arr = [];//Vetor Principal
+                dadosGerais.valorEmPorcentagemSeparatriz=0;
+                dadosGerais.valorDaSeparatriz=1;
                 dadosGerais.typeOfCalculation =tipoDeCalculo;// 0-Descritiva, 1-Probabilidade, 2-Correlação
 
                 dadosGerais.tipoDePesquisa = opcao; //0-População, 1-Amostra
@@ -198,6 +341,7 @@
                 }
                 dadosGerais.totalFrequenciaPercentual = arredondaTotal(dadosGerais.totalFrequenciaPercentualReal);
                 if (dadosGerais.varType=='Qualitativa'){
+                    temCopia=true;
                     dadosGerais.copiaFrequenciaPercentualReal = dadosGerais.frequenciaPercentualReal.slice();
                     dadosGerais.copiaFrequenciaAcumulada = dadosGerais.frequenciaAcumulada.slice();
                     dadosGerais.copiaFrequenciaAcumuladaPercentualReal = dadosGerais.frequenciaAcumuladaPercentualReal.slice();
@@ -222,12 +366,15 @@
                 dadosGerais.mediana = retornaMediana(dadosGerais.varType, dadosGerais.elementosIniciais, dadosGerais.totalDeElementos, dadosGerais.frequenciaAcumulada, dadosGerais.contagemElementosPorClasse, dadosGerais.intervaloDeClasse, dadosGerais.arr, dadosGerais.qtdElementos, dadosGerais.elementos);
 
                 dadosGerais.desvioPadrao = retornaDesvioPadrao(dadosGerais.varType, dadosGerais.elementos, dadosGerais.qtdElementos, dadosGerais.media, dadosGerais.totalDeElementos, dadosGerais.pontoMedio, dadosGerais.tipoDePesquisa, dadosGerais.contagemElementosPorClasse);
+                dadosGerais.coeficienteVariacao = retornaCoeficienteVariacao(dadosGerais.desvioPadrao, dadosGerais.media);
 
 
                 exibeModa(dadosGerais.moda);
                 exibeMedia(dadosGerais.media);
                 exibeMediana(dadosGerais.mediana);
                 exibeDesvioPadrao(dadosGerais.desvioPadrao);
+                exiveCoeficienteVariacao(dadosGerais.coeficienteVariacao);
+                dadosGerais.medidaSeparatriz = retornaMedidaSeparatriz();
 
 
                 if (debug){
@@ -266,6 +413,7 @@
             dadosGerais.mediana = retornaMediana(dadosGerais.varType, dadosGerais.elementosIniciais, dadosGerais.totalDeElementos, dadosGerais.frequenciaAcumulada, dadosGerais.contagemElementosPorClasse, dadosGerais.intervaloDeClasse, dadosGerais.arr, dadosGerais.copiaQtdElementos, dadosGerais.copiaElementos);
 
             exibeMediana(dadosGerais.mediana);
+
 
             if (debug){
                 showDebug();
