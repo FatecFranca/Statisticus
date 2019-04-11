@@ -42,7 +42,7 @@ function retornaPorcentagemSeparatriz(medidaSeparatriz, valorDaSeparatriz ){
     return parseFloat(valorEmPorcentagem);
 }
 
-function calculaSeparatriz(varType, valorDaSeparatriz, medidaSeparatriz, totalDeElementos, frequenciaAcumulada, elementos ){
+function calculaSeparatriz(varType, valorDaSeparatriz, medidaSeparatriz, totalDeElementos, frequenciaAcumulada, elementos,contagemElementosPorClasse, intervaloDeClasse, elementosIniciais ){
 
     let valorEmPorcentagem;
     let posicao;
@@ -51,10 +51,10 @@ function calculaSeparatriz(varType, valorDaSeparatriz, medidaSeparatriz, totalDe
 
 
 
-
+    posicao=valorEmPorcentagem*totalDeElementos/100;
 
     if (varType!="Continua"){
-        posicao=valorEmPorcentagem*totalDeElementos/100;
+
 
         for(let i=0;i<frequenciaAcumulada.length;i++){
             if (posicao<=frequenciaAcumulada[i]){
@@ -65,40 +65,30 @@ function calculaSeparatriz(varType, valorDaSeparatriz, medidaSeparatriz, totalDe
 
 
     } else {
-       /*
-       if(varType == 'Continua'){
 
-        //acha qual a Fac do elemento e do anterior
-        for(let i = 0; i<frequenciaAcumulada.length; i++){
-            if(frequenciaAcumulada[i] >= resPosicao && !achou){
-                achou = true;
-                posicao =  i;
-                if(frequenciaAcumulada[i - 1] > 0){
-                    facAnterior = frequenciaAcumulada[i - 1];
-                }
-                break;
-            }
-        }
-        //Acha o limite inferior
-        for(let j = 0; j < elementosIniciais.length; j++){
-            if(j = posicao){
-                limiteInferior =  elementosIniciais[j];
-                break;
-            }
-        }
-        //Acha FI
-        for(let x = 0; x < contagemElementosPorClasse.length; x++){
-            if(x = posicao){
-                fiClasse = contagemElementosPorClasse[x];
-                break;
-            }
-        }
+        debugger;
+        return calcMedianaOuSeparatrizContinua(posicao, frequenciaAcumulada, elementosIniciais, contagemElementosPorClasse, intervaloDeClasse);
 
-        elemento = limiteInferior + ((resPosicao - facAnterior) / fiClasse * intervaloDeClasse);
 
-       */
     }
+}
 
+function calcMedianaOuSeparatrizContinua(posicao, frequenciaAcumulada, elementosIniciais, contagemElementosPorClasse, intervaloDeClasse){
+    let posArr = Math.ceil(posicao);
+    let limInferiorClasse;
+    let indice=0;
+    let feAcumuladaAnterior=0
+    for (let i=0; i<frequenciaAcumulada.length; i++){
+        if (posArr<=frequenciaAcumulada[i]){
+            limInferiorClasse=elementosIniciais[i];
+            indice=i;
+            break;
+        }
+    }
+    if (indice>0){
+        feAcumuladaAnterior=frequenciaAcumulada[indice-1];
+    }
+    return (limInferiorClasse + ((posicao - feAcumuladaAnterior)/contagemElementosPorClasse[indice]) * intervaloDeClasse);
 }
 
 function exibeSeparatriz(valor){
@@ -513,24 +503,15 @@ function destroiGrafico(){
 function retornaMediana(varType, limitesIniciais, totalDeElementos, frequenciaAcumulada, contagemElementosPorClasse, intervaloDeClasse, arr, qtdElementos, elementos){
 
 
-    let pos = totalDeElementos/2;
+    let pos = 50*totalDeElementos/100;;
     let posArr = Math.round(pos);
     let limInferiorClasse;
     let indice=0;
     let feAcumuladaAnterior=0
     let mediana;
     if (varType=='Continua'){
-        for (let i=0; i<frequenciaAcumulada.length; i++){
-            if (posArr<=frequenciaAcumulada[i]){
-                limInferiorClasse=frequenciaAcumulada[i];
-                indice=i;
-                break;
-            }
-        }
-        if (indice>0){
-            feAcumuladaAnterior=frequenciaAcumulada[indice-1];
-        }
-        mediana = limInferiorClasse + ((pos - feAcumuladaAnterior)/contagemElementosPorClasse[indice]) * intervaloDeClasse;
+
+        mediana = calcMedianaOuSeparatrizContinua(pos, frequenciaAcumulada, limitesIniciais, contagemElementosPorClasse, intervaloDeClasse);
     } else if (varType=='Discreta'){
 
         if (totalDeElementos%2==0){

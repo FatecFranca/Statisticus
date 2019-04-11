@@ -236,7 +236,7 @@
                 } else {
                     fa=dadosGerais.frequenciaAcumulada;
                 }
-                dadosGerais.resultadoDaSeparatrizEscolhida = calculaSeparatriz(dadosGerais.varType, dadosGerais.valorDaSeparatriz, dadosGerais.medidaSeparatriz, dadosGerais.totalDeElementos, fa, dadosGerais.elementos);
+                dadosGerais.resultadoDaSeparatrizEscolhida = calculaSeparatriz(dadosGerais.varType, dadosGerais.valorDaSeparatriz, dadosGerais.medidaSeparatriz, dadosGerais.totalDeElementos, fa, dadosGerais.elementos, dadosGerais.contagemElementosPorClasse, dadosGerais.intervaloDeClasse, dadosGerais.elementosIniciais);
                 dadosGerais.valorEmPorcentagemSeparatriz = retornaPorcentagemSeparatriz(dadosGerais.medidaSeparatriz, dadosGerais.valorDaSeparatriz);
                 exibeSeparatriz(dadosGerais.resultadoDaSeparatrizEscolhida);
 
