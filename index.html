@@ -47,94 +47,92 @@
         <div class="container">
             <div class="row">
                 <div class="col-12">
-                    <p> <!--Disparadores -->
-                        <button class="btn btn-secondary" data-toggle="collapse" type="button" data-target="#ItemColapso1" aria-expanded="false" aria-controls="ItemColapso1">Teste</button>
-                    </p>
 
-                    <div class="collapse" id="ItemColapso1">
-                        <div class="card card-body">
-                                <div>
-                                    <input type="button" name="bnt_Descritiva" id="bnt_Descritiva" onclick="tipoDeCalculo=0;" value="Estatística Descritiva">
-                                    <input type="button" name="bnt_Probabilidade" id="bnt_Probabilidade" onclick="tipoDeCalculo=1;" value="Probabilidade">
-                                    <input type="button" name="bnt_Correlacao" id="bnt_Correlacao" onclick="tipoDeCalculo=2;" value="Correlação e Regressão">
-                                </div>
-                                <br>
-                                <div>
-                                    <input type="radio" name="rad_Pesquisa" value="0" onclick="opcao=(this.value)" checked>População<br>
-                                    <input type="radio" name="rad_Pesquisa" value="-1" onclick="opcao=(this.value)">Amostra<br>
-                                </div>
-                                <br>
-                                <div>
-                                    <label for="nomeVariavel">Informe o nome da varável a ser pesquisada</label>
-                                    <input type="text" value = 'Variável Pesquisada (xi)' name="nomeVariavel" id="nomeVariavel">
-                                </div>
-                                <br>
-                                <div>
-                                    <label for="nomeDescricao">Informe o label da coluna de frequencia (este parametro é opcional)</label>
-                                    <input type="text" name="nomeDescricao" value = 'Frequencia (fi)' id="nomeDescricao">
-                                </div>
-                                <br>
-                                <div>
-                                    <label for="inputText">Digite os valores separados por espaço ou ;</label>
-                                    <textarea  name="inputText" id="inputText" ></textarea>
-                                </div>
-                                <br>
-                                <div>
-                                    <label for="inputFile">Importar arquivo:</label>
-                                    <input type="file" name="inputFile" id="inputFile"  accept=".txt, .csv" onchange="tryLoad()">
-                                </div>
-                                <br>
-                                <div>
-                                    <input type="button" name="bnt_initCalc" id="bnt_initCalc" onclick="initCalc()" value="initCalc">
-                                </div>
+                    <div class="card card-body">
+                            <div>
+                                <input type="button" name="bnt_Descritiva" id="bnt_Descritiva" onclick="tipoDeCalculo=0;" value="Estatística Descritiva">
+                                <input type="button" name="bnt_Probabilidade" id="bnt_Probabilidade" onclick="tipoDeCalculo=1;" value="Probabilidade">
+                                <input type="button" name="bnt_Correlacao" id="bnt_Correlacao" onclick="tipoDeCalculo=2;" value="Correlação e Regressão">
+                            </div>
+                            <br>
+                            <div>
+                                <input type="radio" name="rad_Pesquisa" value="0" onclick="opcao=(this.value)" checked>População<br>
+                                <input type="radio" name="rad_Pesquisa" value="-1" onclick="opcao=(this.value)">Amostra<br>
+                            </div>
+                            <br>
+                            <div>
+                                <label for="nomeVariavel">Informe o nome da varável a ser pesquisada</label>
+                                <input type="text" value = 'Variável Pesquisada (xi)' name="nomeVariavel" id="nomeVariavel">
+                            </div>
+                            <br>
+                            <div>
+                                <label for="nomeDescricao">Informe o label da coluna de frequencia (este parametro é opcional)</label>
+                                <input type="text" name="nomeDescricao" value = 'Frequencia (fi)' id="nomeDescricao">
+                            </div>
+                            <br>
+                            <div>
+                                <label for="inputText">Digite os valores separados por espaço ou ;</label>
+                                <textarea  name="inputText" id="inputText" ></textarea>
+                            </div>
+                            <br>
+                            <div>
+                                <label for="inputFile">Importar arquivo:</label>
+                                <input type="file" name="inputFile" id="inputFile"  accept=".txt, .csv" onchange="tryLoad()">
+                            </div>
+                            <br>
+                            <div>
+                                <input type="button" name="bnt_initCalc" id="bnt_initCalc" onclick="initCalc()" value="initCalc">
+                            </div>
 
-                                <div id="tabela">
 
-                                </div>
 
-                                <br>
-                                <div class="form-group">
-                                    <label for="quartil">Escolha uma medida Separatriz:</label>
-                                    <select class="form-control col-md-2" id="cmb_separatirz" onchange="changeComboSeparatriz(this.value)">
-                                        <option value="4" >Quartil</option>
-                                        <option value="5" >Quintil</option>
-                                        <option value="10" >Decil</option>
-                                        <option value="100" >Percentil</option>
-                                        <option value="1000" >Personalizado</option>
-                                    </select>
-                                    <div class="slidecontainer">
-                                        <label id="lblMin">1</label>
-                                        <input type="button" value="-" id="btnSub" onclick="changeSlideValue(this.value)">
-                                        <input type="range" min="1" max="4" value="1" class="slider" id="slider" onchange="setSlideValue(this.value)" oninput="setSlideValue(this.value)"; >
-                                        <input type="button" value="+" id="btnAdd" onclick="changeSlideValue(this.value)">
-                                        <label id="lblMax">4</label><br>
-                                        <input type="text" id="txtPersonalizado" value="1" onkeyup="setValorPersonalizado(this.value)">
-                                        <input type="button" value="Calcular Separatriz" onclick="calculaS()" id="bntCalcularSeparatriz">
-                                    </div>
+                            <br>
+                            <div class="form-group">
+                                <label for="quartil">Escolha uma medida Separatriz:</label>
+                                <select class="form-control col-md-2" id="cmb_separatirz" onchange="changeComboSeparatriz(this.value)">
+                                    <option value="4" >Quartil</option>
+                                    <option value="5" >Quintil</option>
+                                    <option value="10" >Decil</option>
+                                    <option value="100" >Percentil</option>
+                                    <option value="1000" >Personalizado</option>
+                                </select>
+                                <div class="slidecontainer">
+                                    <label id="lblMin">1</label>
+                                    <input type="button" value="-" id="btnSub" onclick="changeSlideValue(this.value)">
+                                    <input type="range" min="1" max="4" value="1" class="slider" id="slider" onchange="setSlideValue(this.value)" oninput="setSlideValue(this.value)"; >
+                                    <input type="button" value="+" id="btnAdd" onclick="changeSlideValue(this.value)">
+                                    <label id="lblMax">4</label><br>
+                                    <input type="text" id="txtPersonalizado" value="1" onkeyup="setValorPersonalizado(this.value)">
+                                    <input type="button" value="Calcular Separatriz" onclick="calculaS()" id="bntCalcularSeparatriz">
                                 </div>
-                                <div>
-                                    <p id="separatriz"></p>
-                                </div>
-                                <div>
-                                    <p id="media"></p>
-                                </div>
-                                <div>
-                                    <p id="moda"></p>
-                                </div>
-                                <div>
-                                    <p id="mediana"></p>
-                                </div>
-                                <div>
-                                    <p id="dp"></p>
-                                </div>
-                                <div>
-                                    <p id="coeficienteVariacao"></p>
-                                </div>
-                                <div id="divGrafico">
+                            </div>
+                            <div>
+                                <p id="separatriz"></p>
+                            </div>
+                            <div>
+                                <p id="media"></p>
+                            </div>
+                            <div>
+                                <p id="moda"></p>
+                            </div>
+                            <div>
+                                <p id="mediana"></p>
+                            </div>
+                            <div>
+                                <p id="dp"></p>
+                            </div>
+                            <div>
+                                <p id="coeficienteVariacao"></p>
+                            </div>
 
-                                </div>
-                                <br>
-                        </div>
+                            <div id="tabela">
+
+                            </div>
+
+                            <div id="divGrafico">
+
+                            </div>
+                            <br>
                     </div>
                 </div>
             </div>
