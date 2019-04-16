@@ -601,6 +601,7 @@ function retornaModa(elementos, qtdElementos, varType, contagemElementosPorClass
             res.push("Série Amodal");
         }
     } else {
+        maior = contagemElementosPorClasse[0];
        for(let i=1;i<contagemElementosPorClasse.length;i++){ //checa se tem a mesma qtd de elementos em todo o vetor
             if (x != contagemElementosPorClasse[i]){
                 iguais = false;
