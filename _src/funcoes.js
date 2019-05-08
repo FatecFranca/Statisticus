@@ -683,10 +683,18 @@ function retornaDesvioPadrao(varType, elementos, qtdElementos, media, totalDeEle
     return res;
 }
 
-function retornaDesvioPadraoUniforme(PontoInicial, PontoFinal){
+function retornaDesvioPadraoUniforme(Variancia){
     let res = 0;
 
-    res = Math.sqrt((Math.pow(PontoFinal - PontoInicial, 2)))/12;
+    res = Math.sqrt(Variancia);
+
+    return res;
+}
+
+function retornaVariancia(PontoInicial, PontoFinal){
+    let res = 0;
+
+    res = (Math.pow(PontoFinal - PontoInicial, 2))/12;
 
     return res;
 }
@@ -697,9 +705,11 @@ function retornaProbabilidade(PontoInicial, PontoFinal,IntervaloUniformeInicial,
     let intervalo = 0;
 
     if(tipo == 1){
-        res = 1 / (PontoFinal-PontoInicial) * IntervaloUniformeInicial;
+        intervalo = PontoFinal - IntervaloUniformeInicial;
+        res = 1 / (PontoFinal-PontoInicial) * intervalo;
     } else if (tipo == -1) {
-        res = 1 / (PontoFinal-PontoInicial) * IntervaloUniformeInicial;
+        intervalo = IntervaloUniformeInicial - PontoInicial;
+        res = 1 / (PontoFinal-PontoInicial) * intervalo;
     } else {
         intervalo = IntervaloUniformeFinal - IntervaloUniformeInicial;
         res = 1 / (PontoFinal-PontoInicial) * intervalo;
@@ -754,6 +764,15 @@ function retornaTotalBinomial(arrEvento, sucesso, fracasso, tamanhoAmostra){
     return res.toFixed(6);
 }
 
+function exibeVariancia(Variancia){
+    let p= document.body.querySelector("#varianciaUniforme");
+    let res;
+
+    res = 'Variância= ' + Variancia.toFixed(2);
+
+    p.innerHTML = res;
+}
+
 function exibeDesvioPadraoUniforme(DesvioPadrao){
     let p= document.body.querySelector("#dpUniforme");
     let res;
@@ -773,8 +792,9 @@ function exibeProbabilidade(Probabilidade){
 }
 
 function validaValores(arrEvento, amostra){
-    for(let i =0; i <arrEvento.length ; i++){
-        if(arrEvento[i] > amostra){
+    let amostraNum = parseInt(amostra);
+    for(let i =0; i <= arrEvento.length ; i++){
+        if(arrEvento[i] > amostraNum){
             return false;
         }
     }
@@ -785,7 +805,7 @@ function exibeTotalBinomail(Total){
     let p= document.body.querySelector("#probalidadeBinomial");
     let res;
 
-    res = 'Total = ' + Total;
+    res = 'Total = ' + Total + '%';
 
     p.innerHTML = res;
 }

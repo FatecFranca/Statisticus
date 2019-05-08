@@ -5,7 +5,7 @@
         let tipoDeCalculo=0;
         let opcao=0;
         let opcaoProbabilidade=0;
-        let opcaoUniforme =0;
+        let opcaoUniforme =-1;
         let jaCalculado = false; //Controla se já foi executado algum calculo para poder apagar as tabelas geradas
         let temCopia = false; //Controla se tem copia dos dados da tabela quali
         let dadosGerais = new Object();
@@ -159,6 +159,9 @@
                             </div>
                             <div>
                                 <p id="dpUniforme"></p>
+                            </div>
+                            <div>
+                                <p id="varianciaUniforme"></p>
                             </div>
                             <div>
                                 <p id="mediaUniforme"></p>
@@ -356,9 +359,11 @@
                 dadosUniforme.PontoFinal = PontoFinal;
                 dadosUniforme.IntervaloUniformeInicial = IntervaloUniformeInicial;
                 dadosUniforme.IntervaloUniformeFinal= IntervaloUniformeFinal;
-                dadosUniforme.desvioPadrao = retornaDesvioPadraoUniforme(dadosUniforme.PontoInicial, dadosUniforme.PontoFinal);
+                dadosUniforme.variancia = retornaVariancia(dadosUniforme.PontoInicial, dadosUniforme.PontoFinal);
+                dadosUniforme.desvioPadrao = retornaDesvioPadraoUniforme(dadosUniforme.variancia);
                 dadosUniforme.media = retornaMedia('Uniforme',dadosUniforme.PontoInicial,0,0,dadosUniforme.PontoFinal,'',0);
                 dadosUniforme.probalidade = retornaProbabilidade(dadosUniforme.PontoInicial, dadosUniforme.PontoFinal, dadosUniforme.IntervaloUniformeInicial, dadosUniforme.IntervaloUniformeFinal,opcaoUniforme);
+                exibeVariancia(dadosUniforme.variancia);
                 exibeDesvioPadraoUniforme(dadosUniforme.desvioPadrao);
                 exibeMedia(dadosUniforme.media,'U');
                 exibeProbabilidade(dadosUniforme.probalidade);
