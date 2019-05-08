@@ -438,6 +438,8 @@ function retornaPontoMedio(varType, elementosIniciais, elementosFinais){
 function retornaMedia(varType, elementos, qtdElementos, pontoMedio, totalDeElementos, arr, contagem){
     let res=0;
     let soma=0;
+    let maior = 0
+    let menor = 0;
 
     if (varType=='Continua'){
         for(let i=0;i<pontoMedio.length;i++){
@@ -445,8 +447,12 @@ function retornaMedia(varType, elementos, qtdElementos, pontoMedio, totalDeEleme
             soma+=pontoMedio[i]*contagem[i];
         }
         res=soma/totalDeElementos;
-    }else if (varType=='Qualitativa'){
+    } else if (varType=='Qualitativa'){
         res = 'A média não existe!';
+    } else if (varType=='Uniforme') {
+        maior = totalDeElementos;
+        menor = elementos;
+        res = (parseInt(maior) + parseInt(menor)) /2;
     } else {
        for (let i=0;i<arr.length;i++){
            soma+=arr[i];
@@ -455,8 +461,14 @@ function retornaMedia(varType, elementos, qtdElementos, pontoMedio, totalDeEleme
     }
     return res;
 }
-function exibeMedia(media){
-    let p= document.body.querySelector("#media");
+function exibeMedia(media,tipo){
+    let p;
+    if(tipo=='D'){
+        p = document.body.querySelector("#media");
+    } else {
+        p = document.body.querySelector("#mediaUniforme");
+    }
+
     if (isNaN(media)){
         res=media;
     } else {
@@ -475,7 +487,7 @@ function retornaCoeficienteVariacao(desvioPadrao, media){
     return (desvioPadrao/media)*100;
 }
 
-function exiveCoeficienteVariacao(cf){
+function exibeCoeficienteVariacao(cf){
     let p= document.body.querySelector("#coeficienteVariacao");
     res=`Coeficiente de Variação = ${cf.toFixed(numCasasDecimaisMediaModaMediana)}%`;
     p.innerHTML = res;
@@ -669,4 +681,111 @@ function retornaDesvioPadrao(varType, elementos, qtdElementos, media, totalDeEle
     res=soma1/(totalDeElementos+parseInt(tipoDePesquisa));
     res=Math.sqrt(res);
     return res;
+}
+
+function retornaDesvioPadraoUniforme(PontoInicial, PontoFinal){
+    let res = 0;
+
+    res = Math.sqrt((Math.pow(PontoFinal - PontoInicial, 2)))/12;
+
+    return res;
+}
+
+function retornaProbabilidade(PontoInicial, PontoFinal,IntervaloUniformeInicial, IntervaloUniformeFinal,opcaoUniforme){
+    let res = 0;
+    let tipo = parseInt(opcaoUniforme);
+    let intervalo = 0;
+
+    if(tipo == 1){
+        res = 1 / (PontoFinal-PontoInicial) * IntervaloUniformeInicial;
+    } else if (tipo == -1) {
+        res = 1 / (PontoFinal-PontoInicial) * IntervaloUniformeInicial;
+    } else {
+        intervalo = IntervaloUniformeFinal - IntervaloUniformeInicial;
+        res = 1 / (PontoFinal-PontoInicial) * intervalo;
+    }
+    res = res * 100;
+    return res.toFixed(2);
+}
+
+function retornaTotalBinomial(arrEvento, sucesso, fracasso, tamanhoAmostra){
+    let porcentagemSucesso = parseInt(sucesso) / 100;
+    let porcentagemFracasso = parseInt(fracasso) / 100;
+    let tamanhoVetor = arrEvento.length;
+    let acmFatorial = 0;
+    let acmTamanhoAmostra;
+    let acmEvento;
+    let acmDiferencaEvento;
+    let res = 0;
+    let DiferencaEvento;
+
+    for(let i = 0; i<tamanhoVetor; i++){
+        acmFatorial = 0;
+        acmTamanhoAmostra = 1;
+        acmEvento = 1;
+        acmDiferencaEvento = 1;
+        DiferencaEvento = tamanhoAmostra - arrEvento[i];
+
+        for(j = tamanhoAmostra; j > 0; j--){
+            acmTamanhoAmostra *= j;
+        }
+
+        if(arrEvento[i] > 0){
+            for(k = arrEvento[i]; k > 0; k--){
+                acmEvento *= k;
+            }
+        } else{
+            acmEvento = 1;
+        }
+
+        if(DiferencaEvento > 0){
+            for(l = DiferencaEvento; l > 0; l--){
+                acmDiferencaEvento *= l;
+            }
+        } else{
+            acmDiferencaEvento = 1;
+        }
+
+        acmFatorial = acmTamanhoAmostra / (acmEvento * acmDiferencaEvento);
+
+        res +=  acmFatorial * Math.pow(porcentagemSucesso,arrEvento[i]) * Math.pow(porcentagemFracasso, tamanhoAmostra - arrEvento[i]);
+    }
+    res = res * 100;
+    return res.toFixed(6);
+}
+
+function exibeDesvioPadraoUniforme(DesvioPadrao){
+    let p= document.body.querySelector("#dpUniforme");
+    let res;
+
+    res = 'Desvio Padrao = ' + DesvioPadrao.toFixed(2);
+
+    p.innerHTML = res;
+}
+
+function exibeProbabilidade(Probabilidade){
+    let p= document.body.querySelector("#probabilidadeUniforme");
+    let res;
+
+    res = 'Probalidade = ' + Probabilidade + ' %';
+
+    p.innerHTML = res;
+}
+
+function validaValores(arrEvento, amostra){
+    for(let i =0; i <arrEvento.length ; i++){
+        if(arrEvento[i] > amostra){
+            return false;
+        }
+    }
+    return true;
+}
+
+function exibeTotalBinomail(Total){
+    let p= document.body.querySelector("#probalidadeBinomial");
+    let res;
+
+    res = 'Total = ' + Total;
+
+    p.innerHTML = res;
 }
