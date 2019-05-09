@@ -43,33 +43,23 @@ function retornaPorcentagemSeparatriz(medidaSeparatriz, valorDaSeparatriz ){
 }
 
 function calculaSeparatriz(varType, valorDaSeparatriz, medidaSeparatriz, totalDeElementos, frequenciaAcumulada, elementos,contagemElementosPorClasse, intervaloDeClasse, elementosIniciais ){
-
     let valorEmPorcentagem;
     let posicao;
 
     valorEmPorcentagem = retornaPorcentagemSeparatriz(medidaSeparatriz, valorDaSeparatriz);
 
-
-
     posicao=valorEmPorcentagem*totalDeElementos/100;
 
     if (varType!="Continua"){
-
-
         for(let i=0;i<frequenciaAcumulada.length;i++){
             if (posicao<=frequenciaAcumulada[i]){
                 return elementos[i];
                 break;
             }
         }
-
-
     } else {
-
         debugger;
         return calcMedianaOuSeparatrizContinua(posicao, frequenciaAcumulada, elementosIniciais, contagemElementosPorClasse, intervaloDeClasse);
-
-
     }
 }
 
@@ -99,10 +89,6 @@ function exibeSeparatriz(valor){
     p.innerHTML = res;
 }
 
-
-
-
-
 //Transfere a opção escolhida (amostra ou população) para a variável de controle
 function setaRadioOption(opcao){
     dadosGerais.tipoDePesquisa=parseInt(opcao);
@@ -123,7 +109,6 @@ function processaInput(res) {
             arr.splice(i,1);
         }
     }
-
 
     return arr;
 }
@@ -156,15 +141,7 @@ function checaSeTemLetras(arr) {
     }
     return temLetras;
 }
- /*
-            Função para verificar qual o tipo de variável
-            Qualitativa Nominal - Tipo = String, Ordenação = ???
-            Qualitativa Ordinal - Tipo = String, Ordenação = ???
-            Quantitativa Discreta - Tipo = Numérica, Ordenação = crescente
-            Quantitativa Continua - Tipo = Numérica, Ordenação = crescente
-            (Discreta: Pouca variedade(<= que 6) e muita repetição)
-            (Continua: Muita variedade(> 6) e pouca repetição)
-        */
+
 function verificaTipo(Vetor){
     let tipo = '';
     for(let i=0 ; i< Vetor.length; i++){
@@ -178,6 +155,7 @@ function verificaTipo(Vetor){
     }
     return tipo;
 }
+
 function verificaQuantitativa(Vetor){
     let arr = Vetor;
     let arrAux = [];
@@ -211,6 +189,7 @@ function verificaQuantitativa(Vetor){
 
     return tipoQuantitativa;
 }
+
 function retornaMaior(arr, tipo){
     let res;
     if (tipo=='Qualitativa'){
@@ -226,6 +205,7 @@ function retornaMaior(arr, tipo){
     }
     return res;
 }
+
 function retornaMenor(arr, tipo){
     let res;
     if (tipo=='Qualitativa'){
@@ -240,6 +220,7 @@ function retornaMenor(arr, tipo){
     }
     return res;
 }
+
 function calcAmplitude(maior, menor, tipo){
     let res;
     if (tipo!='Qualitativa'){
@@ -247,6 +228,7 @@ function calcAmplitude(maior, menor, tipo){
     }
     return res
 }
+
 function contaElementos(arr){
     elementos=[];
     contVet=[];
@@ -267,10 +249,12 @@ function contaElementos(arr){
     }
     return elementos;
 }
+
 function quantidadeElementos(arr, total){
 
     return contVet;
 }
+
 function calcFreqPerc(arr, total){
     freqPerc=[];
 
@@ -279,6 +263,7 @@ function calcFreqPerc(arr, total){
     }
     return freqPerc;
 }
+
 function calcTotalReal(arr){
     let res=0;
     for(let i=0;i<arr.length;i++){
@@ -286,6 +271,7 @@ function calcTotalReal(arr){
     }
     return res;
 }
+
 function calcFreqAcum(contVet){
     freqAcum=[];
     freqAcum.push(contVet[0]);
@@ -294,6 +280,7 @@ function calcFreqAcum(contVet){
     }
     return freqAcum;
 }
+
 function calcFreqAcumPerc(freq,qtd){
     freqAcumPerc=[];
     freqAcumPerc.push(freq[0]);
@@ -302,9 +289,11 @@ function calcFreqAcumPerc(freq,qtd){
     }
     return freqAcumPerc;
 }
+
 function calcK(arr){
     return Math.trunc(Math.sqrt(arr.length));
 }
+
 function intervaloClasse(amp,k,tam){
 
     r=[];
@@ -328,15 +317,18 @@ function intervaloClasse(amp,k,tam){
     } while (!flag);
     return r;
 }
+
 function arredondaTotal(num){
     return Math.round(num);
 }
+
 function trocaElementoDoArray(arr,pos1, pos2){
     let temp = arr[pos1];
     arr[pos1]=arr[pos2];
     arr[pos2]=temp;
     return arr;
 }
+
 function retornaElementosIniciaisDasClasses(elementos,intervalo,k){
     let res=[];
     for(let i=0;i<k;i++){
@@ -344,6 +336,7 @@ function retornaElementosIniciaisDasClasses(elementos,intervalo,k){
     }
     return res;
 }
+
 function retornaElementosFinaisDaClasse(elementosIniciais,intervalo,k){
     let res=[];
     for(let i=0;i<k;i++){
@@ -351,6 +344,7 @@ function retornaElementosFinaisDaClasse(elementosIniciais,intervalo,k){
     }
     return res;
 }
+
 function contaPorClasse(arr, elementosIniciais, elementosFinais){
     let res=[];
     for (let i=0; i<elementosIniciais.length; i++){
@@ -365,7 +359,6 @@ function contaPorClasse(arr, elementosIniciais, elementosFinais){
     }
     return res;
 }
-
 
 function desenhaTabela(arr,varType,varName,varDescription,elementos,contVet,freqPerc,fqA,fqAcP,total,totalPercentagem, k, elementosIniciais, elementosFinais, intervaloDeClasse, elementosPorClasse){
 
@@ -420,9 +413,6 @@ function desenhaTabela(arr,varType,varName,varDescription,elementos,contVet,freq
     } else {
         tr.innerHTML=`<td>Total:</td><td>Tam. Intervalo: ${intervaloDeClasse}</td><td>${total}</td><td>${totalPercentagem}%</td>`;
     }
-
-
-
 }
 
 function retornaPontoMedio(varType, elementosIniciais, elementosFinais){
@@ -435,6 +425,7 @@ function retornaPontoMedio(varType, elementosIniciais, elementosFinais){
     }
     return pontoMedio;
 }
+
 function retornaMedia(varType, elementos, qtdElementos, pontoMedio, totalDeElementos, arr, contagem){
     let res=0;
     let soma=0;
@@ -461,6 +452,7 @@ function retornaMedia(varType, elementos, qtdElementos, pontoMedio, totalDeEleme
     }
     return res;
 }
+
 function exibeMedia(media,tipo){
     let p;
     if(tipo=='D'){
@@ -493,8 +485,6 @@ function exibeCoeficienteVariacao(cf){
     p.innerHTML = res;
 }
 
-
-
 function destroiTabela(){
     let temp = document.querySelector("#tabelaQualitativa");
     if (temp==null){
@@ -513,8 +503,6 @@ function destroiGrafico(){
 }
 
 function retornaMediana(varType, limitesIniciais, totalDeElementos, frequenciaAcumulada, contagemElementosPorClasse, intervaloDeClasse, arr, qtdElementos, elementos){
-
-
     let pos = 50*totalDeElementos/100;;
     let posArr = Math.round(pos);
     let limInferiorClasse;
@@ -764,6 +752,87 @@ function retornaTotalBinomial(arrEvento, sucesso, fracasso, tamanhoAmostra){
     return res.toFixed(6);
 }
 
+function retornaTotalBinomial2(Evento, sucesso, fracasso, tamanhoAmostra, opcao){
+    let porcentagemSucesso = parseInt(sucesso) / 100;
+    let porcentagemFracasso = parseInt(fracasso) / 100;
+    let acmFatorial = 0;
+    let acmTamanhoAmostra;
+    let acmEvento;
+    let acmDiferencaEvento;
+    let res = 0;
+    let DiferencaEvento;
+    let inicio = 0;
+    let final = 0;
+
+    if(Evento != 0){
+        if(opcao == 1){
+            inicio = parseInt(Evento) + 1;
+            final = parseInt(tamanhoAmostra) + 1;
+
+        } else if(opcao == -1){
+            final = Evento;
+        } else {
+            final = parseInt(tamanhoAmostra)
+            inicio = parseInt(final) - 1
+        }
+
+        for(let i = inicio; i < final; i++){
+            acmFatorial = 0;
+            acmTamanhoAmostra = 1;
+            acmEvento = 1;
+            acmDiferencaEvento = 1;
+            DiferencaEvento = tamanhoAmostra - i;
+
+            for(j = tamanhoAmostra; j > 0; j--){
+                acmTamanhoAmostra *= j;
+            }
+
+            if(i > 0){
+                if (opcao == 0){
+                    for(k = Evento; k > 0; k--){
+                        acmEvento *= k;
+                    }
+                } else{
+                    for(k = i; k > 0; k--){
+                        acmEvento *= k;
+                    }
+                }
+            } else{
+                acmEvento = 1;
+            }
+
+            if(DiferencaEvento > 0){
+                for(l = DiferencaEvento; l > 0; l--){
+                    acmDiferencaEvento *= l;
+                }
+            } else{
+                acmDiferencaEvento = 1;
+            }
+
+            acmFatorial = acmTamanhoAmostra / (acmEvento * acmDiferencaEvento);
+
+            res +=  acmFatorial * Math.pow(porcentagemSucesso,i) * Math.pow(porcentagemFracasso, tamanhoAmostra - i);
+        }
+    } else {
+        res =  1 * Math.pow(porcentagemSucesso,0) * Math.pow(porcentagemFracasso, tamanhoAmostra - 0);
+    }
+
+    res = res * 100;
+    return res.toFixed(6);
+}
+
+function retornaMediaBinomial(tamanhoAmostra, sucesso){
+    let res = 0;
+    res = tamanhoAmostra * sucesso;
+    return res;
+}
+
+function retornaDesvioPadraoBinomial(tamanhoAmostra, sucesso, fracasso){
+    let res = 0
+    res = Math.sqrt(tamanhoAmostra * sucesso * fracasso);
+    return res;
+}
+
 function exibeVariancia(Variancia){
     let p= document.body.querySelector("#varianciaUniforme");
     let res;
@@ -805,7 +874,34 @@ function exibeTotalBinomail(Total){
     let p= document.body.querySelector("#probalidadeBinomial");
     let res;
 
-    res = 'Total = ' + Total + '%';
+    res = 'Probabilidade = ' + Total + '%';
+
+    p.innerHTML = res;
+}
+
+function exibeTotalBinomail2(Total){
+    let p= document.body.querySelector("#probalidadeBinomial2");
+    let res;
+
+    res = 'Probabilidade = ' + Total + '%';
+
+    p.innerHTML = res;
+}
+
+function exibeMediaBinomial(Total){
+    let p= document.body.querySelector("#mediaBinomial");
+    let res;
+
+    res = 'Média = ' + Total + '%';
+
+    p.innerHTML = res;
+}
+
+function exibeDesvioPadraoBinomial(Total){
+    let p= document.body.querySelector("#desvioPadraoBinomial");
+    let res;
+
+    res = 'Desvio Padrão = ' + Total + '%';
 
     p.innerHTML = res;
 }

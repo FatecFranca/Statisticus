@@ -6,6 +6,7 @@
         let opcao=0;
         let opcaoProbabilidade=0;
         let opcaoUniforme =-1;
+        let opcaoBinomial2 =-1;
         let jaCalculado = false; //Controla se já foi executado algum calculo para poder apagar as tabelas geradas
         let temCopia = false; //Controla se tem copia dos dados da tabela quali
         let dadosGerais = new Object();
@@ -188,11 +189,27 @@
                                 <input type="text" name="Fracasso" id="fracasso">%
                             </div>
                             <div>
+                                <input type="radio" name="rad_uniforme" value="-1" onclick="opcaoBinomial2=(this.value)" checked>Menor que<br>
+                                <input type="radio" name="rad_uniforme" value="1" onclick="opcaoBinomial2=(this.value)">Maior que<br>
+                                <input type="radio" name="rad_uniforme" value="0" onclick="opcaoBinomial2=(this.value)">Exatamente<br>
+                                <label for="binomial">Evento </label>
+                                <input type="text" name="binomial" id="binomial">
+                            </div>
+                            <div>
                                 <label for="inputTextEvento">Digite os valores dos eventos separados por espaço ou ;</label>
                                 <textarea  name="inputTextEvento" id="inputTextEvento" ></textarea>
                             </div>
                             <div>
                                 <p id="probalidadeBinomial"></p>
+                            </div>
+                            <div>
+                                <p id="probalidadeBinomial2"></p>
+                            </div>
+                            <div>
+                                <p id="mediaBinomial"></p>
+                            </div>
+                            <div>
+                                <p id="desvioPadraoBinomial"></p>
                             </div>
                             <div>
                                 <input type="button" name="bnt_initCalc2" id="bnt_initCalc2" onclick="CalcularBinomial()" value="Calcular">
@@ -229,7 +246,6 @@
                     reader.readAsText(file);
                 } else {
                     alert("Arquivo inválido!");
-
                 }
             }
         };
@@ -376,6 +392,7 @@
             let evento = document.querySelector("#inputTextEvento").value;
             let sucesso = document.querySelector("#sucesso").value;
             let fracasso = document.querySelector("#fracasso").value;
+            let evento2 = document.querySelector("#binomial").value;
             let passouBinomial = true;
 
             if(tamanhoAmostra.value == ""){
@@ -408,14 +425,23 @@
                 dadosBinomial.tamanhoAmostra = tamanhoAmostra;
                 dadosBinomial.sucesso = sucesso;
                 dadosBinomial.fracasso = fracasso;
+                dadosBinomial.evento = evento;
+                dadosBinomial.evento2 = evento2;
                 dadosBinomial.arrEvento = processaInput(inputTextEvento.value);
                 dadosBinomial.arrEvento = ordenaVetor(dadosBinomial.arrEvento);
                 dadosBinomial.valida = validaValores(dadosBinomial.arrEvento,dadosBinomial.tamanhoAmostra);
                 if(dadosBinomial.valida == false){
                     alert("Os valores do evento estao invalidos");
                 } else{
+                    debugger;
+                    dadosBinomial.total2 = retornaTotalBinomial2(dadosBinomial.evento2, dadosBinomial.sucesso, dadosBinomial.fracasso, dadosBinomial.tamanhoAmostra, opcaoBinomial2);
                     dadosBinomial.total = retornaTotalBinomial(dadosBinomial.arrEvento, dadosBinomial.sucesso, dadosBinomial.fracasso, dadosBinomial.tamanhoAmostra);
+                    dadosBinomial.desvioPadrao = retornaDesvioPadraoBinomial(dadosBinomial.tamanhoAmostra, dadosBinomial.sucesso, dadosBinomial.fracasso)
+                    dadosBinomial.media = retornaMediaBinomial(dadosBinomial.tamanhoAmostra, dadosBinomial.sucesso)
+                    exibeDesvioPadraoBinomial(dadosBinomial.desvioPadrao);
+                    exibeMediaBinomial(dadosBinomial.media);
                     exibeTotalBinomail(dadosBinomial.total);
+                    exibeTotalBinomail2(dadosBinomial.total2);
                 }
 
             }
