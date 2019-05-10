@@ -196,14 +196,7 @@
                                 <input type="text" name="binomial" id="binomial">
                             </div>
                             <div>
-                                <label for="inputTextEvento">Digite os valores dos eventos separados por espaço ou ;</label>
-                                <textarea  name="inputTextEvento" id="inputTextEvento" ></textarea>
-                            </div>
-                            <div>
                                 <p id="probalidadeBinomial"></p>
-                            </div>
-                            <div>
-                                <p id="probalidadeBinomial2"></p>
                             </div>
                             <div>
                                 <p id="mediaBinomial"></p>
@@ -389,10 +382,9 @@
 
         function CalcularBinomial(){
             let tamanhoAmostra = document.querySelector("#tamanhoAmostra").value;
-            let evento = document.querySelector("#inputTextEvento").value;
             let sucesso = document.querySelector("#sucesso").value;
             let fracasso = document.querySelector("#fracasso").value;
-            let evento2 = document.querySelector("#binomial").value;
+            let evento = document.querySelector("#binomial").value;
             let passouBinomial = true;
 
             if(tamanhoAmostra.value == ""){
@@ -426,22 +418,16 @@
                 dadosBinomial.sucesso = sucesso;
                 dadosBinomial.fracasso = fracasso;
                 dadosBinomial.evento = evento;
-                dadosBinomial.evento2 = evento2;
-                dadosBinomial.arrEvento = processaInput(inputTextEvento.value);
-                dadosBinomial.arrEvento = ordenaVetor(dadosBinomial.arrEvento);
-                dadosBinomial.valida = validaValores(dadosBinomial.arrEvento,dadosBinomial.tamanhoAmostra);
+                dadosBinomial.valida = validaValores(dadosBinomial.Evento,dadosBinomial.tamanhoAmostra);
                 if(dadosBinomial.valida == false){
-                    alert("Os valores do evento estao invalidos");
+                    alert("Os valores do evento estao inválidos");
                 } else{
-                    debugger;
-                    dadosBinomial.total2 = retornaTotalBinomial2(dadosBinomial.evento2, dadosBinomial.sucesso, dadosBinomial.fracasso, dadosBinomial.tamanhoAmostra, opcaoBinomial2);
-                    dadosBinomial.total = retornaTotalBinomial(dadosBinomial.arrEvento, dadosBinomial.sucesso, dadosBinomial.fracasso, dadosBinomial.tamanhoAmostra);
+                    dadosBinomial.total = retornaTotalBinomial(dadosBinomial.evento, dadosBinomial.sucesso, dadosBinomial.fracasso, dadosBinomial.tamanhoAmostra, opcaoBinomial2);
                     dadosBinomial.desvioPadrao = retornaDesvioPadraoBinomial(dadosBinomial.tamanhoAmostra, dadosBinomial.sucesso, dadosBinomial.fracasso)
                     dadosBinomial.media = retornaMediaBinomial(dadosBinomial.tamanhoAmostra, dadosBinomial.sucesso)
                     exibeDesvioPadraoBinomial(dadosBinomial.desvioPadrao);
                     exibeMediaBinomial(dadosBinomial.media);
                     exibeTotalBinomail(dadosBinomial.total);
-                    exibeTotalBinomail2(dadosBinomial.total2);
                 }
 
             }

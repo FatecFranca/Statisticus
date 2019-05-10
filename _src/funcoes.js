@@ -706,53 +706,7 @@ function retornaProbabilidade(PontoInicial, PontoFinal,IntervaloUniformeInicial,
     return res.toFixed(2);
 }
 
-function retornaTotalBinomial(arrEvento, sucesso, fracasso, tamanhoAmostra){
-    let porcentagemSucesso = parseInt(sucesso) / 100;
-    let porcentagemFracasso = parseInt(fracasso) / 100;
-    let tamanhoVetor = arrEvento.length;
-    let acmFatorial = 0;
-    let acmTamanhoAmostra;
-    let acmEvento;
-    let acmDiferencaEvento;
-    let res = 0;
-    let DiferencaEvento;
-
-    for(let i = 0; i<tamanhoVetor; i++){
-        acmFatorial = 0;
-        acmTamanhoAmostra = 1;
-        acmEvento = 1;
-        acmDiferencaEvento = 1;
-        DiferencaEvento = tamanhoAmostra - arrEvento[i];
-
-        for(j = tamanhoAmostra; j > 0; j--){
-            acmTamanhoAmostra *= j;
-        }
-
-        if(arrEvento[i] > 0){
-            for(k = arrEvento[i]; k > 0; k--){
-                acmEvento *= k;
-            }
-        } else{
-            acmEvento = 1;
-        }
-
-        if(DiferencaEvento > 0){
-            for(l = DiferencaEvento; l > 0; l--){
-                acmDiferencaEvento *= l;
-            }
-        } else{
-            acmDiferencaEvento = 1;
-        }
-
-        acmFatorial = acmTamanhoAmostra / (acmEvento * acmDiferencaEvento);
-
-        res +=  acmFatorial * Math.pow(porcentagemSucesso,arrEvento[i]) * Math.pow(porcentagemFracasso, tamanhoAmostra - arrEvento[i]);
-    }
-    res = res * 100;
-    return res.toFixed(6);
-}
-
-function retornaTotalBinomial2(Evento, sucesso, fracasso, tamanhoAmostra, opcao){
+function retornaTotalBinomial(Evento, sucesso, fracasso, tamanhoAmostra, opcao){
     let porcentagemSucesso = parseInt(sucesso) / 100;
     let porcentagemFracasso = parseInt(fracasso) / 100;
     let acmFatorial = 0;
@@ -772,8 +726,8 @@ function retornaTotalBinomial2(Evento, sucesso, fracasso, tamanhoAmostra, opcao)
         } else if(opcao == -1){
             final = Evento;
         } else {
-            final = parseInt(tamanhoAmostra)
-            inicio = parseInt(final) - 1
+            inicio = Evento
+            final = parseInt(inicio) + 1;
         }
 
         for(let i = inicio; i < final; i++){
@@ -781,7 +735,12 @@ function retornaTotalBinomial2(Evento, sucesso, fracasso, tamanhoAmostra, opcao)
             acmTamanhoAmostra = 1;
             acmEvento = 1;
             acmDiferencaEvento = 1;
-            DiferencaEvento = tamanhoAmostra - i;
+            if(opcao == 0){
+                DiferencaEvento = tamanhoAmostra - Evento;
+            } else{
+                DiferencaEvento = tamanhoAmostra - i;
+            }
+
 
             for(j = tamanhoAmostra; j > 0; j--){
                 acmTamanhoAmostra *= j;
@@ -860,27 +819,16 @@ function exibeProbabilidade(Probabilidade){
     p.innerHTML = res;
 }
 
-function validaValores(arrEvento, amostra){
+function validaValores(Evento, amostra){
     let amostraNum = parseInt(amostra);
-    for(let i =0; i <= arrEvento.length ; i++){
-        if(arrEvento[i] > amostraNum){
-            return false;
-        }
+    if(Evento > amostraNum){
+        return false;
     }
     return true;
 }
 
 function exibeTotalBinomail(Total){
     let p= document.body.querySelector("#probalidadeBinomial");
-    let res;
-
-    res = 'Probabilidade = ' + Total + '%';
-
-    p.innerHTML = res;
-}
-
-function exibeTotalBinomail2(Total){
-    let p= document.body.querySelector("#probalidadeBinomial2");
     let res;
 
     res = 'Probabilidade = ' + Total + '%';
