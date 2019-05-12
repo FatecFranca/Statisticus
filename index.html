@@ -7,6 +7,7 @@
         let opcaoProbabilidade=0;
         let opcaoUniforme =-1;
         let opcaoBinomial2 =-1;
+        let opcaoNormal =0;
         let jaCalculado = false; //Controla se já foi executado algum calculo para poder apagar as tabelas geradas
         let temCopia = false; //Controla se tem copia dos dados da tabela quali
         let dadosGerais = new Object();
@@ -24,6 +25,7 @@
         <script src="js/bootstrap.min.js"></script>
         <script src="https://www.gstatic.com/charts/loader.js"></script>
         <script src="_src/funcoes.js"></script>
+        <script src="_src/distNormal.js"></script>
         <style>
 
             table,tr,td, th {
@@ -87,7 +89,6 @@
                         <div>
                             <input type="button" name="bnt_initCalc" id="bnt_initCalc" onclick="initCalc()" value="initCalc">
                         </div>
-
                         <br>
                         <div class="form-group">
                             <label for="quartil">Escolha uma medida Separatriz:</label>
@@ -126,13 +127,9 @@
                         <div>
                             <p id="coeficienteVariacao"></p>
                         </div>
-
                         <div id="tabela">
-
                         </div>
-
                         <div id="divGrafico">
-
                         </div>
                         <div class="card card-body">
                             <div>
@@ -207,7 +204,38 @@
                             <div>
                                 <input type="button" name="bnt_initCalc2" id="bnt_initCalc2" onclick="CalcularBinomial()" value="Calcular">
                             </div>
-                        <div>
+                            <br>
+                            <br>
+                            <p>Distribuição Normal</p>
+                            <div>
+                                <label for="txtMedia">Média</label>
+                                <input type="text" name="txtMedia" id="txtMedia">
+                            </div>
+                            <div>
+                                <label for="txtDesvioPadrao">Desvio Padrão</label>
+                                <input type="text" name="txtDesvioPadrao" id="txtDesvioPadrao">
+                            </div>
+                            <div>
+                                <input type="radio" name="rad_normal" value="0" onclick="validaNormal(this.value)" checked><b>Menor </b>que<br>
+                                <input type="radio" name="rad_normal" value="1" onclick="validaNormal(this.value)"><b>Maior </b>que<br>
+                                <input type="radio" name="rad_normal" value="2" onclick="validaNormal(this.value)"><b>Entre</b><br>
+                            </div>
+                            <div>
+                                <label for="txtValIni">Valor </label>
+                                <input type="text" name="txtValIni" id="txtValIni">
+                            </div>
+                            <div>
+                                <label for="txtValFin" name="lblValFim" id="lblValFim" style="display:none;">Valor Final </label>
+                                <input type="text" name="txtValFin" id="txtValFin" style="display:none;">
+                            </div>
+                            <br>
+                            <div>
+                                <p id="distribuicaoNormal"></p>
+                            </div>
+                            <div>
+                                <input type="button" name="bnt_initCalc3" id="bnt_initCalc3" onclick="preparaCalculoProbabilidadeNormal()" value="Calcular">
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -568,6 +596,18 @@
                 showDebug();
             }
         }
+
+        function preparaCalculoProbabilidadeNormal(){
+
+            let media=parseFloat(document.querySelector("#txtMedia").value.replace(",","."));
+            let desvioPad = parseFloat(document.querySelector("#txtDesvioPadrao").value.replace(",","."));
+            let valorInicial = parseFloat(document.querySelector("#txtValIni").value.replace(",","."));
+            let valorFinal = parseFloat(document.querySelector("#txtValFin").value.replace(",","."));
+            let res = calcularNormal(media, desvioPad, valorInicial, valorFinal);
+
+            document.querySelector('#distribuicaoNormal').innerHTML ='A probabilidade é de ' + (parseFloat(res)*100).toFixed(2) + '%';
+        }
+
     </script>
 </html>
 
