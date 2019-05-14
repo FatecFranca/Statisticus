@@ -604,7 +604,6 @@
             let valorInicial = parseFloat(document.querySelector("#txtValIni").value.replace(",","."));
             let valorFinal = parseFloat(document.querySelector("#txtValFin").value.replace(",","."));
             let res = calcularNormal(media, desvioPad, valorInicial, valorFinal);
-
             document.querySelector('#distribuicaoNormal').innerHTML ='A probabilidade é de ' + (parseFloat(res)*100).toFixed(2) + '%';
         }
 

@@ -13,6 +13,7 @@ function calcularNormal(media, desvioPad, valorInicial, valorFinal){
         negIni=true;
         zInicial*=-1;
     }
+
     zInicial = zInicial.toFixed(2);
     zInicial = zInicial.substr(0,1) + zInicial.substr(2,2);
     let areaInicial = retornaArea(zInicial);
@@ -83,6 +84,8 @@ function retornaZ(x, media, dp){
     media=parseFloat(media);
     dp=parseFloat(dp);
     res = ((x-media)/dp);
+    if (res>=4) {res=3.9;}
+    if (res<=-4) {res=-3.9;}
     return res;
 }
 
