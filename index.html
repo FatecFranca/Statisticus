@@ -215,6 +215,10 @@
                                 <label for="txtDesvioPadrao">Desvio Padrão</label>
                                 <input type="text" name="txtDesvioPadrao" id="txtDesvioPadrao">
                             </div>
+                             <div>
+                                <label for="txtVariancia">Variancia</label>
+                                <input type="text" name="txtVariancia" id="txtVariancia" onchange="preencheDesvioPelaVariancia(this.value)">
+                            </div>
                             <div>
                                 <input type="radio" name="rad_normal" value="0" onclick="validaNormal(this.value)" checked><b>Menor </b>que<br>
                                 <input type="radio" name="rad_normal" value="1" onclick="validaNormal(this.value)"><b>Maior </b>que<br>
@@ -598,13 +602,16 @@
         }
 
         function preparaCalculoProbabilidadeNormal(){
-
             let media=parseFloat(document.querySelector("#txtMedia").value.replace(",","."));
             let desvioPad = parseFloat(document.querySelector("#txtDesvioPadrao").value.replace(",","."));
             let valorInicial = parseFloat(document.querySelector("#txtValIni").value.replace(",","."));
             let valorFinal = parseFloat(document.querySelector("#txtValFin").value.replace(",","."));
             let res = calcularNormal(media, desvioPad, valorInicial, valorFinal);
             document.querySelector('#distribuicaoNormal').innerHTML ='A probabilidade é de ' + (parseFloat(res)*100).toFixed(2) + '%';
+        }
+
+        function preencheDesvioPelaVariancia(x){
+            document.querySelector("#txtDesvioPadrao").value = Math.sqrt(parseFloat(x));
         }
 
     </script>
