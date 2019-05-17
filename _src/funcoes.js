@@ -781,14 +781,20 @@ function retornaTotalBinomial(Evento, sucesso, fracasso, tamanhoAmostra, opcao){
 }
 
 function retornaMediaBinomial(tamanhoAmostra, sucesso){
+    let porcentagemSucesso = parseInt(sucesso) / 100;
+    let porcentagemFracasso = parseInt(fracasso) / 100;
     let res = 0;
-    res = tamanhoAmostra * sucesso;
+
+    res = tamanhoAmostra * porcentagemSucesso;
     return res;
 }
 
 function retornaDesvioPadraoBinomial(tamanhoAmostra, sucesso, fracasso){
-    let res = 0
-    res = Math.sqrt(tamanhoAmostra * sucesso * fracasso);
+    let porcentagemSucesso = parseInt(sucesso) / 100;
+    let porcentagemFracasso = parseInt(fracasso) / 100;
+    let res = 0;
+
+    res = Math.sqrt(tamanhoAmostra * porcentagemSucesso * porcentagemFracasso);
     return res;
 }
 
@@ -840,7 +846,7 @@ function exibeMediaBinomial(Total){
     let p= document.body.querySelector("#mediaBinomial");
     let res;
 
-    res = 'Média = ' + Total + '%';
+    res = 'Média = ' + Total;
 
     p.innerHTML = res;
 }
@@ -849,7 +855,7 @@ function exibeDesvioPadraoBinomial(Total){
     let p= document.body.querySelector("#desvioPadraoBinomial");
     let res;
 
-    res = 'Desvio Padrão = ' + Total + '%';
+    res = 'Desvio Padrão = ' + Total;
 
     p.innerHTML = res;
 }
