@@ -13,6 +13,9 @@
         let dadosGerais = new Object();
         let dadosUniforme = new Object();
         let dadosBinomial = new Object();
+        let jaCalculadoCorrelacao = false;
+        let correlacaoImportada = false;
+        let dadosCorrelacao = new Object();
 
     </script>
     <head>
@@ -26,6 +29,7 @@
         <script src="https://www.gstatic.com/charts/loader.js"></script>
         <script src="_src/funcoes.js"></script>
         <script src="_src/distNormal.js"></script>
+        <script src="_src/correlaco.js"></script>
         <style>
 
             table,tr,td, th {
@@ -54,12 +58,12 @@
         <div class="container">
             <div class="row">
                 <div class="col-12">
+                    <div>
+                        <input type="button" name="bnt_Descritiva" id="bnt_Descritiva" onclick="tipoDeCalculo=0;" value="Estatística Descritiva">
+                        <input type="button" name="bnt_Probabilidade" id="bnt_Probabilidade" onclick="tipoDeCalculo=1;" value="Probabilidade">
+                        <input type="button" name="bnt_Correlacao" id="bnt_Correlacao" onclick="tipoDeCalculo=2;" value="Correlação e Regressão">
+                    </div>
                     <div class="card card-body">
-                        <div>
-                            <input type="button" name="bnt_Descritiva" id="bnt_Descritiva" onclick="tipoDeCalculo=0;" value="Estatística Descritiva">
-                            <input type="button" name="bnt_Probabilidade" id="bnt_Probabilidade" onclick="tipoDeCalculo=1;" value="Probabilidade">
-                            <input type="button" name="bnt_Correlacao" id="bnt_Correlacao" onclick="tipoDeCalculo=2;" value="Correlação e Regressão">
-                        </div>
                         <br>
                         <div>
                             <input type="radio" name="rad_Pesquisa" value="0" onclick="opcao=(this.value)" checked>População<br>
@@ -83,11 +87,11 @@
                         <br>
                         <div>
                             <label for="inputFile">Importar arquivo:</label>
-                            <input type="file" name="inputFile" id="inputFile"  accept=".txt, .csv" onchange="tryLoad()">
+                            <input type="file" name="inputFile" id="inputFile"  accept=".txt, .csv" onchange="tryLoad(1)">
                         </div>
                         <br>
                         <div>
-                            <input type="button" name="bnt_initCalc" id="bnt_initCalc" onclick="initCalc()" value="initCalc">
+                            <input type="button" name="bnt_initCalc" id="bnt_initCalc" onclick="initCalc()" value="Calcular">
                         </div>
                         <br>
                         <div class="form-group">
@@ -128,9 +132,13 @@
                             <p id="coeficienteVariacao"></p>
                         </div>
                         <div id="tabela">
+
                         </div>
                         <div id="divGrafico">
+
                         </div>
+                    </div>
+                    <div class="card card-body">
                         <div class="card card-body">
                             <div>
                                 <input class="radio-inline" type="radio" name="uniforme" value="0" onclick="opcaoProbabilidade=(this.value)" checked>Uniforme<br>
@@ -241,6 +249,43 @@
                             </div>
                         </div>
                     </div>
+                    <div class="card card-body">
+                        <div>
+                            <label for="txtVarIndependente">Informe o nome da variável independente (x<sub>i</sub>)</label>
+                            <input type="text" value = 'Independente (xi)' name="txtVarIndependente" id="txtVarIndependente">
+                        </div>
+                        <br>
+                        <div>
+                            <label for="txtVarDependente">Informe o nome da variável dependente (y<sub>i</sub>)</label>
+                            <input type="text" name="txtVarDependente" value = 'Dependente (yi)' id="txtVarDependente">
+                        </div>
+                        <br>
+                        <div>
+                            <label for="inputText">Digite os valores da variável independente separados por espaço ou ;</label>
+                            <textarea  name="txtValoresIndependente" id="txtValoresIndependente" ></textarea>
+                        </div>
+                        <div>
+                            <label for="inputText">Digite os valores da variável dependente separados por espaço ou ;</label>
+                            <textarea  name="txtValoresDependente" id="txtValoresDependente" ></textarea>
+                        </div>
+                        <br>
+                        <div>
+                            <textarea  name="txtEscondido" id="txtEscondido" style="display: none;"></textarea>
+                        </div>
+                        <div>
+                                <p id="fatorCorrelacao"></p>
+                        </div>
+                        <br>
+                        <div>
+                            <label for="inputFile2">Importar arquivo:</label>
+                            <input type="file" name="inputFile2" id="inputFile2"  accept=".txt, .csv" onchange="tryLoad(2)">
+                        </div>
+                        <br>
+                        <div>
+                            <input type="button" name="bntCalcCorrelacao" id="bntCalcCorrelacao" onclick="calcCorrelacao()" value="Calcular">
+                        </div>
+                        <br>
+                    </div>
                 </div>
             </div>
         </div>
@@ -252,19 +297,35 @@
         iniciaControlesSeparatriz();
 
         //Função tryLoad é responsável por importar o arquivo
-        function tryLoad(){
+        function tryLoad(x){
+            let file;
+
             let reader = new FileReader();
             reader.addEventListener('load', function() {
                 let res = this.result;
-                document.querySelector("#inputText").value=res;
-                imported=true;
+
+                if (x!=2){
+                    document.querySelector("#inputText").value=res;
+                    imported=true;
+                } else {
+                    document.querySelector("#txtEscondido").value=res;
+                    correlacaoImportada=true;
+                    calcCorrelacao();
+                }
+
+
             });
             reader.addEventListener('error', function() {
                 dadosGerais.arr=[];
                 imported=false;
+                correlacaoImportada=false;
             });
-            let file = document.querySelector('#inputFile').files[0];
-           // alert(file.name);
+            if (x!=2){
+                file = document.querySelector('#inputFile').files[0];
+            } else {
+                file = document.querySelector('#inputFile2').files[0];
+            }
+
             if (file!=undefined){
                 let ext = file.name.split('.').pop();
                 if (ext =='txt' || ext=='csv') {
@@ -566,9 +627,9 @@
         //Exibe as informações de debug
         function showDebug(){
             console.clear();
-            for (let i in dadosGerais) {
-                if (dadosGerais.hasOwnProperty(i)) {
-                    console.log("dadosGerais." + i + " = " + dadosGerais[i]);
+            for (let i in dadosCorrelacao) {
+                if (dadosCorrelacao.hasOwnProperty(i)) {
+                    console.log("dadosCorrelação." + i + " = " + dadosCorrelacao[i]);
                 }
             }
         }
@@ -612,6 +673,61 @@
 
         function preencheDesvioPelaVariancia(x){
             document.querySelector("#txtDesvioPadrao").value = Math.sqrt(parseFloat(x));
+        }
+
+        function calcCorrelacao(){
+
+            let inptText = document.querySelector("#txtEscondido");
+            let inptIndependente = document.querySelector("#txtValoresIndependente");
+            let inptDependente = document.querySelector("#txtValoresDependente");
+
+            if (!correlacaoImportada){
+
+                inptText.value = inptIndependente.value + " " + inptDependente.value;
+            }
+
+            if (inptText.value=="" || inptText.value==" "){
+                alert("Você deve informar 1 ou mais valores antes de continuar!");
+                return false;
+            }
+
+            dadosCorrelacao = new Object();
+            dadosCorrelacao.arr = [];
+            dadosCorrelacao.arr = processaInput(inptText.value);
+            if (checaSeTemLetras(dadosCorrelacao.arr)==false){dadosCorrelacao.arr=converteEmNumeros(dadosCorrelacao.arr);}
+
+            if (dadosCorrelacao.arr.length%2!=0){
+                alert ("Erro! As variáveis devem possuir o mesmo número de elementos!");
+                inptText.value="";
+                return false;
+            }
+            dadosCorrelacao.tamanhoArr = dadosCorrelacao.arr.length;
+            if (dadosCorrelacao.tamanhoArr<4) {
+                alert ("Erro! É necessário que cada variável possua pelo menos dois elementos!");
+                inptText.value="";
+                return false;
+            }
+            dadosCorrelacao.pontoDeDivisao = (dadosCorrelacao.tamanhoArr / 2);
+            dadosCorrelacao.x = retornaVarArr(dadosCorrelacao.arr, 0, dadosCorrelacao.pontoDeDivisao);
+            dadosCorrelacao.y = retornaVarArr(dadosCorrelacao.arr, dadosCorrelacao.pontoDeDivisao, dadosCorrelacao.tamanhoArr);
+            inptIndependente.value = retornaTexto(dadosCorrelacao.x);
+            inptDependente.value   = retornaTexto(dadosCorrelacao.y);
+            dadosCorrelacao.x2 = retornaQuadrado(dadosCorrelacao.x);
+            dadosCorrelacao.y2 = retornaQuadrado(dadosCorrelacao.y);
+            dadosCorrelacao.somaX = retornaSoma(dadosCorrelacao.x);
+            dadosCorrelacao.somaY = retornaSoma(dadosCorrelacao.y);
+            dadosCorrelacao.somaX2 = retornaSoma(dadosCorrelacao.x2);
+            dadosCorrelacao.somaY2 = retornaSoma(dadosCorrelacao.y2);
+            dadosCorrelacao.XvezesY = retornaMultiplicacao(dadosCorrelacao.x, dadosCorrelacao.y);
+            dadosCorrelacao.somaXvezesY = retornaSoma(dadosCorrelacao.XvezesY);
+            dadosCorrelacao.n = dadosCorrelacao.x.length;
+            dadosCorrelacao.r = retornaCorrelacao(dadosCorrelacao.n, dadosCorrelacao.somaX, dadosCorrelacao.somaY, dadosCorrelacao.somaX2,    dadosCorrelacao.somaY2, dadosCorrelacao.somaXvezesY );
+
+            document.querySelector("#fatorCorrelacao").innerHTML = retornaGrauDeCorrelacao(dadosCorrelacao.r);
+
+            showDebug();
+            correlacaoImportada=false;
+            inptText.value="";
         }
 
     </script>
