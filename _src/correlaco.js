@@ -61,3 +61,15 @@ function retornaTexto(x){
     res+=x[x.length-1];
     return res;
 }
+
+
+function convertToPoint(xx,yy){
+    let res=[];
+
+    for(let i=0;i<xx.length;i++){
+        res.push({x:xx[i], y:yy[i]});
+    }
+
+
+    return res;
+}
