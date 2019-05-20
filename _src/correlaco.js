@@ -73,3 +73,15 @@ function convertToPoint(xx,yy){
 
     return res;
 }
+
+function retornaA(n, somaX, somaY, somaX2, somaXvezesY){
+    let res=0;
+    res = ((n * somaXvezesY)-(somaX*somaY))/((n * somaX2) - Math.pow(somaX,2));
+    return res;
+}
+function retornaB(somaX, somaY, n, a){
+    let mX = somaX/n;
+    let mY = somaY/n;
+    let res= mY - a*mX;
+    return res;
+}
