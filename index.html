@@ -22,14 +22,18 @@
         <meta charset="utf-8">
         <title>Teste</title>
         <meta name="viewport" content="width=device-width, initial-scale = 1, shrink-to-fit=no">
+        <link rel="stylesheet" type="text/css" href="css/Chart.css"  />
         <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
         <script src="js/jquery-3.2.1.min.js"></script>
         <script src="js/popper.min.js"></script>
         <script src="js/bootstrap.min.js"></script>
+        <script src="js/Chart.js"></script>
         <script src="https://www.gstatic.com/charts/loader.js"></script>
         <script src="_src/funcoes.js"></script>
         <script src="_src/distNormal.js"></script>
         <script src="_src/correlaco.js"></script>
+
+
         <style>
 
             table,tr,td, th {
@@ -707,6 +711,8 @@
                 inptText.value="";
                 return false;
             }
+            dadosCorrelacao.textoVarIndependente = document.querySelector("#txtVarIndependente").value;
+            dadosCorrelacao.textoVarDependente = document.querySelector("#txtVarDependente").value;
             dadosCorrelacao.pontoDeDivisao = (dadosCorrelacao.tamanhoArr / 2);
             dadosCorrelacao.x = retornaVarArr(dadosCorrelacao.arr, 0, dadosCorrelacao.pontoDeDivisao);
             dadosCorrelacao.y = retornaVarArr(dadosCorrelacao.arr, dadosCorrelacao.pontoDeDivisao, dadosCorrelacao.tamanhoArr);
@@ -723,7 +729,7 @@
             dadosCorrelacao.n = dadosCorrelacao.x.length;
             dadosCorrelacao.r = retornaCorrelacao(dadosCorrelacao.n, dadosCorrelacao.somaX, dadosCorrelacao.somaY, dadosCorrelacao.somaX2,    dadosCorrelacao.somaY2, dadosCorrelacao.somaXvezesY );
 
-            document.querySelector("#fatorCorrelacao").innerHTML = retornaGrauDeCorrelacao(dadosCorrelacao.r);
+            document.querySelector("#fatorCorrelacao").innerHTML = retornaGrauDeCorrelacao(dadosCorrelacao.r, dadosCorrelacao.textoVarIndependente, dadosCorrelacao.textoVarDependente);
 
             showDebug();
             correlacaoImportada=false;

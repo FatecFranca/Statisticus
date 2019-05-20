@@ -37,8 +37,8 @@ function retornaCorrelacao(n, somaX, somaY, somaX2,  somaY2, somaXvezesY){
     return res;
 }
 
-function retornaGrauDeCorrelacao(r){
-    let res=`A correlação entre as duas variáveis é de <b>${(r*100).toFixed(2)}%</b><br>`;
+function retornaGrauDeCorrelacao(r, x, y){
+    let res=`A correlação existente entre ${x} e ${y} é de <b>${(r*100).toFixed(2)}%</b><br>`;
     if (r<0.3){
         res+= "Existe correlação <b>insignificante</b> entre as variáveis.";
         return res;
