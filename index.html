@@ -293,6 +293,10 @@
                             <input type="button" value="Y-" name="aumentaZoomY" id="aumentaZoomY" onclick="zoom('y',1)">
                         </div>
                         <br>
+                        <div id="divTabelaCorrelacao">
+
+                        </div>
+                        <br>
                         <div>
                             <label for="inputFile2">Importar arquivo:</label>
                             <input type="file" name="inputFile2" id="inputFile2"  accept=".txt, .csv" onchange="tryLoad(2)">
@@ -313,8 +317,8 @@
 
 
 
-       // google.charts.load('current', {'packages':['corechart']});
-       // google.charts.setOnLoadCallback(geraGrafico);
+        google.charts.load('current', {'packages':['corechart']});
+        google.charts.setOnLoadCallback(geraGrafico);
         iniciaControlesSeparatriz();
 
         //Função tryLoad é responsável por importar o arquivo
@@ -755,26 +759,38 @@
             dadosCorrelacao.menorY = retornaMenor(dadosCorrelacao.y,"menor");
             dadosCorrelacao.maiorY = retornaMaior(dadosCorrelacao.y,"maior");
 
-            document.querySelector("#formulaCorrelacao").innerHTML = `${dadosCorrelacao.a.toFixed(2)}X + ${dadosCorrelacao.b.toFixed(2)} = Y`;
+            document.querySelector("#formulaCorrelacao").innerHTML = `Equação da reta: <b>Y</b> = ${dadosCorrelacao.a.toFixed(2)}<b>X</b> + ${dadosCorrelacao.b.toFixed(2)}`;
 
             dadosCorrelacao.ctx = document.querySelector("#graficoCorrelacao");
 
             document.querySelector("#fatorCorrelacao").innerHTML = retornaGrauDeCorrelacao(dadosCorrelacao.r, dadosCorrelacao.textoVarIndependente, dadosCorrelacao.textoVarDependente);
             dadosCorrelacao.dadosDoGrafico = convertToPoint(dadosCorrelacao.x, dadosCorrelacao.y);
-            //dadosCorrelacao.dadosDoGrafico = [{x:1, y:2}, {x:3,y:10}];
 
-            geraGrafico(dadosCorrelacao.ctx, "scatter", "teste", dadosCorrelacao.dadosDoGrafico, dadosCorrelacao.menorX, dadosCorrelacao.maiorX, dadosCorrelacao.menorY, dadosCorrelacao.maiorY, dadosCorrelacao.a, dadosCorrelacao.b);
+
+            geraGrafico(dadosCorrelacao.ctx, "scatter", dadosCorrelacao.textoVarIndependente, dadosCorrelacao.dadosDoGrafico, dadosCorrelacao.menorX, dadosCorrelacao.maiorX, dadosCorrelacao.menorY, dadosCorrelacao.maiorY, dadosCorrelacao.a, dadosCorrelacao.b, dadosCorrelacao.textoVarDependente);
+
+
+            geraTabelaCorr(dadosCorrelacao.x, dadosCorrelacao.y, dadosCorrelacao.textoVarIndependente, dadosCorrelacao.textoVarDependente);
 
             showDebug();
             correlacaoImportada=false;
             inptText.value="";
         }
 
-
-
+        function adicionaNovoPonto(eixo,valor){
+            if(eixo=='x'){
+                dadosCorrelacao.x.push(valor);
+                dadosCorrelacao.y.push(dadosCorrelacao.a*valor+dadosCorrelacao.b);
+            }else{
+                dadosCorrelacao.y.push(valor);
+                dadosCorrelacao.x.push((valor-dadosCorrelacao.b)/dadosCorrelacao.a);
+            }
+            geraTabelaCorr(dadosCorrelacao.x, dadosCorrelacao.y, dadosCorrelacao.textoVarIndependente, dadosCorrelacao.textoVarDependente);
+        }
 
 
     </script>
+
 </html>
 
 

@@ -38,6 +38,7 @@ function retornaCorrelacao(n, somaX, somaY, somaX2,  somaY2, somaXvezesY){
 }
 
 function retornaGrauDeCorrelacao(r, x, y){
+    if (r<0){r*=-1;}
     let res=`A correlação existente entre ${x} e ${y} é de <b>${(r*100).toFixed(2)}%</b><br>`;
     if (r<0.3){
         res+= "Existe correlação <b>insignificante</b> entre as variáveis.";
@@ -84,4 +85,18 @@ function retornaB(somaX, somaY, n, a){
     let mY = somaY/n;
     let res= mY - a*mX;
     return res;
+}
+
+function geraTabelaCorr(x,y,tit, sub){
+    let divTabela=document.querySelector("#divTabelaCorrelacao");
+    divTabela.innerHTML="";
+    let res='<table>'
+    res+=`<tr><th>${tit}</th><th>${sub}</th></tr>`;
+    for(i=0;i<x.length;i++){
+        res+=`<tr><td>${x[i]}</td><td>${y[i]}</td></tr>`;
+    }
+    res+=`<tr><td><input type="text" name="newX" id="newX" value=0 onkeyup="adicionaNovoPonto('x',this.value)"></td>`;
+    res+=`<td><input type="text" name="newY" id="newY" value=0 onkeyup="adicionaNovoPonto('y',this.value)"></td></tr>`;
+    res+='</table>'
+    divTabela.innerHTML = res;
 }

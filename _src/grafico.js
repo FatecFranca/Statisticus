@@ -9,6 +9,9 @@ let titulo;
 let dados;
 let a=0;
 let b=0;
+let subtitulo;
+let tamanhoDosPontos=3;
+let larguraDaReta=1;
 
 function zoom(eixo,valor){
 
@@ -23,14 +26,22 @@ function zoom(eixo,valor){
         scales: {
             responsive: true,
             xAxes: [{
+                scaleLabel: {
+                    display: true,
+                    labelString: titulo,
+                },
                 type: 'linear',
-                position: 'top',
+                position: 'bottom',
                 ticks: {
                     min: menorx-zoomX,
                     max: maiorx+zoomX
                 }
             }],
             yAxes: [{
+                scaleLabel: {
+                    display: true,
+                    labelString: subtitulo,
+                },
                 type: 'linear',
                 position: 'left',
                 ticks: {
@@ -44,18 +55,18 @@ function zoom(eixo,valor){
 
     graf.data = {
         datasets: [{
-            label: titulo,
+            label: 'Pontos Correlacionados',
             data: dados,
             borderColor: '#2196f3',
             backgroundColor: '#2196f3',
-            borderWidth: 10,
+            borderWidth: tamanhoDosPontos,
             showLine: false
         }, {
             type: 'line',
-            label: 'line',
+            label: `Y = ${a.toFixed(2)}X + ${b.toFixed(2)}`,
             data: [{x:menorx-zoomX-2, y:geraReta(menorx-zoomX-2,a,b)}, {x:maiorx+zoomX+2,y:geraReta(maiorx+zoomX+2,a,b)}],
             borderColor: '#000000',
-            borderWidth: 5,
+            borderWidth: larguraDaReta,
             showLine: true,
             fill: false
 
@@ -65,7 +76,7 @@ function zoom(eixo,valor){
 
 }
 
-function geraGrafico(ctx, tipo, Titulo, Dados, menorX, maiorX, menorY, maiorY, A, B ){
+function geraGrafico(ctx, tipo, Titulo, Dados, menorX, maiorX, menorY, maiorY, A, B, SubTitulo ){
     a=A;
     b=B;
     menorx=menorX;
@@ -73,6 +84,7 @@ function geraGrafico(ctx, tipo, Titulo, Dados, menorX, maiorX, menorY, maiorY, A
     maiorx=maiorX;
     maiory=maiorY;
     titulo=Titulo;
+    subtitulo=SubTitulo;
     dados=Dados;
     if (tipo=='scatter'){
         tipo = 'line';
@@ -81,18 +93,18 @@ function geraGrafico(ctx, tipo, Titulo, Dados, menorX, maiorX, menorY, maiorY, A
             type: tipo,
             data: {
                 datasets: [{
-                    label: titulo,
+                    label: 'Pontos Correlacionados',
                     data: dados,
                     borderColor: '#2196f3',
                     backgroundColor: '#2196f3',
-                    borderWidth: 10,
+                    borderWidth: tamanhoDosPontos,
                     showLine: false
                 }, {
+                    label: `Y = ${a.toFixed(2)}X + ${b.toFixed(2)}`,
                     type: 'line',
-                    label: 'line',
                     data: [{x:menorx-zoomX-1, y:geraReta(menorx-zoomX-1,a,b)}, {x:maiorx+zoomX+1,y:geraReta(maiorx+zoomX+1,a,b)}],
                     borderColor: '#000000',
-                    borderWidth: 5,
+                    borderWidth: larguraDaReta,
                     showLine: true,
                     fill: false
 
@@ -101,14 +113,22 @@ function geraGrafico(ctx, tipo, Titulo, Dados, menorX, maiorX, menorY, maiorY, A
             options: {
                 scales: {
                     xAxes: [{
+                         scaleLabel: {
+                            display: true,
+                            labelString: titulo,
+                        },
                         type: 'linear',
-                        position: 'top',
+                        position: 'bottom',
                         ticks: {
                             min: menorX-zoomX,
                             max: maiorX+zoomX
                         }
                     }],
                     yAxes: [{
+                        scaleLabel: {
+                            display: true,
+                            labelString: subtitulo,
+                        },
                         type: 'linear',
                         position: 'left',
                         ticks: {
@@ -120,8 +140,6 @@ function geraGrafico(ctx, tipo, Titulo, Dados, menorX, maiorX, menorY, maiorY, A
                 }
             }
         });
-    } else {
-
     }
 }
 
