@@ -291,6 +291,11 @@
                             <br>
                             <input type="button" value="Y+" name="aumentaZoomY" id="aumentaZoomY" onclick="zoom('y',-1)">
                             <input type="button" value="Y-" name="aumentaZoomY" id="aumentaZoomY" onclick="zoom('y',1)">
+                             <br>
+                            <input type="button" value="&larr;" name="moveE" id="moveE" onclick="moveGrafico('x',-2)">
+                            <input type="button" value="&rarr;" name="moveD" id="moveD" onclick="moveGrafico('x',2)">
+                            <input type="button" value="&uarr;" name="moveC" id="moveC" onclick="moveGrafico('y',2)">
+                            <input type="button" value="&darr;" name="moveB" id="moveB" onclick="moveGrafico('y',-2)">
                         </div>
                         <br>
                         <div id="divTabelaCorrelacao">
@@ -778,14 +783,24 @@
         }
 
         function adicionaNovoPonto(eixo,valor){
-            if(eixo=='x'){
-                dadosCorrelacao.x.push(valor);
-                dadosCorrelacao.y.push(dadosCorrelacao.a*valor+dadosCorrelacao.b);
-            }else{
-                dadosCorrelacao.y.push(valor);
-                dadosCorrelacao.x.push((valor-dadosCorrelacao.b)/dadosCorrelacao.a);
+            let xx=0;
+            let yy=0;
+
+            if(event.keyCode == 13) {
+                if(eixo=='x'){
+                    xx=valor;
+                    yy = dadosCorrelacao.a*valor+dadosCorrelacao.b;
+                    dadosCorrelacao.x.push(xx);
+                    dadosCorrelacao.y.push(yy);
+                }else{
+                    xx=(valor-dadosCorrelacao.b)/dadosCorrelacao.a;
+                    yy = valor;
+                    dadosCorrelacao.y.push(yy);
+                    dadosCorrelacao.x.push(xx);
+                }
+                geraTabelaCorr(dadosCorrelacao.x, dadosCorrelacao.y, dadosCorrelacao.textoVarIndependente, dadosCorrelacao.textoVarDependente);
+                addPonto(xx,yy);
             }
-            geraTabelaCorr(dadosCorrelacao.x, dadosCorrelacao.y, dadosCorrelacao.textoVarIndependente, dadosCorrelacao.textoVarDependente);
         }
 
 

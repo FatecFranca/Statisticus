@@ -12,6 +12,7 @@ let b=0;
 let subtitulo;
 let tamanhoDosPontos=3;
 let larguraDaReta=1;
+let dadosPersonalizados=[];
 
 function zoom(eixo,valor){
 
@@ -70,6 +71,16 @@ function zoom(eixo,valor){
             showLine: true,
             fill: false
 
+        },{
+            label: `Personalizado`,
+            type: 'line',
+            data: dadosPersonalizados,
+            borderColor: '#FF0033',
+            backgroundColor: '#FF0033',
+            borderWidth: tamanhoDosPontos,
+            showLine: false,
+
+
         }]
     }
     graf.update();
@@ -108,6 +119,15 @@ function geraGrafico(ctx, tipo, Titulo, Dados, menorX, maiorX, menorY, maiorY, A
                     showLine: true,
                     fill: false
 
+                }, {
+                    label: `Personalizado`,
+                    data: dadosPersonalizados,
+                    borderColor: '#FF0033',
+                    backgroundColor: '#FF0033',
+                    borderWidth: tamanhoDosPontos,
+                    showLine: false,
+
+
                 }]
             },
             options: {
@@ -145,4 +165,29 @@ function geraGrafico(ctx, tipo, Titulo, Dados, menorX, maiorX, menorY, maiorY, A
 
 function geraReta(x, a, b){
     return a*x+b;
+}
+
+function moveGrafico(eixo,qtd){
+    if (eixo=='x'){
+        menorx+=qtd;
+        maiorx+=qtd;
+    }else{
+        menory+=qtd;
+        maiory+=qtd;
+    }
+    zoom("x",0);
+    zoom("y",0);
+}
+
+function addPonto(xx,yy){
+    //graf.data.datasets["2"].data.push({x:xx, y:yy});
+    dadosPersonalizados.push({x:xx, y:yy});
+    if (xx<menorx){menorx=parseInt(xx);}
+    if (yy<menory){menory=parseInt(yy);}
+    if (xx>maiorx){maiorx=parseInt(xx);}
+    if (yy>maiory){maiory=parseInt(yy);}
+
+    graf.update();
+    zoom("x",0);
+    zoom("y",0);
 }
