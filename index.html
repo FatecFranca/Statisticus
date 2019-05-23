@@ -285,7 +285,10 @@
                         </div>
                         <br>
                         <div style="max-width: 400px;">
-                            <canvas id="graficoCorrelacao" width="100" height="100"></canvas>
+                            <div id="divCanvas">
+                                <canvas id="graficoCorrelacao" width="100" height="100"></canvas>
+                            </div>
+
                             <input type="button" value="X+" name="aumentaZoomX" id="aumentaZoomX" onclick="zoom('x',-1)">
                             <input type="button" value="X-" name="aumentaZoomX" id="aumentaZoomX" onclick="zoom('x',1)">
                             <br>
@@ -707,6 +710,18 @@
 
         function calcCorrelacao(){
 
+            let canvas = document.querySelector("#graficoCorrelacao");
+            let divcanvas = document.querySelector("#divCanvas");
+            let x = divcanvas.removeChild(canvas);
+
+            canvas = document.createElement("canvas");
+            divcanvas.appendChild(canvas);
+            canvas.setAttribute("id","graficoCorrelacao");
+            canvas.setAttribute("width","100");
+            canvas.setAttribute("height","100");
+
+
+
             let inptText = document.querySelector("#txtEscondido");
             let inptIndependente = document.querySelector("#txtValoresIndependente");
             let inptDependente = document.querySelector("#txtValoresDependente");
@@ -722,6 +737,7 @@
             }
 
             dadosCorrelacao = new Object();
+            dadosCorrelacao.ctx = document.querySelector("#graficoCorrelacao");
             dadosCorrelacao.arr = [];
             dadosCorrelacao.arr = processaInput(inptText.value);
             if (checaSeTemLetras(dadosCorrelacao.arr)==false){dadosCorrelacao.arr=converteEmNumeros(dadosCorrelacao.arr);}
@@ -773,7 +789,7 @@
 
             document.querySelector("#formulaCorrelacao").innerHTML = `Equação da reta: <b>Y</b> = ${dadosCorrelacao.a.toFixed(2)}<b>X</b> + ${dadosCorrelacao.b.toFixed(2)}`;
 
-            dadosCorrelacao.ctx = document.querySelector("#graficoCorrelacao");
+
 
             document.querySelector("#fatorCorrelacao").innerHTML = retornaGrauDeCorrelacao(dadosCorrelacao.r, dadosCorrelacao.textoVarIndependente, dadosCorrelacao.textoVarDependente);
             dadosCorrelacao.dadosDoGrafico = convertToPoint(dadosCorrelacao.x, dadosCorrelacao.y);
