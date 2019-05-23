@@ -737,6 +737,13 @@
                 inptText.value="";
                 return false;
             }
+            for (let i=0;i<dadosCorrelacao.arr.length;i++){
+                if(isNaN(dadosCorrelacao.arr[i])){
+                    alert ("Erro! Apenas números podem ser informados!");
+                    inptText.value="";
+                    return false;
+                }
+            }
             dadosCorrelacao.textoVarIndependente = document.querySelector("#txtVarIndependente").value;
             dadosCorrelacao.textoVarDependente = document.querySelector("#txtVarDependente").value;
             dadosCorrelacao.pontoDeDivisao = (dadosCorrelacao.tamanhoArr / 2);
