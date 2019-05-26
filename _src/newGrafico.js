@@ -6,17 +6,19 @@ let minY=-5;
 let maxY=5;
 let modificadorDeMovimento = 2;
 let opcoes;
+let opcoesPizza;
 let grafico;
+let graficoPizza;
 let ctx;
 
 function iniciaVariaveis(){
- grafico=undefined;
- minX=-5;
- maxX=5;
- minY=-5;
- maxY=5;
- modificadorDeMovimento = 2;
- opcoes = {
+
+    minX=-5;
+    maxX=5;
+    minY=-5;
+    maxY=5;
+    modificadorDeMovimento = 2;
+    opcoes = {
             type: 'line',
             data: {
                 datasets: []
@@ -50,7 +52,62 @@ function iniciaVariaveis(){
                     }]
                 }
             }
-        }
+};
+    opcoesPizza = {
+            type: 'pie',
+            data: {
+                datasets: [{
+                    data:[],
+                    backgroundColor: []
+                }],
+                labels: []
+            },
+			options: {
+				responsive: true
+			}
+    }
+}
+
+function criaGraficoPizza(ctx,lbl,ddd, pai){
+
+
+    iniciaVariaveis();
+    let cores=[];
+
+    for(let i=0;i<ddd.length;i++){
+        cores.push(geraRGB());
+    }
+
+    opcoesPizza.data.datasets[0].data=ddd;
+    opcoesPizza.data.datasets[0].backgroundColor=cores;
+    opcoesPizza.data.labels=lbl;
+
+    if (graficoPizza!=undefined){
+        debugger;
+        opcoesPizza.data.datasets.splice(0, 1);
+
+        var newDataset = {
+				backgroundColor: [],
+				data: []
+			};
+
+			for (var index = 0; index < lbl.length; ++index) {
+				newDataset.data.push(ddd[index]);
+
+				var colorName = lbl[index];
+				var newColor = cores[index];
+				newDataset.backgroundColor.push(newColor);
+			}
+
+			opcoesPizza.data.datasets.push(newDataset);
+			graficoPizza.update();
+
+
+
+    } else {
+        graficoPizza = new Chart(ctx, opcoesPizza);
+    }
+
 }
 
 
@@ -113,6 +170,7 @@ function criaGrafico(canvas){
     grafico = new Chart(ctx, opcoes);
 }
 
+
 function apagaGrafico(nomeCanvas){
     let canvas = document.querySelector(`#${nomeCanvas}`);
     let pai = canvas.parentNode;
@@ -120,7 +178,7 @@ function apagaGrafico(nomeCanvas){
     grafico=undefined;
     filho = document.createElement("canvas");
     filho.setAttribute("style","max-height: 300; max-width: 300;");
-    filho.setAttribute("id","graficoCorrelacao");
+    filho.setAttribute("id",nomeCanvas);
     filho.setAttribute("height","150");
     filho.setAttribute("width","150");
     pai.appendChild(filho);

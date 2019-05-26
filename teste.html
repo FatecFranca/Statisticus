@@ -47,13 +47,11 @@
 
             function cria(){
                 iniciaVariaveis();
-                removeTodosDatasets();
-                setaLabelX('aulas');
-                setaLabelY('presenças');
-                setaTipo('line');
-                criaGrafico('graficoCorrelacao');
-                //desenha a linha primeiro (deve ser sempre o primeiro dataset)
-                adicionaDataset('Linha Divisoria','line',[{x:-1,y:-1},{x:1,y:1}],'#000000',1,true,false);
+                //removeTodosDatasets();
+                //setaLabelX('aulas');
+                //setaLabelY('presenças');
+                setaTipo('pie');
+               criaGraficoPizza('graficoCorrelacao',['agua','coca','cerveja','doce'],[45,50,13,30]);
             }
 
             function apaga(){

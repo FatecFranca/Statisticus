@@ -138,8 +138,8 @@
                         <div id="tabela">
 
                         </div>
-                        <div id="divGrafico">
-
+                        <div id="divGrafico" name="divGrafico">
+                            <canvas name="graficoGeral" id="graficoGeral"  height="150" width="150" style="max-height: 300; max-width: 300;"></canvas>
                         </div>
                     </div>
                     <div class="card card-body">
@@ -347,6 +347,7 @@
                 if (x!=2){
                     document.querySelector("#inputText").value=res;
                     imported=true;
+                    initCalc();
                 } else {
                     document.querySelector("#txtEscondido").value="";
                     document.querySelector("#txtEscondido").value=res;
@@ -631,7 +632,13 @@
                     dadosGerais.copiaElementos = dadosGerais.elementos.slice();
                     dadosGerais.copiaQtdElementos = dadosGerais.qtdElementos.slice();
                     desenhaTabela(dadosGerais.arr, dadosGerais.varType, dadosGerais.varName, dadosGerais.varDescription, dadosGerais.copiaElementos, dadosGerais.copiaQtdElementos, dadosGerais.copiaFrequenciaPercentualReal, dadosGerais.copiaFrequenciaAcumulada, dadosGerais.copiaFrequenciaAcumuladaPercentualReal, dadosGerais.totalFrequenciaAcumuladaReal, dadosGerais.totalFrequenciaPercentual, dadosGerais.K, dadosGerais.elementosIniciais, dadosGerais.elementosFinais, dadosGerais.intervaloDeClasse, dadosGerais.contagemElementosPorClasse );
-                    geraGrafico(dadosGerais.elementos,dadosGerais.qtdElementos,'Pizza', dadosGerais.varName, dadosGerais.varDescription);
+/////////////////////////////// graficos ////////////////////////////////////////////////////
+
+                    let newDDD =  dadosGerais.qtdElementos.map((x) => x);
+                    criaGraficoPizza(document.querySelector('#graficoGeral'),dadosGerais.elementos,newDDD, document.querySelector("#divGrafico"));
+
+
+                   // geraGrafico(dadosGerais.elementos,dadosGerais.qtdElementos,'Pizza', dadosGerais.varName, dadosGerais.varDescription);
 
 
                 } else {
