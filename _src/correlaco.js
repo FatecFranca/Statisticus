@@ -93,7 +93,7 @@ function geraTabelaCorr(x,y,tit, sub){
     let res='<table>'
     res+=`<tr><th>${tit}</th><th>${sub}</th></tr>`;
     for(i=0;i<x.length;i++){
-        res+=`<tr><td>${x[i]}</td><td>${y[i]}</td></tr>`;
+        res+=`<tr><td>${x[i].toFixed(2)}</td><td>${y[i].toFixed(2)}</td></tr>`;
     }
     res+='</table>'
     divTabela.innerHTML = res;

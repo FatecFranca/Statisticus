@@ -286,6 +286,7 @@
 
                         <div>
                             <p id="entradaPontos"></p>
+                            <p id="dadosNovoPonto"></p>
                         </div>
                         <br>
                         <div id="divGraficoCorrelacao">
@@ -723,6 +724,9 @@
                 document.querySelector("#formulaCorrelacao").innerHTML="";
                 document.querySelector("#entradaPontos").innerHTML="";
                 document.querySelector("#fatorCorrelacao").innerHTML="";
+                document.querySelector("#divTabelaCorrelacao").innerHTML="";
+                document.querySelector("#entradaPontos").innerHTML ="";
+
 
            } else {
                calculouCorrelacao=true;
@@ -797,10 +801,8 @@
             document.querySelector("#formulaCorrelacao").innerHTML = `Equação da reta: <b>Y</b> = ${dadosCorrelacao.a.toFixed(2)}<b>X</b> + ${dadosCorrelacao.b.toFixed(2)}`;
 
             document.querySelector("#entradaPontos").innerHTML = `
-                <b>Y(<input size="1" type="text" name="newY" id="newY" value=0 onkeyup="adicionaNovoPonto('y',this.value)">)</b>
-                 = ${dadosCorrelacao.a.toFixed(2)} *
-                <b>X(<input size="1" type="text" name="newX" id="newX" value=0 onkeyup="adicionaNovoPonto('x',this.value)">)</b>
-                + ${dadosCorrelacao.b.toFixed(2)}`;
+                ${dadosCorrelacao.a.toFixed(2)} * <b>X(<input size="1" type="text" name="newX" id="newX" value=0 onkeyup="adicionaNovoPonto('x',this.value)">)</b> + ${dadosCorrelacao.b.toFixed(2)} = <b>Y(<input size="1" type="text" name="newY" id="newY" value=0 onkeyup="adicionaNovoPonto('y',this.value)">)</b>
+                 `;
 
 
             document.querySelector("#fatorCorrelacao").innerHTML = retornaGrauDeCorrelacao(dadosCorrelacao.r, dadosCorrelacao.textoVarIndependente, dadosCorrelacao.textoVarDependente);
@@ -819,7 +821,7 @@
             let labelLinha = `Linha: ${dadosCorrelacao.a.toFixed(2)}X + ${dadosCorrelacao.b.toFixed(2)} = Y`;
             adicionaDataset(labelLinha,'line',geraLinha(),'#000000',1,true,false);
             adicionaDataset('Pontos','line',dadosCorrelacao.dadosDoGrafico,geraRGB(),1,false,true);
-            adicionaDataset('Personalizado','line',[],"yellow",1,false,true);
+            adicionaDataset('Personalizado','line',[],"red",2,false,true);
 
 
 
@@ -837,8 +839,10 @@
         function adicionaNovoPonto(eixo,valor){
             let xx=0;
             let yy=0;
+            valor=parseFloat(valor);
 
             if(event.keyCode == 13) {
+                //debugger;
                 if(eixo=='x'){
                     xx=valor;
                     yy = dadosCorrelacao.a*valor+dadosCorrelacao.b;
@@ -851,8 +855,12 @@
                     dadosCorrelacao.x.push(xx);
                 }
                 geraTabelaCorr(dadosCorrelacao.x, dadosCorrelacao.y, dadosCorrelacao.textoVarIndependente, dadosCorrelacao.textoVarDependente);
-                addPonto(xx,yy);
+                adicionaPonto(2,xx,yy);
+                document.querySelector("#dadosNovoPonto").innerHTML = `O novo ponto adicionado tem coordenadas X=${xx.toFixed(2)} e Y=${yy.toFixed(2)}`;
+                document.querySelector("#newX").value=0;
+                document.querySelector("#newY").value=0;
             }
+
         }
 
 

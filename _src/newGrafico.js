@@ -117,7 +117,7 @@ function apagaGrafico(nomeCanvas){
     let canvas = document.querySelector(`#${nomeCanvas}`);
     let pai = canvas.parentNode;
     let filho = pai.removeChild(canvas);
-    grafico.update();
+    grafico=undefined;
     filho = document.createElement("canvas");
     filho.setAttribute("style","max-height: 300; max-width: 300;");
     filho.setAttribute("id","graficoCorrelacao");
