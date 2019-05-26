@@ -16,6 +16,7 @@
         let jaCalculadoCorrelacao = false;
         let correlacaoImportada = false;
         let dadosCorrelacao = new Object();
+        let calculouCorrelacao=false;
     </script>
     <head>
         <meta charset="utf-8">
@@ -27,11 +28,10 @@
         <script src="js/popper.min.js"></script>
         <script src="js/bootstrap.min.js"></script>
         <script src="js/Chart.js"></script>
-        <script src="https://www.gstatic.com/charts/loader.js"></script>
         <script src="_src/funcoes.js"></script>
         <script src="_src/distNormal.js"></script>
         <script src="_src/correlaco.js"></script>
-        <script src="_src/grafico.js"></script>
+        <script src="_src/newGrafico.js"></script>
 
 
         <style>
@@ -283,22 +283,29 @@
                         <div>
                             <p id="formulaCorrelacao"></p>
                         </div>
-                        <br>
-                        <div style="max-width: 400px;">
-                            <div id="divCanvas">
-                                <canvas id="graficoCorrelacao" width="100" height="100"></canvas>
-                            </div>
 
-                            <input type="button" value="X+" name="aumentaZoomX" id="aumentaZoomX" onclick="zoom('x',-1)">
-                            <input type="button" value="X-" name="aumentaZoomX" id="aumentaZoomX" onclick="zoom('x',1)">
+                        <div>
+                            <p id="entradaPontos"></p>
+                        </div>
+                        <br>
+                        <div id="divGraficoCorrelacao">
+                            <div id="divCanvas">
+                                <canvas id="graficoCorrelacao"  height="150" width="150" style="max-height: 300; max-width: 300;"></canvas>
+                            </div>
+                            <label for="escala">Fator da escala: (y<sub>i</sub>)</label>
+                            <input type="text" name="escala" value = "2" id="escala" onchange="setaModMovimento(this.value)">
                             <br>
-                            <input type="button" value="Y+" name="aumentaZoomY" id="aumentaZoomY" onclick="zoom('y',-1)">
-                            <input type="button" value="Y-" name="aumentaZoomY" id="aumentaZoomY" onclick="zoom('y',1)">
+                            <input type="button" value="X+" name="aumentaZoomX" id="aumentaZoomX" onclick="zoom('x','+')">
+                            <input type="button" value="X-" name="diminuiZoomX" id="diminuiZoomX" onclick="zoom('x','-')">
+                            <br>
+                            <input type="button" value="Y+" name="aumentaZoomY" id="aumentaZoomY" onclick="zoom('y','+')">
+                            <input type="button" value="Y-" name="diminuiZoomY" id="diminuiZoomY" onclick="zoom('y','-')">
                              <br>
-                            <input type="button" value="&larr;" name="moveE" id="moveE" onclick="moveGrafico('x',-2)">
-                            <input type="button" value="&rarr;" name="moveD" id="moveD" onclick="moveGrafico('x',2)">
-                            <input type="button" value="&uarr;" name="moveC" id="moveC" onclick="moveGrafico('y',2)">
-                            <input type="button" value="&darr;" name="moveB" id="moveB" onclick="moveGrafico('y',-2)">
+                            <input type="button" value="&larr;" name="moveE" id="moveE" onclick="moveX(-1)">
+                            <input type="button" value="&rarr;" name="moveD" id="moveD" onclick="moveX(1)">
+                            <input type="button" value="&uarr;" name="moveC" id="moveC" onclick="moveY(1)">
+                            <input type="button" value="&darr;" name="moveB" id="moveB" onclick="moveY(-1)">
+                            <input type="button" value="Centralizar" name="fit" id="fit" onclick="fit()">
                         </div>
                         <br>
                         <div id="divTabelaCorrelacao">
@@ -325,8 +332,7 @@
 
 
 
-        google.charts.load('current', {'packages':['corechart']});
-        google.charts.setOnLoadCallback(geraGrafico);
+
         iniciaControlesSeparatriz();
 
         //Função tryLoad é responsável por importar o arquivo
@@ -341,9 +347,11 @@
                     document.querySelector("#inputText").value=res;
                     imported=true;
                 } else {
+                    document.querySelector("#txtEscondido").value="";
                     document.querySelector("#txtEscondido").value=res;
                     correlacaoImportada=true;
                     calcCorrelacao();
+
                 }
 
 
@@ -709,17 +717,16 @@
         }
 
         function calcCorrelacao(){
+           document.querySelector("#inputFile2").value="";
+           if(calculouCorrelacao==true){
+                apagaGrafico('graficoCorrelacao');
+                document.querySelector("#formulaCorrelacao").innerHTML="";
+                document.querySelector("#entradaPontos").innerHTML="";
+                document.querySelector("#fatorCorrelacao").innerHTML="";
 
-            let canvas = document.querySelector("#graficoCorrelacao");
-            let divcanvas = document.querySelector("#divCanvas");
-            let x = divcanvas.removeChild(canvas);
-
-            canvas = document.createElement("canvas");
-            divcanvas.appendChild(canvas);
-            canvas.setAttribute("id","graficoCorrelacao");
-            canvas.setAttribute("width","100");
-            canvas.setAttribute("height","100");
-
+           } else {
+               calculouCorrelacao=true;
+           }
 
 
             let inptText = document.querySelector("#txtEscondido");
@@ -789,13 +796,34 @@
 
             document.querySelector("#formulaCorrelacao").innerHTML = `Equação da reta: <b>Y</b> = ${dadosCorrelacao.a.toFixed(2)}<b>X</b> + ${dadosCorrelacao.b.toFixed(2)}`;
 
+            document.querySelector("#entradaPontos").innerHTML = `
+                <b>Y(<input size="1" type="text" name="newY" id="newY" value=0 onkeyup="adicionaNovoPonto('y',this.value)">)</b>
+                 = ${dadosCorrelacao.a.toFixed(2)} *
+                <b>X(<input size="1" type="text" name="newX" id="newX" value=0 onkeyup="adicionaNovoPonto('x',this.value)">)</b>
+                + ${dadosCorrelacao.b.toFixed(2)}`;
 
 
             document.querySelector("#fatorCorrelacao").innerHTML = retornaGrauDeCorrelacao(dadosCorrelacao.r, dadosCorrelacao.textoVarIndependente, dadosCorrelacao.textoVarDependente);
             dadosCorrelacao.dadosDoGrafico = convertToPoint(dadosCorrelacao.x, dadosCorrelacao.y);
 
+///////////////////////////////////// GRAFICO ///////////////////////////////////////////////////
 
-            geraGrafico(dadosCorrelacao.ctx, "scatter", dadosCorrelacao.textoVarIndependente, dadosCorrelacao.dadosDoGrafico, dadosCorrelacao.menorX, dadosCorrelacao.maiorX, dadosCorrelacao.menorY, dadosCorrelacao.maiorY, dadosCorrelacao.a, dadosCorrelacao.b, dadosCorrelacao.textoVarDependente);
+            iniciaVariaveis();
+            removeTodosDatasets();
+            setaLabelX(dadosCorrelacao.textoVarIndependente);
+            setaLabelY(dadosCorrelacao.textoVarDependente);
+            setaTipo('line');
+            setaAeB(dadosCorrelacao.a, dadosCorrelacao.b);
+            criaGrafico('graficoCorrelacao');
+            //desenha a linha primeiro (deve ser sempre o primeiro dataset)
+            let labelLinha = `Linha: ${dadosCorrelacao.a.toFixed(2)}X + ${dadosCorrelacao.b.toFixed(2)} = Y`;
+            adicionaDataset(labelLinha,'line',geraLinha(),'#000000',1,true,false);
+            adicionaDataset('Pontos','line',dadosCorrelacao.dadosDoGrafico,geraRGB(),1,false,true);
+            adicionaDataset('Personalizado','line',[],"yellow",1,false,true);
+
+
+
+           // geraGrafico(dadosCorrelacao.ctx, "scatter", dadosCorrelacao.textoVarIndependente, dadosCorrelacao.dadosDoGrafico, dadosCorrelacao.menorX, dadosCorrelacao.maiorX, dadosCorrelacao.menorY, dadosCorrelacao.maiorY, dadosCorrelacao.a, dadosCorrelacao.b, dadosCorrelacao.textoVarDependente);
 
 
             geraTabelaCorr(dadosCorrelacao.x, dadosCorrelacao.y, dadosCorrelacao.textoVarIndependente, dadosCorrelacao.textoVarDependente);
@@ -803,6 +831,7 @@
             showDebug();
             correlacaoImportada=false;
             inptText.value="";
+
         }
 
         function adicionaNovoPonto(eixo,valor){

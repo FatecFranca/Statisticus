@@ -1,21 +1,20 @@
+let a=0;
+let b=0;
 let minX=-5;
 let maxX=5;
 let minY=-5;
 let maxY=5;
-let zoomX=0;
-let zoomY=0;
 let modificadorDeMovimento = 2;
 let opcoes;
 let grafico;
 let ctx;
 
 function iniciaVariaveis(){
+ grafico=undefined;
  minX=-5;
  maxX=5;
  minY=-5;
  maxY=5;
- zoomX=0;
- zoomY=0;
  modificadorDeMovimento = 2;
  opcoes = {
             type: 'line',
@@ -56,7 +55,7 @@ function iniciaVariaveis(){
 
 
 function setaModMovimento(valor){
-    modificadorDeMovimento = parseFloat(valor);
+    modificadorDeMovimento = parseFloat(valor.replace(",","."));
 }
 
 function setaLabelX(nome){
@@ -74,6 +73,7 @@ function adicionaDataset(titulo,tipo,dados,corBorda,tamBorda,mostrarLinha,preenc
         type: tipo,
         data: dados,
         borderColor: corBorda,
+        backgroundColor: corBorda,
         borderWidth: tamBorda,
         showLine: mostrarLinha,
         fill: preencher
@@ -113,9 +113,10 @@ function criaGrafico(canvas){
     grafico = new Chart(ctx, opcoes);
 }
 
-function apagaGrafico(){
-    let pai = ctx.parentNode;
-    let filho = pai.removeChild(ctx);
+function apagaGrafico(nomeCanvas){
+    let canvas = document.querySelector(`#${nomeCanvas}`);
+    let pai = canvas.parentNode;
+    let filho = pai.removeChild(canvas);
     grafico.update();
     filho = document.createElement("canvas");
     filho.setAttribute("style","max-height: 300; max-width: 300;");
@@ -184,13 +185,30 @@ function zoom(eixo, tipo){
 }
 
 
+function recalculaReta(){
+    opcoes.data.datasets[0].data = geraLinha();
+}
+
+function setaAeB(a,b){
+    A=a;
+    B=b;
+}
 
 function moveX(valor){
-
+    minX+=valor*modificadorDeMovimento;
+    maxX+=valor*modificadorDeMovimento;
+    opcoes.options.scales.xAxes[0].ticks.min = minX;
+    opcoes.options.scales.xAxes[0].ticks.max = maxX;
+    atualiza();
 }
 
 function moveY(valor){
 
+    minY+=valor*modificadorDeMovimento;
+    maxY+=valor*modificadorDeMovimento;
+    opcoes.options.scales.yAxes[0].ticks.min = minY;
+    opcoes.options.scales.yAxes[0].ticks.max = maxY;
+    atualiza();
 }
 
 function fit(){
@@ -221,11 +239,18 @@ function fit(){
                 }
             }
         }
+
         opcoes.options.scales.xAxes[0].ticks.min = menorx;
         opcoes.options.scales.xAxes[0].ticks.max = maiorx;
         opcoes.options.scales.yAxes[0].ticks.min = menory;
         opcoes.options.scales.yAxes[0].ticks.max = maiory;
+        minX = menorx;
+        maxX = maiorx;
+        minY = menory;
+        maxY = maiory;
+
         atualiza();
+
 
 
     }
@@ -247,7 +272,26 @@ function atualiza(){
     if (grafico!=undefined){
         grafico.data=opcoes.data;
         grafico.options = opcoes.options;
+        recalculaReta();
         grafico.update();
     }
 
 }
+
+function geraLinha(){
+    let w=0;
+    let z=0;
+    let mmin=minX -3;
+    let mmax=maxX +3;
+    w=(A*(mmin)+B);
+    z=(A*(mmax)+B);
+    let res = [{
+        x:mmin,
+        y:w
+    },{
+        x:mmax,
+        y:z
+    }];
+    return res;
+}
+

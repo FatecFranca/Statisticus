@@ -95,8 +95,6 @@ function geraTabelaCorr(x,y,tit, sub){
     for(i=0;i<x.length;i++){
         res+=`<tr><td>${x[i]}</td><td>${y[i]}</td></tr>`;
     }
-    res+=`<tr><td><input type="text" name="newX" id="newX" value=0 onkeyup="adicionaNovoPonto('x',this.value)"></td>`;
-    res+=`<td><input type="text" name="newY" id="newY" value=0 onkeyup="adicionaNovoPonto('y',this.value)"></td></tr>`;
     res+='</table>'
     divTabela.innerHTML = res;
 }
