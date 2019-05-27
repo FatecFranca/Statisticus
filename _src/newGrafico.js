@@ -7,8 +7,10 @@ let maxY=5;
 let modificadorDeMovimento = 2;
 let opcoes;
 let opcoesPizza;
+let opcoesColunas;
 let grafico;
 let graficoPizza;
+let graficoColunas;
 let ctx;
 
 function iniciaVariaveis(){
@@ -65,41 +67,72 @@ function iniciaVariaveis(){
 			options: {
 				responsive: true
 			}
+};
+
+    opcoesColunas = {
+        type: 'bar',
+        data: {
+            labels: [],
+            datasets: [{
+                label: '',
+                data: [],
+                backgroundColor: [],
+                borderColor: [],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            legend: false,
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]
+            }
+        }
+    };
+}
+
+function criaGraficoDeColunas(ctx,lbl,ddd){
+    iniciaVariaveis();
+    graficoColunas = new Chart(ctx, opcoesColunas);
+    opcoesColunas.type='bar';
+    opcoesColunas.data.labels=lbl;
+    opcoesColunas.data.datasets[0].data=ddd;
+
+    let cores=[];
+    for(let i=0;i<lbl.length;i++){
+        cores.push(geraRGB());
+        opcoesColunas.data.datasets[0].label=lbl[i];
     }
+    opcoesColunas.data.datasets[0].backgroundColor=cores;
+    opcoesColunas.data.datasets[0].borderColor=cores;
+    graficoColunas.update();
+
 }
 
 function criaGraficoPizza(ctx,lbl,ddd){
-
-
     iniciaVariaveis();
     graficoPizza = new Chart(ctx, opcoesPizza);
-
     setaTipo('pie');
     let cores=[];
-
     for(let i=0;i<ddd.length;i++){
         cores.push(geraRGB());
     }
-
     opcoesPizza.data.datasets[0].data=ddd;
     opcoesPizza.data.datasets[0].backgroundColor=cores;
     opcoesPizza.data.labels=lbl;
-
-
-
     var newDataset = {
             backgroundColor: [],
             data: []
         };
-
     for (var index = 0; index < lbl.length; ++index) {
         newDataset.data.push(ddd[index]);
-
         var colorName = lbl[index];
         var newColor = cores[index];
         newDataset.backgroundColor.push(newColor);
     }
-
     opcoesPizza.data.datasets.push(newDataset);
     opcoesPizza.data.datasets.splice(0, 1);
     graficoPizza.update();
@@ -136,8 +169,6 @@ function adicionaDataset(titulo,tipo,dados,corBorda,tamBorda,mostrarLinha,preenc
     } else {
         fit();
     }
-
-
 }
 
 function removeDataset(indice){

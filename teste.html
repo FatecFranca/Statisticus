@@ -21,12 +21,14 @@
 
             function cria(){
 
+
                 let dados=[];
                 for (let i=0;i<4;i++){
-                    dados.push(Math.random()*100);
+                    dados.push(Math.random()*10);
                 }
 
-               criaGraficoPizza('graficoCorrelacao',['agua','coca','cerveja','doce'],dados);
+
+               criaGraficoDeColunas(document.querySelector('#graficoCorrelacao'),['agua','coca','cerveja','doce'],dados);
             }
 
 
