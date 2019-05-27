@@ -12,74 +12,24 @@
 
 
         <input type="button" onclick="cria()" value="gerar grafico">
-        <input type="button" onclick="apaga()" value="apaga grafico">
-        <input type="button" onclick="popula()" value="popula grafico">
-        <input type="button" onclick="rem()" value="remove serie">
-        <input type="button" onclick="remAll()" value="remove todas series">
-        <br>
-        x = <input type="text" id="x" > y= <input type="text" id="y"> serie = <input type="text" id="s"><br>
-        <input type="button" onclick="add()" value="adiciona ponto">
-        <input type="button" onclick="minus()" value="remove ponto">
-        <br>
-        <input type="text" id="modMovimento" onchange="setaModMovimento(this.value)">
-        <br>
-        <input type="button" onclick="zoom('x', '+')" value="zoom x +">
-        <input type="button" onclick="zoom('x', '-')" value="zoom x -">
-        <input type="button" onclick="zoom('y', '+')" value="zoom y +">
-        <input type="button" onclick="zoom('y', '-')" value="zoom y -">
-        <br>
-        <input type="button" onclick="moveX(-1)" value="&larr;">
-        <input type="button" onclick="moveX(1)" value="&rarr;">
-        <input type="button" onclick="moveY(1)" value="&uarr;">
-        <input type="button" onclick="moveY(-1)" value="&darr;">
-        <input type="button" onclick="fit()" value="FIT">
+
+
+
         <script>
 
-            function popula(){
-                let dados=[];
-                for (let i=0;i<10;i++){
-                    dados.push({x:Math.random()*5, y:Math.random()*5});
-                }
-                dados.push({x:-2, y:3});
-                dados.push({x:-2, y:-2});
-                adicionaDataset('População 1','line',dados,geraRGB(),5,false,false);
-            }
+
 
             function cria(){
-                iniciaVariaveis();
-                //removeTodosDatasets();
-                //setaLabelX('aulas');
-                //setaLabelY('presenças');
-                setaTipo('pie');
-               criaGraficoPizza('graficoCorrelacao',['agua','coca','cerveja','doce'],[45,50,13,30]);
+
+                let dados=[];
+                for (let i=0;i<4;i++){
+                    dados.push(Math.random()*100);
+                }
+
+               criaGraficoPizza('graficoCorrelacao',['agua','coca','cerveja','doce'],dados);
             }
 
-            function apaga(){
-                apagaGrafico();
-            }
 
-            function add(){
-                x=parseFloat(document.querySelector("#x").value);
-                y=parseFloat(document.querySelector("#y").value);
-                s=parseFloat(document.querySelector("#s").value);
-                adicionaPonto(s,x,y);
-            }
-            function minus(){
-                x=parseFloat(document.querySelector("#x").value);
-                y=parseFloat(document.querySelector("#y").value);
-                s=parseFloat(document.querySelector("#s").value);
-                removePonto(s,x,y);
-            }
-
-            function rem(){
-                let s =parseInt(document.querySelector("#s").value);
-                removeDataset(s);
-
-            }
-
-            function remAll(){
-                removeTodosDatasets();
-            }
 
         </script>
     </body>

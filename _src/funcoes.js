@@ -497,10 +497,7 @@ function destroiTabela(){
         document.querySelector("#tabela").removeChild(temp);
     }
 }
-function destroiGrafico(){
-    let temp = document.querySelector("#divGrafico");
-    temp.innerHTML="";
-}
+
 
 function retornaMediana(varType, limitesIniciais, totalDeElementos, frequenciaAcumulada, contagemElementosPorClasse, intervaloDeClasse, arr, qtdElementos, elementos){
     let pos = 50*totalDeElementos/100;;
@@ -624,33 +621,6 @@ function retornaModa(elementos, qtdElementos, varType, contagemElementosPorClass
     return res;
 }
 
-function geraGrafico(classes, frequencia, tipo, tituloVariavel, tituloFrequencia){
-    var data = new google.visualization.DataTable();
-
-    if (tipo=='Pizza'){
-        data.addColumn('string', tituloVariavel);
-        data.addColumn('number', tituloFrequencia);
-        for (let i=0; i<classes.length;i++){
-            data.addRow([classes[i],frequencia[i]]);
-        }
-        var options = {'title':'',
-                       'width':600,
-                       'height':400};
-        var chart = new google.visualization.PieChart(document.getElementById('divGrafico'));
-        chart.draw(data, options);
-    } else if(tipo=='Colunas'){
-        data.addColumn('number', tituloVariavel);
-        data.addColumn('number', tituloFrequencia);
-        for (let i=0; i<classes.length;i++){
-            data.addRow([classes[i],frequencia[i]]);
-        }
-        var options = {'title':tituloVariavel,
-                       'width':600,
-                       'height':400};
-        var chart = new google.visualization.ColumnChart(document.getElementById('divGrafico'));
-        chart.draw(data, options);
-    }
-}
 
 function retornaDesvioPadrao(varType, elementos, qtdElementos, media, totalDeElementos, pontoMedio, tipoDePesquisa, contagemElementosPorClasse){
     let res;

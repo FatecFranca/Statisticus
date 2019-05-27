@@ -68,10 +68,13 @@ function iniciaVariaveis(){
     }
 }
 
-function criaGraficoPizza(ctx,lbl,ddd, pai){
+function criaGraficoPizza(ctx,lbl,ddd){
 
 
     iniciaVariaveis();
+    graficoPizza = new Chart(ctx, opcoesPizza);
+
+    setaTipo('pie');
     let cores=[];
 
     for(let i=0;i<ddd.length;i++){
@@ -82,32 +85,24 @@ function criaGraficoPizza(ctx,lbl,ddd, pai){
     opcoesPizza.data.datasets[0].backgroundColor=cores;
     opcoesPizza.data.labels=lbl;
 
-    if (graficoPizza!=undefined){
-        debugger;
-        opcoesPizza.data.datasets.splice(0, 1);
-
-        var newDataset = {
-				backgroundColor: [],
-				data: []
-			};
-
-			for (var index = 0; index < lbl.length; ++index) {
-				newDataset.data.push(ddd[index]);
-
-				var colorName = lbl[index];
-				var newColor = cores[index];
-				newDataset.backgroundColor.push(newColor);
-			}
-
-			opcoesPizza.data.datasets.push(newDataset);
-			graficoPizza.update();
 
 
+    var newDataset = {
+            backgroundColor: [],
+            data: []
+        };
 
-    } else {
-        graficoPizza = new Chart(ctx, opcoesPizza);
+    for (var index = 0; index < lbl.length; ++index) {
+        newDataset.data.push(ddd[index]);
+
+        var colorName = lbl[index];
+        var newColor = cores[index];
+        newDataset.backgroundColor.push(newColor);
     }
 
+    opcoesPizza.data.datasets.push(newDataset);
+    opcoesPizza.data.datasets.splice(0, 1);
+    graficoPizza.update();
 }
 
 
