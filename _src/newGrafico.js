@@ -12,6 +12,8 @@ let grafico;
 let graficoPizza;
 let graficoColunas;
 let ctx;
+let graficoContinua;
+let opcoesContinua;
 
 function iniciaVariaveis(){
 
@@ -93,6 +95,54 @@ function iniciaVariaveis(){
             }
         }
     };
+
+    opcoesContinua = {
+        type: 'bar',
+        data: {
+            labels: [' '],
+            datasets: [{
+                label: '',
+                data: [],
+                backgroundColor: [],
+                borderColor: [],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            legend: false,
+            responsive: true,
+            scales: {
+                xAxes: [{
+                    barPercentage: 1,
+                    categoryPercentage:1
+                }],
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]
+            }
+        }
+    };
+}
+
+
+function criaGraficoContinua(ctx,lbl,ddd){
+    iniciaVariaveis();
+    let cores=[];
+    for(let i=0;i<lbl.length;i++){
+        cores.push(geraRGB());
+        opcoesContinua.data.datasets[0].label=lbl[i];
+    }
+    opcoesContinua.type='bar';
+    opcoesContinua.data.labels=lbl;
+    opcoesContinua.data.datasets[0].data=ddd;
+
+
+    opcoesContinua.data.datasets[0].backgroundColor=cores;
+    opcoesContinua.data.datasets[0].borderColor=cores;
+    graficoContinua = new Chart(ctx,opcoesColunas);
+    graficoContinua.update();
 }
 
 function criaGraficoDeColunas(ctx,lbl,ddd){
