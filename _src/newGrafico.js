@@ -72,7 +72,7 @@ function iniciaVariaveis(){
     opcoesColunas = {
         type: 'bar',
         data: {
-            labels: [],
+            labels: [' '],
             datasets: [{
                 label: '',
                 data: [],
@@ -83,6 +83,7 @@ function iniciaVariaveis(){
         },
         options: {
             legend: false,
+            responsive: true,
             scales: {
                 yAxes: [{
                     ticks: {
@@ -95,20 +96,25 @@ function iniciaVariaveis(){
 }
 
 function criaGraficoDeColunas(ctx,lbl,ddd){
-    iniciaVariaveis();
-    graficoColunas = new Chart(ctx, opcoesColunas);
-    opcoesColunas.type='bar';
-    opcoesColunas.data.labels=lbl;
-    opcoesColunas.data.datasets[0].data=ddd;
 
+    iniciaVariaveis();
     let cores=[];
     for(let i=0;i<lbl.length;i++){
         cores.push(geraRGB());
         opcoesColunas.data.datasets[0].label=lbl[i];
     }
+    opcoesColunas.type='bar';
+    opcoesColunas.data.labels=lbl;
+    opcoesColunas.data.datasets[0].data=ddd;
+
+
     opcoesColunas.data.datasets[0].backgroundColor=cores;
     opcoesColunas.data.datasets[0].borderColor=cores;
+    graficoColunas = new Chart(ctx,opcoesColunas);
     graficoColunas.update();
+
+
+
 
 }
 

@@ -642,11 +642,6 @@
 
                 } else {
                     desenhaTabela(dadosGerais.arr, dadosGerais.varType, dadosGerais.varName, dadosGerais.varDescription, dadosGerais.elementos, dadosGerais.qtdElementos, dadosGerais.frequenciaPercentualReal, dadosGerais.frequenciaAcumulada, dadosGerais.frequenciaAcumuladaPercentualReal, dadosGerais.totalFrequenciaAcumuladaReal, dadosGerais.totalFrequenciaPercentual, dadosGerais.K, dadosGerais.elementosIniciais, dadosGerais.elementosFinais, dadosGerais.intervaloDeClasse, dadosGerais.contagemElementosPorClasse );
-                    if (dadosGerais.varType!='Continua'){
-                       geraGrafico(dadosGerais.elementos,dadosGerais.frequenciaPercentualReal,'Colunas', dadosGerais.varName, dadosGerais.varDescription);
-                    } else {
-                        //FAZER OS GRAFICOS DA CONTINUA
-                    }
                 }
 
                 dadosGerais.pontoMedio = retornaPontoMedio(dadosGerais.varType, dadosGerais.elementosIniciais, dadosGerais.elementosFinais);
@@ -667,9 +662,21 @@
                 dadosGerais.medidaSeparatriz = retornaMedidaSeparatriz();
 
                 if(dadosGerais.varType=='Qualitativa'){
-
-
                     criaGraficoPizza(ctx1,dadosGerais.elementos,dadosGerais.qtdElementos);
+                }
+                if(dadosGerais.varType=='Discreta'){
+                    let filho="";
+                    filho = document.querySelector('#graficosGeral');
+                    let posterior = document.querySelector('#posterior');
+                    let pai = filho.parentNode;
+                    filho = pai.removeChild(filho);
+                    filho = document.createElement("canvas");
+                    pai.insertBefore(filho,posterior);
+                    filho.setAttribute("id","graficosGeral");
+                    filho.setAttribute("height","150");
+                    filho.setAttribute("width","150");
+                    filho.setAttribute("style","max-height: 300; max-width: 300;");
+                    criaGraficoDeColunas(filho,dadosGerais.elementos,dadosGerais.qtdElementos);
                 }
 
 
