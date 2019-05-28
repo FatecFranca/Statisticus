@@ -114,7 +114,7 @@ function iniciaVariaveis(){
             scales: {
                 xAxes: [{
                     barPercentage: 1,
-                    categoryPercentage:1
+                    categoryPercentage: 1
                 }],
                 yAxes: [{
                     ticks: {
@@ -141,8 +141,9 @@ function criaGraficoContinua(ctx,lbl,ddd){
 
     opcoesContinua.data.datasets[0].backgroundColor=cores;
     opcoesContinua.data.datasets[0].borderColor=cores;
-    graficoContinua = new Chart(ctx,opcoesColunas);
-    graficoContinua.update();
+    graficoColunas = new Chart(ctx,opcoesContinua);
+    graficoColunas.update();
+
 }
 
 function criaGraficoDeColunas(ctx,lbl,ddd){

@@ -681,6 +681,10 @@
 
                     criaGraficoDeColunas(filho,dadosGerais.elementos,dadosGerais.qtdElementos);
                 }
+                if(dadosGerais.varType=='Continua'){
+
+                    criaGraficoContinua(filho,dadosGerais.elementosIniciais,dadosGerais.contagemElementosPorClasse);
+                }
 
 
                 if (debug){
@@ -690,10 +694,10 @@
         }
         //Exibe as informações de debug
         function showDebug(){
-            console.clear();
-            for (let i in dadosCorrelacao) {
+            //console.clear();
+            for (let i in dadosGerais) {
                 if (dadosCorrelacao.hasOwnProperty(i)) {
-                    console.log("dadosCorrelação." + i + " = " + dadosCorrelacao[i]);
+                    console.log("dadosCorrelação." + i + " = " + dadosGerais[i]);
                 }
             }
         }
@@ -830,7 +834,7 @@
             document.querySelector("#fatorCorrelacao").innerHTML = retornaGrauDeCorrelacao(dadosCorrelacao.r, dadosCorrelacao.textoVarIndependente, dadosCorrelacao.textoVarDependente);
             dadosCorrelacao.dadosDoGrafico = convertToPoint(dadosCorrelacao.x, dadosCorrelacao.y);
 
-///////////////////////////////////// GRAFICO ///////////////////////////////////////////////////
+
 
             iniciaVariaveis();
             removeTodosDatasets();
